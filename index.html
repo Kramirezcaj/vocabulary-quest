@@ -6,561 +6,542 @@
 <title>Vocabulary Quest</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --teal:#1D9E75;--teal-bg:#E1F5EE;--teal-dark:#085041;
-    --blue:#185FA5;--blue-bg:#E6F1FB;--blue-dark:#0C447C;
-    --amber:#BA7517;--amber-bg:#FAEEDA;--amber-dark:#633806;
-    --coral:#993C1D;--coral-bg:#FAECE7;--coral-dark:#712B13;
-    --green-bg:#EAF3DE;--green-text:#27500A;--green-border:#639922;
-    --red-bg:#FCEBEB;--red-text:#791F1F;--red-border:#E24B4A;
-    --bg:#ffffff;--bg2:#f5f4f0;--bg3:#eeede8;
-    --text:#1a1a18;--text2:#5a5a56;--text3:#9a9994;
-    --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.2);
-    --radius:12px;--radius-sm:8px;
-  }
-  @media(prefers-color-scheme:dark){
-    :root{
-      --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
-      --text:#e8e6df;--text2:#a8a69f;--text3:#6a6860;
-      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
-      --teal-bg:#04342C;--blue-bg:#042C53;--amber-bg:#412402;--coral-bg:#4A1B0C;
-      --green-bg:#173404;--green-text:#C0DD97;--green-border:#3B6D11;
-      --red-bg:#501313;--red-text:#F7C1C1;--red-border:#A32D2D;
-    }
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-  #app{max-width:640px;margin:0 auto;padding:20px 16px 48px}
-  .screen{display:none}.screen.active{display:block}
+:root{
+  --teal:#0f9e72;--teal-light:#e0f5ee;--teal-mid:#5dcaa5;
+  --blue:#1a6fc4;--blue-light:#e8f2fb;
+  --amber:#c47a10;--amber-light:#fdf0d8;--amber-mid:#f0b840;
+  --coral:#c44a28;--coral-light:#fdeee9;--coral-mid:#f0896a;
+  --purple:#5b45c8;--purple-light:#eeecfd;
+  --ok-bg:#e8f7ef;--ok-border:#3daa6f;--ok-text:#145c35;
+  --err-bg:#fdeaea;--err-border:#d94f4f;--err-text:#7a1a1a;
+  --bg:#f7f6f2;--card:#ffffff;--card2:#f0efe9;
+  --text:#18180f;--text2:#6b6a60;--text3:#b0aea4;
+  --border:#e2e0d8;--border2:#c8c6bc;
+  --r:16px;--rs:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#app{max-width:700px;margin:0 auto;padding:24px 18px 72px}
+.screen{display:none}.screen.active{display:block}
+.accent-bar{height:4px;border-radius:2px;margin-bottom:28px;background:linear-gradient(90deg,var(--teal),var(--blue),var(--amber),var(--coral))}
 
-  /* NAME SCREEN */
-  .name-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;gap:0}
-  .name-logo{width:56px;height:56px;border-radius:16px;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-  .name-logo svg{width:30px;height:30px}
-  .name-title{font-size:26px;font-weight:700;margin-bottom:8px}
-  .name-sub{font-size:14px;color:var(--text2);line-height:1.55;max-width:320px;margin:0 auto 32px}
-  .name-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
-  .name-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;text-align:left}
-  .name-input{width:100%;padding:12px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s}
-  .name-input:focus{border-color:var(--teal)}
-  .name-btn{width:100%;margin-top:14px;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--teal);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
-  .name-btn:hover{opacity:.9}
-  .name-btn:disabled{opacity:.5;cursor:not-allowed}
-  .name-footer{font-size:11px;color:var(--text3);margin-top:14px}
+/* NAME */
+.name-outer{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.name-logo{width:56px;height:56px;border-radius:18px;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.name-logo svg{width:28px;height:28px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round}
+.name-title{font-size:36px;font-weight:900;letter-spacing:-1.5px;text-align:center;margin-bottom:6px;line-height:1.1}
+.name-title em{font-style:normal;color:var(--teal)}
+.name-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.65;max-width:360px;margin:0 auto 32px}
+.name-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:30px 26px;width:100%;max-width:400px;text-align:left}
+.field-label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.field-input{width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,158,114,.12)}
+.cta-btn{width:100%;margin-top:14px;padding:15px;border-radius:var(--rs);border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .12s,box-shadow .12s;letter-spacing:.01em;color:#fff}
+.cta-btn.teal{background:var(--teal)}.cta-btn.blue{background:var(--blue)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.hint-text{font-size:11px;color:var(--text3);margin-top:11px;text-align:center;line-height:1.5}
+.teacher-link-btn{margin-top:20px;background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px}
+.color-dots{display:flex;gap:8px;justify-content:center;margin-top:26px}
+.cdot{width:8px;height:8px;border-radius:50%}
+.blocked-card{background:var(--err-bg);border:1.5px solid var(--err-border);border-radius:18px;padding:24px;max-width:400px;width:100%;text-align:center;margin-top:16px}
+.blocked-title{font-size:16px;font-weight:800;color:var(--err-text);margin-bottom:8px}
+.blocked-sub{font-size:13px;color:var(--err-text);line-height:1.6;opacity:.85}
 
-  /* HOME */
-  .home-header{text-align:center;padding:28px 0 20px}
-  .home-avatar{width:44px;height:44px;border-radius:50%;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:14px;font-weight:700;color:var(--teal-dark)}
-  .home-title{font-size:22px;font-weight:700;margin-bottom:5px}
-  .home-sub{font-size:13px;color:var(--text2);line-height:1.5}
-  .level-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 14px}
-  .lv-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s;font-family:inherit}
-  .lv-card:hover{border-color:var(--border2);background:var(--bg2)}
-  .lv-bar{height:3px;border-radius:2px;margin-bottom:12px}
-  .lv-name{font-size:15px;font-weight:700;margin-bottom:4px}
-  .lv-hint{font-size:12px;color:var(--text2);line-height:1.4}
-  .lv-count{font-size:11px;color:var(--text3);margin-top:5px}
-  .home-footer{text-align:center;font-size:12px;color:var(--text3)}
+/* TEACHER LOGIN */
+.tlogin-outer{min-height:90vh;display:flex;align-items:center;justify-content:center}
+.tlogin-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:32px 28px;width:100%;max-width:380px;text-align:center}
+.tlogin-icon{width:52px;height:52px;border-radius:16px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.tlogin-icon svg{width:24px;height:24px;stroke:var(--blue);stroke-width:2;fill:none;stroke-linecap:round}
+.tlogin-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.tlogin-sub{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:22px}
+.error-msg{font-size:12px;color:var(--err-text);margin-top:8px;display:none}
+.back-btn-text{background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:14px;display:block;width:100%;text-align:center}
 
-  /* GAME */
-  .game-topbar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-  .back-btn{background:none;border:none;cursor:pointer;color:var(--text2);font-size:18px;padding:2px 6px;border-radius:6px;line-height:1;font-family:inherit}
-  .back-btn:hover{background:var(--bg2)}
-  .lv-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
-  .prog-track{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
-  .prog-fill{height:100%;border-radius:3px;transition:width .4s ease}
-  .q-count{font-size:12px;color:var(--text3);white-space:nowrap}
-  .q-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:22px 20px;margin-bottom:12px}
-  .q-meta{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-  .tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2)}
-  .scenario-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:7px}
-  .scenario-box{background:var(--bg2);border-radius:var(--radius-sm);padding:14px 16px;font-size:14px;line-height:1.65;margin-bottom:16px}
-  .scenario-box b{font-weight:700}
-  .q-prompt{font-size:15px;font-weight:600;line-height:1.45;margin-bottom:14px}
-  .options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .opt{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 13px;font-size:13px;line-height:1.4;text-align:left;cursor:pointer;color:var(--text);transition:border-color .12s,background .12s;font-family:inherit}
-  .opt:hover:not(:disabled){background:var(--bg2);border-color:var(--text3)}
-  .opt:disabled{cursor:default}
-  .opt.correct{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)}
-  .opt.wrong{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)}
-  .write-area{width:100%;padding:11px 13px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;min-height:90px;resize:vertical;background:var(--bg);color:var(--text);font-family:inherit;line-height:1.55;margin-top:4px}
-  .write-area:focus{outline:none;border-color:var(--teal)}
-  .check-btn{margin-top:8px;padding:9px 20px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit}
-  .check-btn:hover{background:var(--bg2)}
-  .feedback{border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;line-height:1.6;margin-top:12px}
-  .feedback.ok{background:var(--green-bg);color:var(--green-text)}
-  .feedback.bad{background:var(--red-bg);color:var(--red-text)}
-  .fb-title{font-weight:700;font-size:14px;margin-bottom:5px}
-  .fb-extra{margin-top:9px;padding-top:9px;border-top:1px solid rgba(0,0,0,.1);font-size:12px;opacity:.9}
-  .next-btn{display:block;width:100%;padding:13px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg2);font-size:14px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit;text-align:center;transition:background .12s}
-  .next-btn:hover{background:var(--bg3)}
+/* HOME */
+.home-topbar{display:flex;align-items:center;gap:14px;padding:20px 0 16px}
+.ava-ring{border-radius:50%;padding:3px;flex-shrink:0}
+.ava{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
+.home-greeting{font-size:13px;color:var(--text2);margin-bottom:2px}
+.home-uname{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.home-desc{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.55;max-width:480px}
+.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.lv-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 20px 18px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;font-family:inherit;position:relative;overflow:hidden}
+.lv-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.1);border-color:var(--border2)}
+.lv-stripe{height:5px;border-radius:3px;margin-bottom:16px;width:100%}
+.lv-name{font-size:17px;font-weight:800;margin-bottom:5px;letter-spacing:-.2px}
+.lv-hint{font-size:12px;color:var(--text2);line-height:1.45}
+.lv-qs{font-size:11px;font-weight:700;margin-top:10px;padding:3px 10px;border-radius:8px;display:inline-block}
+.lv-bg-shape{position:absolute;bottom:-16px;right:-16px;width:72px;height:72px;border-radius:50%;opacity:.06}
+.home-footer{text-align:center;font-size:11px;color:var(--text3);padding-top:2px}
 
-  /* RESULTS */
-  .results{text-align:center;padding:24px 0}
-  .res-level{font-size:12px;color:var(--text2);margin-bottom:6px}
-  .res-score{font-size:52px;font-weight:700;margin-bottom:4px}
-  .res-stars{font-size:28px;letter-spacing:2px;margin-bottom:8px}
-  .res-msg{font-size:14px;color:var(--text2);margin-bottom:20px}
-  .saving-chip{font-size:12px;color:var(--text3);margin-bottom:12px}
-  .saved-chip{font-size:12px;color:var(--teal);margin-bottom:12px;font-weight:600}
-  .unlock-badge{display:inline-block;font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green-text);margin-bottom:20px;font-weight:700}
-  .review-section{text-align:left;margin-bottom:22px}
-  .review-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
-  .review-item{padding:10px 14px;border-radius:var(--radius-sm);background:var(--bg2);margin-bottom:7px}
-  .review-word{font-weight:700;font-size:14px}
-  .review-sub{font-size:10px;color:var(--text3);margin-left:6px}
-  .review-why{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
-  .action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .a-btn{padding:10px 22px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit;transition:background .12s}
-  .a-btn:hover{background:var(--bg2)}
-  .a-btn.primary{border-color:var(--teal);color:var(--teal-dark);background:var(--teal-bg)}
+/* GAME */
+.game-topbar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.nav-back{background:var(--card);border:1.5px solid var(--border);cursor:pointer;color:var(--text2);font-size:14px;padding:7px 12px;border-radius:10px;font-family:inherit;transition:background .12s}
+.nav-back:hover{background:var(--card2)}
+.lv-pill{font-size:11px;font-weight:800;padding:5px 13px;border-radius:20px;letter-spacing:.04em}
+.prog-area{flex:1;display:flex;flex-direction:column;gap:4px}
+.prog-track{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.prog-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.prog-label{font-size:11px;color:var(--text3);display:flex;justify-content:space-between}
+.score-pill{font-size:13px;font-weight:800;padding:5px 12px;border-radius:20px;background:var(--card);border:1.5px solid var(--border);white-space:nowrap;min-width:52px;text-align:center}
+.q-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:26px 22px;margin-bottom:14px}
+.q-meta{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:9px;letter-spacing:.04em}
+.tag-s{background:var(--card2);color:var(--text2)}
+.tag-t{background:var(--purple-light);color:var(--purple)}
+.word-banner{border-radius:14px;padding:16px 20px;margin-bottom:16px;text-align:center}
+.word-main{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
+.word-pos{font-size:11px;font-weight:600;opacity:.65;letter-spacing:.04em;text-transform:uppercase}
+.scene-label{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.scene-line{flex:1;height:1px;background:var(--border)}
+.scene-box{background:var(--card2);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;padding:15px 17px;font-size:14px;line-height:1.72;margin-bottom:16px}
+.scene-box b{font-weight:800;color:var(--teal)}
+.q-prompt{font-size:15px;font-weight:700;line-height:1.45;margin-bottom:16px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:var(--bg);border:1.5px solid var(--border2);border-radius:12px;padding:13px 14px 13px 10px;font-size:13px;line-height:1.45;text-align:left;cursor:pointer;color:var(--text);transition:all .15s;font-family:inherit;display:flex;align-items:flex-start;gap:9px}
+.opt:hover:not(:disabled){background:var(--teal-light);border-color:var(--teal-mid);transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-text)}
+.opt.wrong{background:var(--err-bg);border-color:var(--err-border);color:var(--err-text)}
+.opt-key{min-width:24px;height:24px;border-radius:7px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;color:var(--text2)}
+.opt.correct .opt-key{background:var(--ok-border);color:#fff}
+.opt.wrong .opt-key{background:var(--err-border);color:#fff}
+.opt-text{flex:1;padding-top:1px}
+.write-area{width:100%;padding:13px 15px;border:1.5px solid var(--border2);border-radius:12px;font-size:14px;min-height:105px;resize:vertical;background:var(--bg);color:var(--text);font-family:inherit;line-height:1.65;transition:border-color .2s,box-shadow .2s;margin-top:4px}
+.write-area:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,158,114,.1)}
+.write-footer{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.char-count{font-size:11px;color:var(--text3)}
+.submit-btn{padding:10px 22px;border-radius:10px;border:1.5px solid var(--teal);background:var(--teal-light);font-size:13px;font-weight:700;cursor:pointer;color:var(--teal);font-family:inherit;transition:all .15s}
+.submit-btn:hover{background:var(--teal);color:#fff}
+.fb-box{border-radius:14px;padding:16px 18px;font-size:13px;line-height:1.68;margin-top:14px;border:1.5px solid}
+.fb-box.ok{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-text)}
+.fb-box.bad{background:var(--err-bg);border-color:var(--err-border);color:var(--err-text)}
+.fb-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.fb-badge{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.04em}
+.fb-box.ok .fb-badge{background:var(--ok-border);color:#fff}
+.fb-box.bad .fb-badge{background:var(--err-border);color:#fff}
+.fb-title{font-weight:800;font-size:14px}
+.fb-extra{margin-top:10px;padding:10px 13px;border-radius:10px;background:rgba(0,0,0,.04);font-size:12px;line-height:1.6}
+.fb-extra-label{font-weight:700;margin-bottom:3px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.7}
+.next-btn{display:block;width:100%;margin-top:3px;padding:14px;border-radius:16px;border:1.5px solid var(--border2);background:var(--card);font-size:14px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;text-align:center;transition:all .18s}
+.next-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal);transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,158,114,.25)}
 
-  /* TOAST */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:13px;font-weight:600;padding:10px 20px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
-  #toast.show{opacity:1}
+/* RESULTS */
+.results-wrap{padding:16px 0 8px}
+.res-top{text-align:center;margin-bottom:28px}
+.res-circle{width:120px;height:120px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid}
+.res-num{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1}
+.res-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;opacity:.7}
+.res-stars{font-size:26px;letter-spacing:4px;margin-bottom:10px}
+.res-msg{font-size:16px;font-weight:700;margin-bottom:8px}
+.res-sub{font-size:13px;color:var(--text2);line-height:1.55;max-width:340px;margin:0 auto}
+.res-bar-wrap{max-width:260px;height:8px;background:var(--card2);border-radius:4px;overflow:hidden;margin:16px auto 6px;border:1px solid var(--border)}
+.res-bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.save-status{font-size:12px;color:var(--text3);text-align:center;margin:8px 0 18px;display:flex;align-items:center;justify-content:center;gap:6px}
+.save-status.saved{color:var(--teal);font-weight:700}
+.save-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center}
+.stat-val{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
+.stat-lbl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase}
+.unlock-banner{background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:14px;padding:14px 18px;text-align:center;margin-bottom:20px;font-size:14px;font-weight:700;color:var(--ok-text)}
+.review-section{margin-bottom:24px}
+.review-header{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.review-dot{width:6px;height:6px;border-radius:50%;background:var(--coral)}
+.review-item{background:var(--card);border:1.5px solid var(--border);border-left:4px solid var(--coral-mid);border-radius:12px;padding:12px 15px;margin-bottom:9px}
+.review-word{font-weight:800;font-size:14px;margin-bottom:2px}
+.review-meta{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
+.review-why{font-size:12px;color:var(--text2);line-height:1.5}
+.action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.act-btn{padding:12px 24px;border-radius:12px;border:1.5px solid var(--border2);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;transition:all .15s}
+.act-btn:hover{background:var(--card2);transform:translateY(-1px)}
+.act-btn.primary{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
+.act-btn.primary:hover{background:var(--teal);color:#fff}
 
-  @media(max-width:420px){
-    .level-grid{grid-template-columns:1fr}
-    .options{grid-template-columns:1fr}
-    .action-row{flex-direction:column}
-    .a-btn{width:100%;text-align:center}
-  }
+/* DASHBOARD */
+.dash-topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;flex-wrap:wrap;gap:10px}
+.dash-title{font-size:22px;font-weight:900;letter-spacing:-.3px}
+.dash-live{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-top:3px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.dash-exit{padding:8px 16px;border-radius:10px;border:1.5px solid var(--border2);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;color:var(--text2);font-family:inherit}
+.dash-exit:hover{background:var(--card2)}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.m-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px 14px}
+.m-stripe{height:3px;border-radius:2px;margin-bottom:12px}
+.m-val{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
+.m-lbl{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.m-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.d-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px}
+.d-card-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.d-card.full{grid-column:1/-1}
+.d-card-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.refresh-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--bg);font-size:11px;font-weight:700;cursor:pointer;color:var(--text2);font-family:inherit;transition:all .15s}
+.refresh-btn:hover{background:var(--teal-light);color:var(--teal);border-color:var(--teal-mid)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-lbl{font-size:12px;color:var(--text2);width:96px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:4px;transition:width .9s ease}
+.bar-val{font-size:11px;color:var(--text2);width:36px;text-align:right;flex-shrink:0;font-weight:600}
+.stu-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.stu-tbl th{font-size:10px;font-weight:700;color:var(--text3);text-align:left;padding:7px 10px;border-bottom:1.5px solid var(--border);text-transform:uppercase;letter-spacing:.05em}
+.stu-tbl td{padding:10px 10px;border-bottom:1px solid var(--border)}
+.stu-tbl tbody tr:last-child td{border-bottom:none}
+.stu-tbl tbody tr:hover td{background:var(--bg)}
+.lv-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.score-track{display:inline-block;width:56px;height:5px;border-radius:3px;background:var(--card2);overflow:hidden;vertical-align:middle;margin-left:6px;border:1px solid var(--border)}
+.score-fill{height:100%;border-radius:3px}
+.star-display{color:var(--amber-mid);font-size:12px;letter-spacing:1px}
+.perf-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;display:inline-block}
+.empty-dash{text-align:center;padding:32px;color:var(--text3);font-size:14px}
+.loading-dash{text-align:center;padding:20px;color:var(--text3);font-size:13px}
+
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:13px;font-weight:700;padding:12px 24px;border-radius:26px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#toast.show{opacity:1}
+
+@media(max-width:480px){
+  .level-grid,.opts,.dash-grid,.metrics-grid{grid-template-columns:1fr}
+  .action-row{flex-direction:column}
+  .act-btn{width:100%;text-align:center}
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+  .d-card.full{grid-column:auto}
+}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="screen active" id="s-name">
-    <div class="name-screen">
-      <div class="name-logo">
-        <svg viewBox="0 0 30 30" fill="none" stroke="#1D9E75" stroke-width="2.2" stroke-linecap="round">
-          <path d="M5 8h20M5 13h14M5 18h16M5 23h10"/>
-        </svg>
-      </div>
-      <h1 class="name-title">Vocabulary Quest</h1>
-      <p class="name-sub">Real-life vocabulary for 6th and 7th grade. Write your name to begin.</p>
+
+<div class="screen active" id="s-name">
+  <div class="name-outer">
+    <div class="name-logo"><svg viewBox="0 0 28 28"><path d="M4 6h20M4 12h14M4 18h17M4 24h10"/></svg></div>
+    <h1 class="name-title">Vocabulary<br><em>Quest</em></h1>
+    <p class="name-sub">Cross-curricular English for grades 6 &amp; 7. Phrasal verbs, modal verbs, conditionals, adjectives, adverbs, reported speech and more.</p>
+    <div id="name-card-wrap">
       <div class="name-card">
-        <div class="name-label">Your full name</div>
-        <input class="name-input" id="name-input" type="text" placeholder="e.g. Valentina Rodríguez" autocomplete="name" />
-        <button class="name-btn" id="name-btn" onclick="startWithName()">Start playing →</button>
-        <div class="name-footer">Your name and score will be saved for your teacher.</div>
+        <div class="field-label">Your full name</div>
+        <input class="field-input" id="name-input" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name"/>
+        <button class="cta-btn teal" onclick="startWithName()">Start playing</button>
+        <div class="hint-text">Your name and score are saved automatically for your teacher.</div>
       </div>
     </div>
-  </div>
-
-  <div class="screen" id="s-home">
-    <div class="home-header">
-      <div class="home-avatar" id="home-avatar"></div>
-      <h2 class="home-title">Choose your level</h2>
-      <p class="home-sub">Each session has 5 real-life questions. Your score is saved automatically.</p>
+    <button class="teacher-link-btn" onclick="showTeacherLogin()">Teacher access</button>
+    <div class="color-dots">
+      <div class="cdot" style="background:#0f9e72"></div>
+      <div class="cdot" style="background:#1a6fc4"></div>
+      <div class="cdot" style="background:#c47a10"></div>
+      <div class="cdot" style="background:#c44a28"></div>
     </div>
-    <div class="level-grid" id="level-grid"></div>
-    <p class="home-footer">No download needed · Works on any device</p>
-  </div>
-
-  <div class="screen" id="s-game">
-    <div class="game-topbar">
-      <button class="back-btn" onclick="goHome()">&#8592;</button>
-      <span class="lv-pill" id="g-pill"></span>
-      <div class="prog-track"><div class="prog-fill" id="g-prog"></div></div>
-      <span class="q-count" id="g-count"></span>
-    </div>
-    <div id="g-body"></div>
-  </div>
-
-  <div class="screen" id="s-results">
-    <div class="results" id="r-body"></div>
   </div>
 </div>
 
+<div class="screen" id="s-teacher-login">
+  <div class="tlogin-outer">
+    <div class="tlogin-card">
+      <div class="tlogin-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div class="tlogin-title">Teacher Dashboard</div>
+      <div class="tlogin-sub">Enter your access password to view real-time student results and class progress.</div>
+      <div class="field-label" style="text-align:left">Password</div>
+      <input class="field-input" id="teacher-pass" type="password" placeholder="Enter password"/>
+      <button class="cta-btn blue" onclick="checkPass()">View dashboard</button>
+      <div class="error-msg" id="pass-err">Incorrect password. Please try again.</div>
+      <button class="back-btn-text" onclick="show('s-name')">Back to student login</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s-dashboard">
+  <div class="accent-bar"></div>
+  <div class="dash-topbar">
+    <div>
+      <div class="dash-title">Teacher Dashboard</div>
+      <div class="dash-live"><div class="live-dot"></div>Live results &mdash; refreshes every 30 seconds</div>
+    </div>
+    <button class="dash-exit" onclick="exitDash()">Exit dashboard</button>
+  </div>
+  <div class="metrics-grid">
+    <div class="m-card"><div class="m-stripe" style="background:#0f9e72"></div><div class="m-val" id="m-total">--</div><div class="m-lbl">Students today</div></div>
+    <div class="m-card"><div class="m-stripe" style="background:#1a6fc4"></div><div class="m-val" id="m-avg">--</div><div class="m-lbl">Average score</div><div class="m-sub">out of 100</div></div>
+    <div class="m-card"><div class="m-stripe" style="background:#c47a10"></div><div class="m-val" id="m-pass">--</div><div class="m-lbl">Pass rate</div><div class="m-sub">scored 60 or above</div></div>
+    <div class="m-card"><div class="m-stripe" style="background:#c44a28"></div><div class="m-val" id="m-top">--</div><div class="m-lbl">Top level</div><div class="m-sub">most played today</div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="d-card"><div class="d-card-title">Average score by level</div><div id="dash-bylevel"><div class="loading-dash">Loading...</div></div></div>
+    <div class="d-card"><div class="d-card-title">Score distribution</div><div id="dash-dist"><div class="loading-dash">Loading...</div></div></div>
+    <div class="d-card full">
+      <div class="d-card-toprow">
+        <div class="d-card-title" style="margin:0">All student results today</div>
+        <button class="refresh-btn" onclick="loadDash()">Refresh now</button>
+      </div>
+      <div id="dash-table"><div class="loading-dash">Loading results...</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s-home">
+  <div class="accent-bar"></div>
+  <div class="home-topbar">
+    <div class="ava-ring" id="ava-ring"><div class="ava" id="home-ava"></div></div>
+    <div><div class="home-greeting">Welcome,</div><div class="home-uname" id="home-uname"></div></div>
+  </div>
+  <p class="home-desc">Choose your level. Each session gives you 5 questions drawn randomly from the full bank. Questions and answer order are different for every student.</p>
+  <div class="level-grid" id="level-grid"></div>
+  <p class="home-footer">No download required &middot; Works on any device &middot; Free</p>
+</div>
+
+<div class="screen" id="s-game">
+  <div class="game-topbar">
+    <button class="nav-back" onclick="goHome()">&#8592; Back</button>
+    <span class="lv-pill" id="g-pill"></span>
+    <div class="prog-area">
+      <div class="prog-track"><div class="prog-fill" id="g-prog"></div></div>
+      <div class="prog-label"><span id="g-frac"></span><span id="g-pts-lbl"></span></div>
+    </div>
+    <div class="score-pill" id="g-score">0</div>
+  </div>
+  <div id="g-body"></div>
+</div>
+
+<div class="screen" id="s-results">
+  <div class="results-wrap" id="r-body"></div>
+</div>
+
+</div>
 <div id="toast"></div>
-
 <script>
-// ── SUPABASE ──────────────────────────────────────────────
-const { createClient } = supabase;
-const db = createClient(
-  'https://zdrxqsezxeusxffafsut.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkcnhxc2V6eGV1c3hmZmFmc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDYwNjIsImV4cCI6MjA5MTc4MjA2Mn0.HAB9g3etuP0b4SmbDdD0dcq0riwVizcepBkO8_BFhqE'
-);
+const SURL="https://zdrxqsezxeusxffafsut.supabase.co";
+const SKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkcnhxc2V6eGV1c3hmZmFmc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDYwNjIsImV4cCI6MjA5MTc4MjA2Mn0.HAB9g3etuP0b4SmbDdD0dcq0riwVizcepBkO8_BFhqE";
+const TPASS="vocab2025";
+const {createClient}=supabase;
+const db=createClient(SURL,SKEY);
+const $=id=>document.getElementById(id);
+const show=id=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");};
+const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
+function shuffleOpts(opts,correct){const arr=opts.map((t,i)=>({t,ok:i===correct}));const sh=shuffle(arr);return{opts:sh.map(o=>o.t),correct:sh.findIndex(o=>o.ok)};}
+function toast(msg,d=2600){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),d);}
+function todayISO(){return new Date().toISOString().slice(0,10);}
 
-async function saveScore(student, level, score) {
-  try {
-    const { error } = await db.from('scores').insert({ student, level, score });
-    if (error) console.error('Supabase error:', error.message);
-  } catch(e) { console.error('Save failed:', e); }
-}
-
-// ── TOAST ────────────────────────────────────────────────
-function toast(msg, duration=2800) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
-}
-
-// ── DATA ─────────────────────────────────────────────────
-const LEVELS = {
-  beginner:     { name:'Beginner',     color:'#1D9E75', bg:'#E1F5EE', dark:'#085041', fill:'#1D9E75' },
-  elementary:   { name:'Elementary',   color:'#185FA5', bg:'#E6F1FB', dark:'#0C447C', fill:'#378ADD' },
-  intermediate: { name:'Intermediate', color:'#854F0B', bg:'#FAEEDA', dark:'#633806', fill:'#BA7517' },
-  expert:       { name:'Expert',       color:'#993C1D', bg:'#FAECE7', dark:'#712B13', fill:'#D85A30' }
-};
-const NEXT = { beginner:'elementary', elementary:'intermediate', intermediate:'expert', expert:null };
-const DESCS = {
-  beginner:     'Read a real situation. Pick what the word means.',
-  elementary:   'Spot which sentence uses the word correctly.',
-  intermediate: 'Fill the blank in a real-life paragraph.',
-  expert:       'Write your own response using the word.'
-};
-
-const QUESTIONS = {
-  beginner:[
-    {word:'organism',subject:'Science',
-     scenario:'You and your friends are watching a nature documentary. The narrator says: "Every <b>organism</b> in this rainforest depends on the others to survive."',
-     prompt:'Your friend asks what "organism" means. Which answer is correct?',
-     options:['Any living thing — a plant, animal, or bacterium','A type of tropical climate','A layer of rainforest soil','A machine that helps plants grow'],correct:0,
-     why:'An organism is any living thing. You, your pet, the grass outside — all organisms. The documentary is saying every living thing in the ecosystem is connected.',
-     extra:'You\'ll also hear this in climate news: "Millions of organisms face extinction due to habitat loss."'},
-    {word:'ratio',subject:'Math',
-     scenario:'You\'re at a school food sale. The juice sign reads: "Mixed in a <b>ratio</b> of 1 part juice to 3 parts water."',
-     prompt:'What does "ratio" mean in this context?',
-     options:['A comparison showing how much of each ingredient is used','The price per cup of juice','The total volume of liquid in the jug','The number of cups sold per hour'],correct:0,
-     why:'A ratio tells you the relationship between two quantities. 1:3 means for every 1 cup of juice, there are 3 cups of water. Ratios appear in cooking, maps, and sports stats every day.',
-     extra:'"Our school\'s student-to-teacher ratio is 25:1" means 25 students for every 1 teacher.'},
-    {word:'habitat',subject:'Science',
-     scenario:'Your city plans to build a shopping mall on an empty field. A news article says: "Construction will destroy the natural <b>habitat</b> of several bird species."',
-     prompt:'What is the article warning about?',
-     options:['The natural home where those birds live and raise their young','The migration route birds travel each year','The food source the birds depend on','The noise level that disturbs the birds'],correct:0,
-     why:'A habitat is the natural environment where a species lives, finds food, and reproduces. Destroying it forces animals out — or kills them if they have nowhere else to go.',
-     extra:'Environmental campaigns often say "Protect the habitat" — meaning protect the actual physical space where wildlife lives.'},
-    {word:'democracy',subject:'Social studies',
-     scenario:'Your class is voting on where to go for the end-of-year trip. Your teacher says: "This is how a <b>democracy</b> works — everyone\'s vote counts equally."',
-     prompt:'What does "democracy" mean here?',
-     options:['A system where people make decisions by voting','A system where only the teacher decides','A competition where one winner is chosen','A meeting where only older students can speak'],correct:0,
-     why:'"Democracy" literally means "rule by the people." Every person\'s vote carries the same weight.',
-     extra:'When people say a country "is a democracy," they mean citizens elect their leaders and rights are protected by law.'},
-    {word:'average',subject:'Math',
-     scenario:'You scored 70, 80, and 90 on three science tests. Your teacher says your <b>average</b> is 80.',
-     prompt:'What did your teacher calculate?',
-     options:['The sum of all scores divided by how many there are','The highest score you received','The score you got most often','The difference between your best and worst score'],correct:0,
-     why:'The average (mean) is found by adding all values and dividing by the count: (70+80+90)÷3 = 80. It gives one number that represents the whole group.',
-     extra:'"The average temperature this week was 22°C" — averages summarize data into one useful, comparable number.'},
-    {word:'evidence',subject:'Language arts',
-     scenario:'A rumor is spreading around school. Your friend says: "I\'m not going to believe that until I see actual <b>evidence</b>."',
-     prompt:'What is your friend asking for?',
-     options:['Facts or information that help prove whether something is true','A second opinion from a teacher','A vote from the class','A written apology from the person who started the rumor'],correct:0,
-     why:'"Evidence" is information that supports or disproves a claim. Your friend is being scientifically minded — requiring proof before accepting something as true.',
-     extra:'Evidence appears everywhere: in science (data), in law (proof at trial), and everyday arguments ("Do you have any evidence for that?").'},
-    {word:'predator',subject:'Science',
-     scenario:'A nature reserve posted: "We reintroduced wolves to control the deer population. As a natural <b>predator</b>, the wolf keeps the ecosystem balanced."',
-     prompt:'What does "predator" mean in this post?',
-     options:['An animal that hunts and eats other animals to survive','An animal that only eats plants','A species that is endangered','A type of bird that lives in forests'],correct:0,
-     why:'A predator is an animal that hunts others for food. Wolves are predators; deer are their prey. Reintroducing predators can restore balance to an ecosystem.',
-     extra:'In everyday language, "predator" can describe a person who exploits others, but in science it means a hunter in the food chain.'},
-    {word:'plot',subject:'Language arts',
-     scenario:'Your English teacher asks: "Before we discuss the themes of this novel, let\'s make sure everyone understands the <b>plot</b>."',
-     prompt:'What is your teacher asking you to know?',
-     options:['The sequence of events that happen in the story','The main message or lesson of the story','The time and place where the story takes place','The personality of the main character'],correct:0,
-     why:'The plot is what happens — the chain of events from beginning to end. It is different from the theme (meaning) or the setting (time and place).',
-     extra:'When someone says "Don\'t spoil the plot!" they mean don\'t reveal what happens in the story.'}
-  ],
-  elementary:[
-    {word:'migration',subject:'Social studies',
-     scenario:'A news article reads: "The <b>migration</b> of families from rural villages to the capital has doubled in a decade, putting pressure on schools and hospitals."',
-     prompt:'Which sentence uses "migration" the same way the article does?',
-     options:['The migration of workers to the city changed the local economy.','She studied migration for her math exam last night.','The migration of the soup made it taste better.','His migration of the argument convinced the class.'],correct:0,
-     why:'"Migration" is the movement of people or animals from one place to another. The correct option mirrors the article — workers moving to a new location.',
-     extra:'"Migration" works for birds (seasonal migration), people (economic migration), and tech (migrating files to a new computer).'},
-    {word:'variable',subject:'Math',
-     scenario:'Your science teacher says: "Keep everything the same in your experiment — except for the one <b>variable</b> you\'re testing, which is the amount of sunlight."',
-     prompt:'Which sentence uses "variable" the same way your teacher did?',
-     options:['The only variable in the test was how much water each plant got.','She bought a variable at the grocery store for dinner.','The variable outside was cold and windy.','He variable his shoes before gym class.'],correct:0,
-     why:'In an experiment, a variable is the one factor you change to see what happens. In math, a variable (like x) represents an unknown value.',
-     extra:'"Income is the key variable in whether a family can afford housing" — here variable means a changing factor that affects the outcome.'},
-    {word:'persuade',subject:'Language arts',
-     scenario:'You want your parents to extend your weekend curfew. Your sibling advises: "Don\'t just ask — <b>persuade</b> them. Show them you\'re responsible with real examples."',
-     prompt:'Which sentence uses "persuade" the same way your sibling did?',
-     options:['She used her safety record to persuade her parents to let her go.','He persuaded his lunch in the cafeteria quickly.','The weather persuaded all afternoon.','They persuaded the math problem on the board.'],correct:0,
-     why:'To persuade is to convince someone through reasoning, evidence, or argument. It is more than just asking — it involves making a strong case.',
-     extra:'Ads persuade you to buy. Politicians persuade voters. Lawyers persuade juries. Persuasion is one of the most used communication skills in real life.'},
-    {word:'conductor',subject:'Science',
-     scenario:'You touch a metal park bench on a hot sunny day and burn your hand. Your friend explains: "Metal is a great <b>conductor</b> — it transfers heat straight to your skin."',
-     prompt:'Which sentence uses "conductor" the same way your friend did?',
-     options:['Copper wire is a conductor, which is why it\'s used in electrical cables.','The conductor of the school orchestra raised her baton.','He was a conductor on the train from the city.','The conductor of the meeting spoke too quickly.'],correct:0,
-     why:'In science, a conductor is a material that allows heat or electricity to pass through easily. Metals are excellent conductors.',
-     extra:'When you use an oven mitt, you\'re protecting yourself from a heat conductor. Electricians choose conductors carefully to keep homes safe.'},
-    {word:'coherent',subject:'Language arts',
-     scenario:'You submit an essay and your teacher writes: "Your ideas are interesting, but the argument is not <b>coherent</b> — the paragraphs don\'t connect to each other."',
-     prompt:'Which sentence uses "coherent" the same way your teacher did?',
-     options:['A coherent presentation flows logically from one point to the next.','The coherent weather made it a perfect day for a picnic.','She coherent her backpack before leaving the house.','The coherent of the equation took three steps to solve.'],correct:0,
-     why:'"Coherent" means logically connected and easy to follow. Your teacher is saying your paragraphs feel disconnected — the ideas don\'t flow together as a unified whole.',
-     extra:'A coherent plan, a coherent argument, a coherent explanation — all mean the parts fit together in a way that makes clear sense.'},
-    {word:'urbanization',subject:'Social studies',
-     scenario:'Your geography textbook says: "<b>Urbanization</b> in Colombia has accelerated since the 1960s, with more than 80% of the population now living in cities."',
-     prompt:'Which sentence uses "urbanization" the same way the textbook does?',
-     options:['Rapid urbanization transformed the once-quiet town into a crowded city.','The urbanization of her speech impressed the judges.','He studied urbanization to prepare for the spelling test.','The urbanization outside was sunny and warm.'],correct:0,
-     why:'"Urbanization" is the process by which more people move from rural areas to cities, and cities grow larger. It affects housing, traffic, and the environment.',
-     extra:'Today, more than half the world\'s population lives in cities, up from 30% in 1950 — one of the biggest urbanization shifts in history.'},
-    {word:'probability',subject:'Math',
-     scenario:'Your phone\'s weather app shows a 70% chance of rain tomorrow. You\'re deciding whether to bring an umbrella to your outdoor sports day.',
-     prompt:'Which sentence uses "probability" the same way the weather app does?',
-     options:['The probability of rain was high enough to cancel the outdoor concert.','She probability her homework before dinner.','The probability outside was cold and cloudy.','He bought a probability at the school book fair.'],correct:0,
-     why:'"Probability" is a measure of how likely something is to happen. 70% means it rains in 7 out of 10 similar conditions — not a guarantee, but worth preparing for.',
-     extra:'Doctors use probability ("80% chance this treatment works"), and insurance companies calculate it to set prices.'},
-    {word:'amendment',subject:'Social studies',
-     scenario:'During a student council meeting, someone suggests changing the school\'s phone rules. The president says: "We can propose an <b>amendment</b> to the school code."',
-     prompt:'Which sentence uses "amendment" the same way the student president did?',
-     options:['The city council passed an amendment to update the noise regulations.','She ate her amendment before the test.','The amendment outside was cold and windy.','He amendment his backpack before leaving school.'],correct:0,
-     why:'An amendment is a formal change or addition to a rule, law, or document. Any official rule can be amended.',
-     extra:'When Colombia updates its constitution, those changes are called amendments too. The word comes from Latin "emendare" — to correct or improve.'}
-  ],
-  intermediate:[
-    {word:'adaptation',subject:'Science',
-     scenario:'You\'re watching a video about desert foxes. The narrator explains that the fox\'s huge ears release body heat to keep it cool in extreme temperatures.',
-     prompt:'Fill in the blank: The fox\'s large ears are a remarkable ___ to life in the desert, developed over thousands of generations.',
-     options:['adaptation','migration','hypothesis','correlation'],correct:0,
-     why:'An adaptation is a trait that evolved because it helps a species survive in its specific environment. The key idea: it developed over time because it solved a survival problem.',
-     extra:'"Working from home is an adaptation many companies made during the pandemic." Same core idea — adjusting to a new situation.'},
-    {word:'inflation',subject:'Social studies',
-     scenario:'Your parents are complaining that groceries cost much more than two years ago. The news anchor says: "Families are feeling the impact of <b>inflation</b>, with food prices up 18% since last year."',
-     prompt:'Fill in the blank: When your school lunch rises from $2 to $3 over two years without the portion getting bigger, that is an example of ___.',
-     options:['inflation','migration','sovereignty','legislation'],correct:0,
-     why:'Inflation is the general increase in prices over time, meaning your money buys less than it used to.',
-     extra:'A dollar in 1990 could buy roughly what $2.30 buys today — that\'s the cumulative effect of inflation over decades.'},
-    {word:'correlation',subject:'Math',
-     scenario:'A school health report shows students who sleep more than 8 hours tend to score higher on tests. The report notes, however, that sleeping more does not necessarily cause better grades.',
-     prompt:'Fill in the blank: The data shows a ___ between sleep and test scores, but not a proven cause-and-effect relationship.',
-     options:['correlation','variable','ratio','hypothesis'],correct:0,
-     why:'A correlation means two things tend to change together. But correlation does not mean one causes the other.',
-     extra:'"Ice cream sales and drowning rates both rise in summer — there\'s a correlation, but ice cream doesn\'t cause drowning." The real cause is hot weather.'},
-    {word:'rhetoric',subject:'Language arts',
-     scenario:'You\'re watching a politician give a speech. They keep repeating emotional phrases and making big promises with no specific plans. Your parent says: "That\'s all just <b>rhetoric</b>."',
-     prompt:'Fill in the blank: The candidate\'s speech was full of ___ — powerful, emotional language, but no concrete policy details.',
-     options:['rhetoric','allegory','syntax','coherence'],correct:0,
-     why:'Rhetoric is the art of using language persuasively. "Just rhetoric" usually means language designed to impress without real substance.',
-     extra:'Advertisers use rhetoric constantly. "New and improved!" is rhetoric — emotionally appealing but vague. Learning to spot it helps you think critically.'},
-    {word:'sovereignty',subject:'Social studies',
-     scenario:'You read this headline: "Small island nation rejects foreign company\'s offer to manage its national water supply, citing <b>sovereignty</b> concerns."',
-     prompt:'Fill in the blank: The island refused because handing over its water supply would compromise its ___ — its right to make its own decisions.',
-     options:['sovereignty','democracy','legislation','migration'],correct:0,
-     why:'"Sovereignty" means a nation\'s right to govern itself without outside interference. Control of basic resources like water is a core element of sovereignty.',
-     extra:'Sovereignty debates come up when countries join international organizations, sign trade agreements, or allow foreign military bases on their soil.'},
-    {word:'biodiversity',subject:'Science',
-     scenario:'Your city is debating whether to replace an old overgrown park with a parking lot. An environmental group argues the park supports dozens of plant and insect species found nowhere else in the city.',
-     prompt:'Fill in the blank: Building on the park would dramatically reduce the ___ of the urban area, making the local ecosystem fragile.',
-     options:['biodiversity','habitat','adaptation','organism'],correct:0,
-     why:'"Biodiversity" refers to the variety of life — different species, genetic diversity within species, and variety of ecosystems. High biodiversity makes ecosystems more resilient.',
-     extra:'A single crop farm has very low biodiversity. A rainforest has extreme biodiversity. When biodiversity drops, entire food chains can collapse.'},
-    {word:'inference',subject:'Math',
-     scenario:'Your school surveyed 80 randomly chosen students about sleep habits. Based on those results, the report made predictions about all 800 students in the school.',
-     prompt:'Fill in the blank: The researchers used ___ to draw conclusions about the whole school from a sample of 80 students.',
-     options:['inference','correlation','probability','variable'],correct:0,
-     why:'An inference is a conclusion you draw from evidence rather than direct observation. Statistical inference means using a sample to make educated conclusions about a larger group.',
-     extra:'"Based on the tire tracks, the detective inferred it was a large SUV." In daily life, we make inferences constantly — filling in what we don\'t know with what we do.'},
-    {word:'legislation',subject:'Social studies',
-     scenario:'Student activists campaigned for a policy banning single-use plastics in the cafeteria. After months of advocacy, the school board approved the rule. A newspaper called it "a small piece of <b>legislation</b>."',
-     prompt:'Fill in the blank: The students celebrated because their campaign had resulted in actual ___ — a formal rule backed by authority.',
-     options:['legislation','rhetoric','migration','sovereignty'],correct:0,
-     why:'"Legislation" means a formal rule created through an official process. The key word is "formal" — it\'s a rule with real authority and consequences.',
-     extra:'"Climate legislation passed in Parliament today" — the word signals a formal legal process has been completed, not just that people agreed on something.'}
-  ],
-  expert:[
-    {word:'biodiversity',subject:'Science',
-     scenario:'Your city is debating replacing an old overgrown park with a new parking lot. An environmental group argues the park supports dozens of plant and insect species that would disappear.',
-     prompt:'Write 2–3 sentences explaining why this park matters, using "biodiversity" correctly. Show you understand its meaning — do not just define it.',
-     model:'The overgrown park is a rare urban space with high biodiversity — it sustains many different plant, insect, and bird species that cannot survive in paved areas. Destroying it would reduce the overall biodiversity of the city, making the local ecosystem less resilient to disease and climate shifts. Once lost, this kind of variety is extremely difficult to restore.',
-     tip:'Strong answers show: (1) biodiversity means variety of living things, not just "many animals," (2) a connection to the park scenario, and (3) why losing it matters beyond just being sad.'},
-    {word:'sovereignty',subject:'Social studies',
-     scenario:'You read: "Small island nation rejects foreign company\'s offer to manage its national water supply, citing sovereignty concerns."',
-     prompt:'In 2–3 sentences, explain what sovereignty means and why it is relevant to this specific situation. Use the word naturally.',
-     model:'Sovereignty is a nation\'s right to govern itself and control its own resources without interference from outside forces. Allowing a foreign company to manage the water supply would mean handing a critical national resource to an entity not accountable to the island\'s citizens — a clear compromise of sovereignty. For a small nation, protecting sovereignty often means choosing independence over short-term economic convenience.',
-     tip:'Strong answers show: (1) sovereignty = self-governance and control, (2) why water control is a sovereignty issue specifically, and (3) what is at stake if sovereignty is compromised.'},
-    {word:'rhetoric',subject:'Language arts',
-     scenario:'A social media post goes viral claiming a new food additive causes serious illness. It uses alarming language and dramatic images — but cites no scientific studies. Thousands of people share it.',
-     prompt:'Write 2–3 sentences analyzing this post using the word "rhetoric." What kind of rhetoric is being used, and why does it work on people?',
-     model:'The post uses fear-based rhetoric — emotional language, dramatic visuals, and personal anecdotes — designed to trigger a gut reaction before readers can evaluate the evidence. This type of rhetoric works because humans respond more strongly to stories and fear than to statistics and studies. Recognizing the rhetoric does not mean the claim is false, but it should prompt you to demand scientific evidence before sharing.',
-     tip:'Strong answers: (1) name the specific type of rhetoric, (2) explain why it bypasses critical thinking, and (3) distinguish between manipulative rhetoric and legitimate persuasion.'},
-    {word:'correlation',subject:'Math',
-     scenario:'A classmate argues: "Students who own smartphones get worse grades — I saw a graph showing schools with higher smartphone use have lower test scores. Phones should be banned."',
-     prompt:'Write 2–3 sentences responding to your classmate. Use the word "correlation" to identify exactly what is missing from their argument.',
-     model:'The graph shows a correlation between smartphone use and lower test scores — meaning the two tend to occur together — but that alone does not prove smartphones cause the drop. It is possible both are caused by a third factor: schools in lower-income areas may have fewer resources and more permissive device policies. To justify a ban, you would need controlled evidence showing phones directly cause lower performance.',
-     tip:'Strong answers: (1) use "correlation" correctly, (2) state that correlation ≠ causation, and (3) propose a third variable or describe what stronger evidence would look like.'},
-    {word:'adaptation',subject:'Science',
-     scenario:'Electric scooters have flooded your city. Within months, local bicycle repair shops started offering scooter services, and street food vendors relocated near charging stations.',
-     prompt:'Write 2–3 sentences using "adaptation" to describe what is happening — and explain whether this is the same meaning as biological adaptation, or a different use.',
-     model:'The repair shops and food vendors are showing behavioral adaptation — changing what they do in response to a new condition in their environment in order to survive economically. This mirrors biological adaptation in its core logic: both involve adjusting to environmental pressures to remain viable. The key difference is that biological adaptation happens over generations through natural selection, while human behavioral adaptation can occur within days through conscious decision-making.',
-     tip:'Strong answers: (1) apply adaptation correctly to the human/economic context, (2) connect it to biological adaptation, and (3) identify at least one meaningful difference.'},
-    {word:'inflation',subject:'Social studies',
-     scenario:'Your younger cousin asks why the same sneakers your older sister bought for $60 three years ago now cost $85. Your cousin says: "Did the sneakers get better?"',
-     prompt:'Write 2–3 sentences explaining inflation to your cousin using a clear, real-life explanation. Use the word "inflation" naturally.',
-     model:'The sneakers probably did not get much better — the price went up mainly because of inflation, which is the gradual rise in prices across the economy over time. When inflation happens, the same amount of money buys less than it used to, so companies charge more for the same product. Inflation is normal in small amounts, but when it rises quickly, people\'s savings and salaries lose value faster than they can keep up.',
-     tip:'Strong answers: (1) explain inflation as a general price rise, not just one product, (2) connect it to purchasing power, and (3) use the cousin scenario concretely.'},
-    {word:'legislation',subject:'Social studies',
-     scenario:'Students successfully campaigned for a rule requiring all food sold on campus to show clear nutritional labels. The school board made it official policy.',
-     prompt:'Write 2–3 sentences using "legislation." Also explain why it matters that this became formal legislation rather than just a recommendation.',
-     model:'The students\' campaign resulted in real legislation — a formal rule approved by an authority body that all food vendors on campus are now legally required to follow. This matters because a recommendation can be ignored, but legislation carries consequences: vendors who do not comply can face penalties. Turning a good idea into legislation is how social change becomes permanent and enforceable.',
-     tip:'Strong answers: (1) use legislation to mean a formal rule through an official process, (2) explain the difference from an informal agreement, and (3) connect it to why formalization matters.'},
-    {word:'inference',subject:'Math',
-     scenario:'Your school surveyed 80 randomly selected students about sleep habits. Based on those results, the report concluded "most students sleep fewer than 7 hours on school nights."',
-     prompt:'Write 2–3 sentences explaining what the researchers did using "inference." Also mention one reason this inference might not be completely reliable.',
-     model:'The researchers used statistical inference to draw conclusions about all 800 students based on data from only 80 — a classic example of using a sample to make predictions about a larger group. This inference could be unreliable if the 80 students were not truly representative — for example, if they were all from the same grade or volunteered rather than being randomly selected. A good inference requires a sample that accurately reflects the variety in the full population.',
-     tip:'Strong answers: (1) explain inference as drawing conclusions beyond what was directly observed, (2) apply it to sampling, and (3) identify a specific reason the inference might be flawed.'}
-  ]
-};
-
-// ── STATE ────────────────────────────────────────────────
-let studentName = '';
-let state = { screen:'name', level:null, questions:[], qIndex:0, score:0, answered:false, missed:[], written:'' };
-
-// ── UTILS ────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const show = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); };
-const shuffle = a => a.slice().sort(()=>Math.random()-.5);
-
-// Enter key on name input
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = $('name-input');
-  if(inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') startWithName(); });
+document.addEventListener("DOMContentLoaded",()=>{
+  const i=$("name-input");if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter")startWithName();});
+  const t=$("teacher-pass");if(t)t.addEventListener("keydown",e=>{if(e.key==="Enter")checkPass();});
 });
 
-function startWithName() {
-  const val = $('name-input').value.trim();
-  if(!val){ toast('Please write your name first!'); return; }
-  studentName = val;
-  // Show initials avatar
-  const initials = val.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  $('home-avatar').textContent = initials;
-  buildHome();
-  show('s-home');
+async function checkPlayedToday(name){
+  try{
+    const today=todayISO();
+    const{data}=await db.from("scores").select("id").ilike("student",name.trim()).gte("created_at",today+"T00:00:00.000Z").limit(1);
+    return data&&data.length>0;
+  }catch{return false;}
+}
+async function saveScore(student,level,score){
+  try{await db.from("scores").insert({student:student.trim(),level,score});}catch(e){console.error(e);}
 }
 
-function goHome() { show('s-home'); }
+function showTeacherLogin(){show("s-teacher-login");setTimeout(()=>$("teacher-pass")&&$("teacher-pass").focus(),80);}
+function checkPass(){
+  if($("teacher-pass").value===TPASS){$("pass-err").style.display="none";show("s-dashboard");loadDash();if(dTimer)clearInterval(dTimer);dTimer=setInterval(loadDash,30000);}
+  else{$("pass-err").style.display="block";}
+}
+let dTimer=null;
+function exitDash(){if(dTimer){clearInterval(dTimer);dTimer=null;}show("s-name");}
 
-function buildHome() {
-  $('level-grid').innerHTML = Object.entries(LEVELS).map(([k,v])=>`
-    <button class="lv-card" onclick="startLevel('${k}')">
-      <div class="lv-bar" style="background:${v.fill}"></div>
-      <div class="lv-name" style="color:${v.color}">${v.name}</div>
-      <div class="lv-hint">${DESCS[k]}</div>
-      <div class="lv-count">${QUESTIONS[k].length} questions available</div>
-    </button>`).join('');
+const LVC={beginner:"#0f9e72",elementary:"#1a6fc4",intermediate:"#c47a10",expert:"#c44a28"};
+const LVN={beginner:"Beginner",elementary:"Elementary",intermediate:"Intermediate",expert:"Expert"};
+const LVL={beginner:"#e0f5ee",elementary:"#e8f2fb",intermediate:"#fdf0d8",expert:"#fdeee9"};
+
+async function loadDash(){
+  try{
+    const today=todayISO();
+    const{data,error}=await db.from("scores").select("*").gte("created_at",today+"T00:00:00.000Z").order("created_at",{ascending:false});
+    if(error||!data){$("dash-table").innerHTML="<div class=\"empty-dash\">Could not load data. Check your connection.</div>";return;}
+    renderDash(data);
+  }catch(e){$("dash-table").innerHTML="<div class=\"empty-dash\">Connection error.</div>";}
 }
 
-function startLevel(lv) {
-  state = { screen:'game', level:lv, questions:shuffle(QUESTIONS[lv]).slice(0,5), qIndex:0, score:0, answered:false, missed:[], written:'' };
-  show('s-game');
-  renderQ();
+function renderDash(rows){
+  const total=rows.length;
+  const avg=total?Math.round(rows.reduce((a,r)=>a+r.score,0)/total):0;
+  const pass=rows.filter(r=>r.score>=60).length;
+  const passRate=total?Math.round(pass/total*100):0;
+  const lvC={};rows.forEach(r=>{lvC[r.level]=(lvC[r.level]||0)+1;});
+  const topLv=Object.entries(lvC).sort((a,b)=>b[1]-a[1])[0];
+  $("m-total").textContent=total;
+  $("m-avg").textContent=avg;
+  $("m-pass").textContent=total?passRate+"%":"--";
+  $("m-top").textContent=topLv?LVN[topLv[0]]||topLv[0]:"--";
+  const lvOrd=["beginner","elementary","intermediate","expert"];
+  let byLv="";
+  lvOrd.forEach(lv=>{
+    const r=rows.filter(x=>x.level===lv);if(!r.length)return;
+    const a=Math.round(r.reduce((s,x)=>s+x.score,0)/r.length);
+    byLv+=`<div class="bar-row"><span class="bar-lbl">${LVN[lv]}</span><div class="bar-track"><div class="bar-fill" style="width:${a}%;background:${LVC[lv]}"></div></div><span class="bar-val">${a}</span></div>`;
+  });
+  $("dash-bylevel").innerHTML=byLv||"<div class=\"empty-dash\">No data yet</div>";
+  const bkts=[{l:"90-100",mn:90,mx:100,c:"#0f9e72"},{l:"70-89",mn:70,mx:89,c:"#3daa6f"},{l:"50-69",mn:50,mx:69,c:"#c47a10"},{l:"0-49",mn:0,mx:49,c:"#c44a28"}];
+  let dist="";
+  bkts.forEach(b=>{
+    const cnt=rows.filter(r=>r.score>=b.mn&&r.score<=b.mx).length;
+    const pct=total?Math.round(cnt/total*100):0;
+    dist+=`<div class="bar-row"><span class="bar-lbl">${b.l}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.c}"></div></div><span class="bar-val">${cnt}</span></div>`;
+  });
+  $("dash-dist").innerHTML=dist;
+  if(!rows.length){$("dash-table").innerHTML="<div class=\"empty-dash\">No students have played today yet.</div>";return;}
+  const sf=s=>s>=80?"★★★":s>=60?"★★☆":s>=40?"★☆☆":"☆☆☆";
+  const pf=s=>s>=80?["Excellent","#0f9e72","#e0f5ee"]:s>=60?["Good","#c47a10","#fdf0d8"]:["Needs work","#c44a28","#fdeee9"];
+  const tr=rows.map(r=>{
+    const tm=new Date(r.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+    const [pl,pc,pb]=pf(r.score);
+    return`<tr><td style="font-weight:700">${r.student}</td><td><span class="lv-dot" style="background:${LVC[r.level]||"#888"}"></span>${LVN[r.level]||r.level}</td><td><strong>${r.score}</strong>/100<div class="score-track"><div class="score-fill" style="width:${r.score}%;background:${r.score>=60?"#0f9e72":"#c44a28"}"></div></div></td><td class="star-display">${sf(r.score)}</td><td><span class="perf-badge" style="background:${pb};color:${pc}">${pl}</span></td><td style="color:var(--text3);font-size:12px">${tm}</td></tr>`;
+  }).join("");
+  $("dash-table").innerHTML=`<table class="stu-tbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>${tr}</tbody></table>`;
 }
 
-function renderQ() {
-  const lv = LEVELS[state.level];
-  const q  = state.questions[state.qIndex];
-  const isWrite = !q.options;
-  const prog = Math.round((state.qIndex/5)*100);
+const LEVELS={
+  beginner:    {name:"Beginner",    color:"#0f9e72",bg:"#e0f5ee",dark:"#085041",fill:"#0f9e72",desc:"Read a real situation. Choose what the word means."},
+  elementary:  {name:"Elementary",  color:"#1a6fc4",bg:"#e8f2fb",dark:"#0C447C",fill:"#1a6fc4",desc:"Which sentence uses the word correctly?"},
+  intermediate:{name:"Intermediate",color:"#c47a10",bg:"#fdf0d8",dark:"#633806",fill:"#c47a10",desc:"Fill the blank in a real-life context."},
+  expert:      {name:"Expert",      color:"#c44a28",bg:"#fdeee9",dark:"#712B13",fill:"#c44a28",desc:"Write your own sentences and responses."}
+};
+const NEXT={beginner:"elementary",elementary:"intermediate",intermediate:"expert",expert:null};
 
-  $('g-pill').textContent = lv.name;
-  $('g-pill').style.cssText = `background:${lv.bg};color:${lv.dark}`;
-  $('g-prog').style.cssText = `width:${prog}%;background:${lv.fill}`;
-  $('g-count').textContent  = `${state.qIndex+1} / 5`;
+const QUESTIONS={
+beginner:[
+  {word:"give up",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend has been trying to learn guitar for two weeks. He keeps making mistakes and says: "I just want to <b>give up</b>."',prompt:'What does "give up" mean here?',options:["To stop trying because something feels too hard","To give a present to someone","To stand up from a chair","To finish all the food on your plate"],correct:0,why:'"Give up" means to quit or stop trying. It is one of the most common phrasal verbs in English.',extra:'Also in real life: "Don't give up on your dreams!" — used constantly in sports, school, and motivation.'},
+  {word:"extremely",pos:"Adverb",subject:"Daily life",scenario:'You come home after a long day. You tell your mom: "I'm <b>extremely</b> tired — I can barely keep my eyes open."',prompt:'What does "extremely" tell us about how tired you are?',options:["You are very, very tired — more than just quite or a bit","You are only slightly tired","You were tired yesterday too","You are tired in a strange way"],correct:0,why:'"Extremely" is an adverb that intensifies adjectives. It means to a very great degree — stronger than "very."',extra:'Also: "extremely important," "extremely difficult" — adverbs of degree make your English much more expressive.'},
+  {word:"must",pos:"Modal verb",subject:"School",scenario:'Your teacher says: "You <b>must</b> submit your lab report by Friday. It is a mandatory requirement."',prompt:'What does "must" express?',options:["A strong obligation — something required, not optional","A polite suggestion","A possibility that could happen","A habit the teacher has"],correct:0,why:'"Must" expresses strong obligation. When a teacher says "you must," it is not optional.',extra:'Also: "You must be 18 to vote" / "You must wear a seatbelt" — must means a mandatory requirement.'},
+  {word:"careless",pos:"Adjective",subject:"School",scenario:'Your teacher returns your essay: "Your ideas are great, but the work was <b>careless</b> — spelling mistakes on every page you could have caught by rereading."',prompt:'What does "careless" describe here?',options:["Not paying enough attention — mistakes were avoidable","Very creative and original","Too difficult to understand","Written very quickly"],correct:0,why:'"Careless" means not giving enough attention. The person could do better but did not make the effort.',extra:'Also: "careless mistake" is one of the most common phrases in school feedback. The opposite is "careful."'},
+  {word:"might",pos:"Modal verb",subject:"Daily life",scenario:'You are deciding whether to bring an umbrella. The sky is gray. You think: "It <b>might</b> rain this afternoon — I'm not sure."',prompt:'What does "might" express here?',options:["A weak possibility — something that could happen but is uncertain","A strong rule that must be followed","Something that definitely happened","A confirmed plan you are certain about"],correct:0,why:'"Might" expresses weak possibility. It is weaker than "may" and much weaker than "will."',extra:'Also: "I might go to the party" = not sure yet. "I will go" = certain. Big difference!'},
+  {word:"look up",pos:"Phrasal verb",subject:"School",scenario:'You find a word you do not understand. Your teacher says: "Do not skip it — <b>look it up</b> in the dictionary."',prompt:'What does "look up" mean here?',options:["To search for information in a reference","To raise your eyes toward the ceiling","To improve gradually over time","To admire or respect someone"],correct:0,why:'"Look up" means to search for information — in a dictionary, on Google, or in any reference source.',extra:'Also: "I looked it up online" — probably the most common thing you say when you don't know something.'},
+  {word:"reliable",pos:"Adjective",subject:"School",scenario:'Your teacher says: "Use <b>reliable</b> sources — Wikipedia alone is not enough. Find official studies or reputable newspapers."',prompt:'What does "reliable" mean here?',options:["Consistently trustworthy and accurate","Very old and well-known","Free and easy to access online","Written only by scientists"],correct:0,why:'"Reliable" means consistently trustworthy. A reliable source gives accurate information every time.',extra:'Also: "Is this a reliable source?" is the most important critical thinking question when doing research.'},
+  {word:"should",pos:"Modal verb",subject:"Health",scenario:'Your doctor says: "You <b>should</b> drink at least eight glasses of water per day — it is not a law, but it is strongly recommended."',prompt:'What does "should" express?',options:["Advice or recommendation — a good idea but not required","A strict rule with serious consequences","Something physically impossible","A repeated past habit"],correct:0,why:'"Should" expresses advice or recommendation. It is weaker than "must" — you won't be punished for ignoring it, but it is wise to follow it.',extra:'Also: "You should study more" = advice. "You must study" = strict requirement. Very different meanings!'},
+  {word:"break down",pos:"Phrasal verb",subject:"Daily life",scenario:'Your dad pulls over on the road trip. He says: "The car just <b>broke down</b> — the engine stopped working."',prompt:'What does "broke down" mean here?',options:["A machine stopped functioning and needs repair","The car reached very high speed","Someone started crying","The road was damaged"],correct:0,why:'"Break down" for machines means to stop working. It can also mean to collapse emotionally, but here it describes a mechanical failure.',extra:'Also: "My laptop broke down right before my exam" — one of the most stressful moments for a student!'},
+  {word:"hang out",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend texts: "Hey, do you want to <b>hang out</b> later? We could go to the mall or just stay home."',prompt:'What does "hang out" mean?',options:["To spend relaxed, casual time with friends","To dry your clothes outside","To wait for someone at a location","To climb up something high"],correct:0,why:'"Hang out" means to spend casual, relaxed time together. It is one of the most common informal expressions in English.',extra:'Also: "We hung out all weekend" — this is everyday natural English you will use constantly.'},
+  {word:"can",pos:"Permission verb",subject:"School",scenario:'You need the bathroom. You ask: "<b>Can</b> I go to the bathroom, please?"',prompt:'What does "can" express here?',options:["A request for permission to do something","A physical ability you possess","A strong obligation to follow","An uncertain future possibility"],correct:0,why:'In informal English, "can" is very commonly used to ask for permission.',extra:'Also: "Can I borrow your charger?" / "Can I sit here?" — asking permission with "can" is natural and polite in everyday situations.'},
+  {word:"gradually",pos:"Adverb",subject:"Science",scenario:'Your biology teacher explains: "Global temperatures are not rising suddenly — they are <b>gradually</b> increasing year by year, making the problem harder to notice."',prompt:'What does "gradually" tell us about how temperatures are rising?',options:["Slowly and steadily, in small steps over a long period","Very suddenly and dramatically","In a confusing, unpredictable pattern","Rapidly at an increasing speed"],correct:0,why:'"Gradually" means slowly, step by step over time. It is the opposite of "suddenly" or "abruptly."',extra:'Also: "She gradually improved her English" / "The situation gradually got better" — gradual change is everywhere in science and social studies.'},
+  {word:"come across",pos:"Phrasal verb",subject:"Technology",scenario:'You are scrolling and you stop on a post. You tell your friend: "I just <b>came across</b> this amazing video about ocean pollution — I was not looking for it."',prompt:'What does "came across" mean?',options:["To find or encounter something by chance","To cross a bridge or road","To feel angry with someone","To understand something perfectly"],correct:0,why:'"Come across" means to find or encounter something unexpectedly, without searching for it.',extra:'Also: "I came across my old diary while cleaning" — the kind of unexpected discovery that brings back memories.'},
+  {word:"turn down",pos:"Phrasal verb",subject:"Social studies",scenario:'Your student council proposed a new school uniform. The principal said: "I appreciate the effort, but I have to <b>turn it down</b>."',prompt:'What does "turn down" mean here?',options:["To refuse or reject a proposal or request","To lower the volume of music","To fold the corner of a page","To physically change direction"],correct:0,why:'"Turn down" means to reject or say no to something — an offer, invitation, proposal, or request.',extra:'Also: "She turned down a scholarship to stay with her family" — people turn things down for many personal reasons.'},
+  {word:"may",pos:"Permission verb",subject:"School",scenario:'In a formal school debate, the moderator announces: "You <b>may</b> begin presenting your argument whenever you are ready."',prompt:'What does "may" express in this formal context?',options:["Formal permission — you are officially allowed to act","A strong obligation you must fulfill","A repeated past habit","An uncertain future possibility"],correct:0,why:'"May" is the formal way to grant or request permission. More polite and correct than "can" in academic, professional, and formal settings.',extra:'Also: "May I come in?" is the most formal and polite way to ask to enter a room.'},
+  {word:"take over",pos:"Phrasal verb",subject:"Social studies",scenario:'The student council president graduated. The vice-president announces: "I am going to <b>take over</b> as president until we hold new elections."',prompt:'What does "take over" mean here?',options:["To assume control or responsibility for something","To carry a heavy object somewhere","To win a sports competition","To repeat a school year"],correct:0,why:'"Take over" means to assume control, leadership, or management of something.',extra:'Also: "A larger company took over the small local business" — corporate takeovers are reported in business news constantly.'}
+],
+elementary:[
+  {word:"put off",pos:"Phrasal verb",subject:"School",scenario:'You have a project due Friday. Your friend says on Monday: "I keep <b>putting it off</b> — I'll start tomorrow." By Thursday he still hasn't started.',prompt:'Which sentence uses "put off" the same way?',options:["She always puts off studying until the night before the exam, then panics.","He put off his shoes before entering the house.","They put off the lights to save electricity.","She put off an impressive performance in the play."],correct:0,why:'"Put off" means to delay or postpone something you should do now. This habit is called procrastination.',extra:'Also: "Stop putting it off and just do it!" — you have definitely heard this from a parent or teacher.'},
+  {word:"incredibly",pos:"Adverb",subject:"Daily life",scenario:'You watched a documentary about the Amazon. You tell your friend: "It was <b>incredibly</b> beautiful — I had no idea how many species live there."',prompt:'Which sentence uses "incredibly" the same way?',options:["The view from the mountain was incredibly breathtaking.","She incredibly her homework before dinner.","The incredibly outside was warm and sunny.","He bought an incredibly at the book fair."],correct:0,why:'"Incredibly" is an adverb that intensifies adjectives to a very high degree, with a sense of amazement.',extra:'Also: "incredibly fast," "incredibly kind," "incredibly difficult" — degree adverbs make your English sound natural and expressive.'},
+  {word:"bring up",pos:"Phrasal verb",subject:"Daily life",scenario:'The family dinner is going well. Then your uncle suddenly brings up your bad grades from last semester, and the whole atmosphere changes.',prompt:'Which sentence uses "bring up" the same way?',options:["She brought up the salary problem during the meeting and the mood shifted.","He brought up his younger sister to the second floor.","They brought up fresh vegetables from the garden.","She brought up her luggage to the hotel room."],correct:0,why:'"Bring up" in its figurative sense means to introduce a topic into a conversation — often an uncomfortable one.',extra:'Also: "Don't bring that up again!" — you say this when you want someone to stop mentioning something embarrassing.'},
+  {word:"should have",pos:"Modal verb",subject:"School",scenario:'You failed your test because you spent the weekend playing video games. Your teacher says: "You <b>should have</b> studied more — you had the whole weekend."',prompt:'Which sentence uses "should have" the same way?',options:["I should have saved my document before the computer crashed — now I lost everything.","She should have a new pencil case for the school year.","They should have the exam results by the end of the week.","He should have been at school right now."],correct:0,why:'"Should have + past participle" expresses regret or criticism about a past action that was the right thing to do but was not done.',extra:'Also: "I should have left earlier — now I'm late." / "You should have told me sooner." — essential for expressing regret.'},
+  {word:"work out",pos:"Phrasal verb",subject:"Daily life",scenario:'You and your best friend had a big argument. Today she texts: "Can we talk? I really want to <b>work things out</b> between us."',prompt:'Which sentence uses "work out" the same way she used it?',options:["After months of talks, the two countries finally worked out a peace agreement.","She works out at the gym every morning.","The math problem worked out to exactly 42.","He worked out the yard by mowing the grass."],correct:0,why:'"Work out" has three meanings: to exercise, to resolve a conflict, or to result in a particular way. Here it means to resolve a conflict.',extra:'Also: "I hope it all works out for you" means you hope everything resolves itself well.'},
+  {word:"reported speech",pos:"Reported verb",subject:"Language arts",scenario:'Your friend told you: "I absolutely love science class." You want to tell another classmate what she said.',prompt:'Which sentence correctly reports what your friend said?',options:['"She said that she loved science class."','"She said that she loves science class now."','"She told: I love science class."','"She said me that she love science."'],correct:0,why:'In reported speech, tenses shift back: "love" becomes "loved." The structure is "said that + clause." "Told:" with a colon is wrong.',extra:'Also: "The president said that the situation had improved." — reported speech is essential for summaries and academic writing.'},
+  {word:"stubborn",pos:"Adjective",subject:"Daily life",scenario:'You try to convince your brother to try a new food. No matter what you say, he refuses to even taste it.',prompt:'Which sentence uses "stubborn" the same way?',options:["She was so stubborn that she refused to change her position even when everyone disagreed.","The stubborn weather made it perfect for swimming.","He stubborn his shoes before entering class.","The stubborn part of the equation required three steps."],correct:0,why:'"Stubborn" describes someone who refuses to change their opinion even when given good reasons. Can be negative (obstinate) or positive (determined).',extra:'Also: "Stubbornly" is the adverb. "Stubbornness" is the noun. A stubborn personality can be both a strength and a weakness.'},
+  {word:"could have",pos:"Modal verb",subject:"Daily life",scenario:'You accidentally sent an embarrassing message to the wrong person. Your friend says: "You <b>could have</b> double-checked before pressing send!"',prompt:'Which sentence uses "could have" the same way?',options:["The accident could have been avoided if the driver had been paying attention.","She could have a new phone if her grades improve.","They could have dinner ready before eight if they start now.","He could have very good reasons for being late."],correct:0,why:'"Could have + past participle" expresses a lost opportunity — something possible in the past that did not happen.',extra:'Also: "We could have won if we had trained harder." — used constantly in reflections, arguments, and regrets.'},
+  {word:"asked (reported)",pos:"Reported verb",subject:"Social studies",scenario:'During a class debate, a student asked the teacher: "Can we have more time to prepare our arguments?"',prompt:'Which sentence correctly reports the question?',options:["She asked whether they could have more time to prepare.","She asked if they can have more time now.","She asked: Can we have more time?","She said that can we have more time."],correct:0,why:'Reported questions use "asked + if/whether." Tense shifts: "can" becomes "could." The question mark is removed.',extra:'Also: "She asked me if I had finished my homework." / "He asked whether the exam would be difficult." — essential in formal writing.'},
+  {word:"set up",pos:"Phrasal verb",subject:"Technology",scenario:'You got a new phone. Your cousin says: "Let me <b>set it up</b> for you — I'll install your apps and connect it to the WiFi."',prompt:'Which sentence uses "set up" the same way?',options:["The teacher set up the projector before the presentation began.","She set up quickly from the chair when she heard the noise.","He set up a ladder to reach the roof.","They set up their arms when they finished the race."],correct:0,why:'"Set up" means to prepare, install, or configure something so it is ready to use.',extra:'Also: "I need to set up a new email account" / "She set up the meeting for Thursday" — constant in digital and professional life.'},
+  {word:"overwhelmed",pos:"Adjective",subject:"School",scenario:'It is exam week. You have five tests, a project due, and sports practice. You message your friend: "I feel completely <b>overwhelmed</b> — I don't even know where to begin."',prompt:'Which sentence uses "overwhelmed" the same way?',options:["She felt overwhelmed by the amount of work before the Friday deadline.","The overwhelmed weather made the afternoon pleasant.","He overwhelmed his backpack before leaving for school.","The overwhelmed part of the equation required a calculator."],correct:0,why:'"Overwhelmed" means having too much to deal with at once — feeling unable to manage the quantity or intensity of demands.',extra:'Also: "Overwhelmingly" is the adverb — "The proposal was overwhelmingly approved." Very common in news about elections.'},
+  {word:"give away",pos:"Phrasal verb",subject:"Daily life",scenario:'Your class is playing a guessing game. A teammate accidentally says something revealing. Your teacher says: "Careful — you almost <b>gave it away</b>!"',prompt:'Which sentence uses "give away" the same way?',options:["His nervous laughter gave away the fact that he already knew the answer.","She gave away her old clothes to charity.","He gave away the trophy to second place.","They gave away free samples at the festival."],correct:0,why:'"Give away" means either to donate something, or to unintentionally reveal a secret. Here the teacher uses the second meaning.',extra:'Also: "Spoiler alert — don't give away the ending!" — the version you will use with movies and books.'},
+  {word:"told (reported)",pos:"Reported verb",subject:"Language arts",scenario:'Your English teacher announced: "We are going to have an important grammar test next Monday."',prompt:'Which sentence correctly reports what the teacher said?',options:["The teacher told us that we were going to have a test the following Monday.","The teacher told us that we are going to have a test next Monday.","The teacher said us we would have a test.","The teacher told: We are going to have a test Monday."],correct:0,why:'"Told" requires a person object: "told us." Tenses shift: "are going to have" becomes "were going to have." Time expressions shift: "next Monday" becomes "the following Monday."',extra:'Also: "She told me that she was feeling tired." / "He told them that the meeting had been postponed." — fundamental in formal and informal reported speech.'},
+  {word:"anxious",pos:"Adjective",subject:"School",scenario:'Tomorrow is your English oral presentation. You cannot sleep. You keep thinking about forgetting your lines.',prompt:'Which sentence uses "anxious" the same way?',options:["She felt anxious before the job interview because she really wanted the position.","The anxious weather made it impossible to go outside.","He anxious his backpack before the school trip.","The anxious part of the problem was hardest to solve."],correct:0,why:'"Anxious" means feeling worried, nervous, or uneasy about something uncertain that is about to happen.',extra:'Also: "Anxiously" is the adverb. "Anxiety" is the noun — very important in health and everyday conversations about stress.'},
+  {word:"fall behind",pos:"Phrasal verb",subject:"School",scenario:'Your math class is moving fast. Your teacher warns: "If you miss too many sessions without catching up, you will <b>fall behind</b>."',prompt:'Which sentence uses "fall behind" the same way?',options:["He missed two weeks of school and fell behind in all his subjects.","She fell behind a bush during hide-and-seek.","They fell behind the sofa watching TV.","He fell behind his brother because he was shorter."],correct:0,why:'"Fall behind" means to make less progress than expected or than the rest of the group.',extra:'Also: "Don't fall behind on your payments" — banks and financial institutions use this constantly.'},
+  {word:"go through",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend's parents are getting divorced. She says quietly: "It's really hard. I never thought I'd have to <b>go through</b> something like this."',prompt:'Which sentence uses "go through" in the same emotional sense?',options:["He went through a very difficult period after losing his job.","She went through the tunnel on her bicycle.","They went through the door one by one.","He went through his pockets looking for his phone."],correct:0,why:'"Go through" in emotional sense means to experience something difficult or painful. It shows empathy and deep understanding.',extra:'Also: "What you're going through sounds really hard" — this is how you express genuine support to a friend in English.'}
+],
+intermediate:[
+  {word:"If I were you",pos:"Conditional expression",subject:"Daily life",scenario:"Your friend wants to text her ex saying she misses him. You think it's a bad idea. She asks for your advice.",prompt:'Fill in the blank: "___, I would not send that message — it will only make things more complicated."',options:["If I were you","If I will be you","If I am you","If I would be you"],correct:0,why:'"If I were you" is a fixed second conditional used to give advice. It uses "were" — not "was" — for all persons. This is the subjunctive mood.',extra:'Also: "If I were you, I'd speak to the teacher directly." — one of the most polite and natural ways to give advice in English.'},
+  {word:"look forward to",pos:"Phrasal verb",subject:"Daily life",scenario:'Your English teacher says: "I <b>look forward to</b> seeing how much you have all improved by the end of the year."',prompt:'Fill in the blank: "I'm really ___ the school science trip next month — I've never visited a research center."',options:["looking forward to","looking up to","looking carefully into","looking anxiously out for"],correct:0,why:'"Look forward to" means to feel excited about something in the future. Always followed by a noun or gerund (-ing verb).',extra:'Also: "I look forward to hearing from you" ends almost every formal English email. VERY important professional vocabulary.'},
+  {word:"unless",pos:"Conditional expression",subject:"Social studies",scenario:'Your economics teacher says: "Countries will continue to depend on fossil fuels <b>unless</b> they invest in renewable energy now."',prompt:'Fill in the blank: "You will not improve your English ___ you practice it every day outside the classroom."',options:["unless","even if","whenever","although"],correct:0,why:'"Unless" means "if not." It introduces a negative condition. "You won't improve unless you practice" = "You will only improve IF you practice."',extra:'Also: "Unless you leave now, we will miss the train." / "I won't go unless you come too." — extremely common in conditional statements.'},
+  {word:"should have",pos:"Modal verb",subject:"School",scenario:'Your group submitted a project without proofreading it. Your teacher says: "You <b>should have</b> reviewed it more carefully — the errors were avoidable."',prompt:'Fill in the blank: "I ___ my files before the computer crashed — now I have lost three hours of work."',options:["should have backed up","must have backed up","might have backed","could backing up"],correct:0,why:'"Should have + past participle" expresses regret about something that was the right action but was not done.',extra:'Also: "I should have eaten breakfast — now I can't concentrate." / "You should have called me sooner."'},
+  {word:"as long as",pos:"Conditional expression",subject:"School",scenario:'Your teacher says before the field trip: "You can use your phones for photos, <b>as long as</b> you stay quiet during the guided tour."',prompt:'Fill in the blank: "You can borrow my laptop ___ you return it before six — I need it for my online class."',options:["as long as","as much as","as soon as","as well as"],correct:0,why:'"As long as" introduces a condition that must be maintained for something to be permitted.',extra:'Also: "I will help you as long as you also make an effort." / "You can stay up late as long as your homework is done."'},
+  {word:"could have",pos:"Modal verb",subject:"Daily life",scenario:'Your team lost a match by one goal. Your coach says: "We <b>could have</b> won if we had maintained our concentration in the second half."',prompt:'Fill in the blank: "The environmental damage ___ been prevented if the company had followed the safety regulations."',options:["could have","should have","must have","would been"],correct:0,why:'"Could have + past participle" expresses a lost possibility — something that was possible but did not happen.',extra:'Also: "You could have told me sooner — I would have helped!" — used in arguments and reflections about missed opportunities.'},
+  {word:"come up with",pos:"Phrasal verb",subject:"School",scenario:'Your teacher says: "By Friday, your team needs to <b>come up with</b> an original idea for your science fair experiment."',prompt:'Fill in the blank: "After two hours of brainstorming, she finally managed to ___ a creative solution to the problem."',options:["come up with","come down with","come across with","come around with"],correct:0,why:'"Come up with" means to think of or produce an idea, plan, or solution through effort and creative thinking.',extra:'Also: "Who came up with that brilliant idea?" / "We need to come up with a new strategy." — constant in school and work.'},
+  {word:"must have",pos:"Modal verb",subject:"Daily life",scenario:'You come home and the kitchen is spotless, dinner is ready, and there are fresh flowers on the table.',prompt:'Fill in the blank: "She is not answering her phone. She ___ her phone on silent — it is completely out of character to ignore messages."',options:["must have left","should have left","could have left","might left"],correct:0,why:'"Must have + past participle" expresses a strong logical deduction about the past — almost certain something happened based on evidence.',extra:'Also: "It must have rained last night — the streets are flooded." — deductive reasoning with past modals is essential in science and everyday logic.'},
+  {word:"provided that",pos:"Conditional expression",subject:"Social studies",scenario:'The school board announced: "Students will be permitted to use devices during lunch, <b>provided that</b> they follow the digital conduct policy at all times."',prompt:'Fill in the blank: "The international agreement will be ratified ___ all member nations commit to reducing emissions by thirty percent."',options:["provided that","even though","regardless of","in addition to"],correct:0,why:'"Provided that" is a formal conditional meaning "only if the condition is fully met." More formal and precise than "if."',extra:'Also: "You will receive the scholarship provided that you maintain a 4.0 average." — appears constantly in contracts and formal agreements.'},
+  {word:"deal with",pos:"Phrasal verb",subject:"Daily life",scenario:'You have been avoiding a difficult conversation with a friend. Your sister says: "You cannot keep running away — you need to <b>deal with</b> it."',prompt:'Fill in the blank: "The school's new policy was designed to more effectively ___ cases of bullying and harassment."',options:["deal with","deal for","deal on","deal by"],correct:0,why:'"Deal with" means to handle, manage, or confront a problem or difficult situation. It implies action rather than avoidance.',extra:'Also: "I'll deal with it later" — something most of us say when we are not ready to face a problem. One of the most important life skills.'},
+  {word:"stand up for",pos:"Phrasal verb",subject:"Social studies",scenario:'A new student is being mocked. Most students stay silent or look away.',prompt:'Fill in the blank: "When the rest of the class was silent, she was the only one who ___ the new student being unfairly treated."',options:["stood up for","stood carefully up to","stood clearly out for","stood bravely in for"],correct:0,why:'"Stand up for" means to defend or advocate for someone or a principle — especially when it is difficult or unpopular to do so.',extra:'Also: "Stand up for what you believe in, even when you are standing alone." — deeply connected to human rights and everyday moral decisions.'},
+  {word:"wish + past",pos:"Conditional expression",subject:"School",scenario:'You forgot to charge your phone. It dies when you need it most. You say: "I <b>wish</b> I had charged it last night — I always forget!"',prompt:'Fill in the blank: "She ___ more consistently throughout the semester — the final exam was much harder than expected."',options:["wishes she had studied","wishes she studies","is wishing to study","wished to have studied"],correct:0,why:'"Wish + past perfect (had + past participle)" expresses regret about the past that cannot be changed.',extra:'Also: "I wish I had taken that opportunity." / "I wish I had said something instead of staying silent." — essential for emotional and reflective English.'},
+  {word:"bring up",pos:"Phrasal verb",subject:"Daily life",scenario:'The family dinner conversation is warm. Then your aunt suddenly raises the topic of your poor performance last term and the atmosphere shifts.',prompt:'Fill in the blank: "The employee decided to ___ the issue of unfair working conditions at the formal meeting with management."',options:["bring up","bring down","bring around","bring off"],correct:0,why:'"Bring up" means to introduce a topic — particularly a sensitive or important one — into a conversation or meeting.',extra:'Also: "Please don't bring up the argument from yesterday." — you will use this constantly in family and professional conversations.'},
+  {word:"not only but also",pos:"Adverb expression",subject:"Science",scenario:'Your science teacher explains: "Plastic pollution is <b>not only</b> killing marine wildlife <b>but also</b> contaminating the seafood that humans eat daily."',prompt:'Fill in the blank: "Regular exercise is ___ essential for a healthy body ___ critically important for positive mental health."',options:["not only / but also","either / or","neither / nor","both / and"],correct:0,why:'"Not only... but also" emphasizes that two things are true simultaneously, with the second adding force to the first. It strengthens arguments considerably.',extra:'Also: "She is not only an exceptional athlete but also a brilliant student." — a powerful structure for persuasive writing and presentations.'},
+  {word:"fall behind",pos:"Phrasal verb",subject:"School",scenario:'Your math teacher warns at the start of a new unit: "If you miss sessions and do not catch up, you will quickly <b>fall behind</b> the rest of the class."',prompt:'Fill in the blank: "After being seriously ill for three weeks, he found that he had significantly ___ in his coursework and needed extra support."',options:["fallen behind","fallen over","fallen through","fallen apart"],correct:0,why:'"Fall behind" means to make less progress than the expected standard or than others in the group.',extra:'Also: "Don't fall behind on your credit card payments — the interest accumulates quickly." — banks use this expression regularly.'}
+],
+expert:[
+  {word:"If I were you",pos:"Conditional expression",subject:"Daily life",scenario:"Your classmate has been arguing loudly with his teacher in front of the whole class. The situation is escalating. He asks you for advice after class.",prompt:'Write 2-3 sentences giving him honest, constructive advice using "If I were you" correctly and naturally. Show you understand both the grammar AND the real social situation.',model:'"If I were you, I would go and apologize to the teacher privately after school today — continuing to argue in front of everyone just made the situation much worse. If I were in your position, I would explain that you were frustrated, but acknowledge that your reaction was disproportionate. Teachers generally respect students who can reflect on their behavior and take responsibility for it."',tip:"Strong answers: (1) use 'If I were you' correctly with would + bare infinitive, (2) give specific and realistic advice for the actual situation, (3) show understanding of the social dynamics, not just the grammar."},
+  {word:"should have / could have",pos:"Modal verb",subject:"School",scenario:"Your group project received a disappointing grade. Looking back, you left everything until the last two days, did not divide tasks fairly, and never reviewed the final version together.",prompt:'Write 2-3 sentences reflecting honestly using both "should have" and "could have" naturally. Show the difference between the two structures.',model:'"We should have started working at least two weeks earlier — we had more than enough time and there is no excuse for waiting until the last moment. We could have divided the workload more fairly from the beginning, which would have reduced the pressure on the people who ended up doing most of the work. Most importantly, we should have reviewed the final draft together before submitting, because many of the errors were completely avoidable."',tip:"Strong answers: (1) show 'should have' = the right thing that was neglected, (2) show 'could have' = an available option not taken, (3) use both naturally in different sentences."},
+  {word:"reported speech",pos:"Reported verb",subject:"Language arts",scenario:'In a debate about phone use, Student A said: "Phones are useful tools and banning them sends the wrong message." Student B responded: "The evidence shows phones reduce concentration and learning outcomes."',prompt:"Write 2-3 sentences accurately reporting what both students said. Use correct reported speech, tense shifts, and reporting verbs beyond just 'said.'",model:'"Student A argued that phones were useful educational tools and that banning them entirely sent the wrong message to students. Student B countered by pointing out that the research clearly showed phones in classrooms reduced both concentration and learning outcomes for the majority of students. Both students presented their positions passionately, though they approached the issue from fundamentally different perspectives."',tip:"Strong answers: (1) use appropriate reporting verbs beyond 'said' — argued, claimed, pointed out, countered, (2) apply correct tense backshifts, (3) change pronouns and time references accurately."},
+  {word:"not only but also",pos:"Adverb expression",subject:"Science",scenario:"Your city council is debating whether to build an urban park or a shopping complex on an undeveloped area. The shopping complex would generate tax revenue and create hundreds of jobs.",prompt:'Write 2-3 sentences defending the park using "not only... but also" at least once. Make a genuinely persuasive argument.',model:'"Investing in the urban park would not only provide residents with essential green space for physical and mental health but also create a natural habitat that significantly increases local biodiversity in what is currently a barren surface. Urban parks not only reduce air pollution and regulate temperatures during heat waves but also generate long-term economic value through higher property prices and improved public health that reduces pressure on healthcare systems. The shopping complex would create jobs in the short term, but the park would deliver lasting social and environmental benefits for generations."',tip:"Strong answers: (1) use 'not only... but also' correctly to link two distinct advantages, (2) engage seriously with the economic argument for the alternative, (3) make a persuasive case with real-world logic."},
+  {word:"unless / provided that / as long as",pos:"Conditional expression",subject:"Social studies",scenario:"Your school is considering allowing extended lunch breaks outside school grounds, but only under specific conditions related to behavior, grades, and parental consent.",prompt:"Write 2-3 sentences explaining under what conditions this policy should be permitted, using at least two of these expressions: unless, provided that, as long as. Show you understand their distinct meanings.",model:'"Students should be permitted to leave school grounds during lunch provided that they have maintained a satisfactory academic record and have written parental consent on file. The policy should apply to all qualifying students as long as they return before afternoon classes and behave responsibly in the surrounding community. However, the privilege should be immediately suspended unless students continue to meet all established requirements — it must be understood as conditional, not permanent."',tip:"Strong answers: (1) use each expression with its correct distinct meaning, (2) apply them to the specific school policy scenario, (3) show that privileges come with clear responsibilities."},
+  {word:"gradual / gradually",pos:"Adjective and Adverb",subject:"Science",scenario:"You are writing a persuasive essay about why climate change is so difficult for governments to respond to urgently, even though the scientific evidence is overwhelming.",prompt:'Write 2-3 sentences explaining the psychological and political difficulty of responding to gradual change. Use "gradual" or "gradually" naturally.',model:'"One fundamental reason climate change is politically difficult to address is that its effects are gradual — temperatures rise by fractions of a degree each year and ecosystems deteriorate gradually over decades rather than collapsing overnight. Human beings and political systems are wired to respond urgently to sudden crises, but consistently struggle to mobilize the same urgency against threats that unfold gradually and are easy to dismiss in any single year. This is why scientists emphasize cumulative data over long periods — the gradual change only becomes truly alarming when you see the full trajectory."',tip:"Strong answers: (1) use 'gradual/gradually' in context of slow change over time, (2) connect it to the psychological or political challenge specifically, (3) go beyond description to genuine analytical insight."},
+  {word:"wish + past perfect",pos:"Conditional expression",subject:"Daily life",scenario:"You are in your most important exam week. Looking back honestly, you realize you spent too much time on social media and socializing instead of studying consistently.",prompt:'Write 2-3 sentences expressing genuine, specific regret using "wish + past perfect" correctly. Be honest and specific — not generic.',model:'"I genuinely wish I had spent even thirty minutes each evening reviewing my notes instead of spending hours scrolling through social media — a habit that consumed far more time than I ever consciously realized. I also wish I had attended the extra study sessions the teacher offered in October, because the topics covered then are exactly the ones I am struggling with most right now. Most of all, I wish I had taken the first month of the term more seriously, because those early habits were incredibly difficult to change once they were established."',tip:"Strong answers: (1) use 'wish + had + past participle' correctly, (2) be specific — mention real choices, real consequences, real time periods, (3) show genuine reflection, not just formulaic sentences."},
+  {word:"overwhelmed / anxious / stubborn",pos:"Adjective",subject:"School",scenario:"A classmate tells you: 'I know I should ask the teacher for help because I don't understand this topic, but I feel too embarrassed. I keep telling myself I can figure it out alone.'",prompt:"Write 2-3 sentences using at least two of these adjectives — overwhelmed, anxious, stubborn — to analyze your classmate's situation. Go beyond just describing the feelings.",model:'"Your classmate is clearly feeling overwhelmed by material she does not understand, but her reluctance to ask for help is making the situation significantly worse. She is also being stubborn in a counterproductive way — her determination to figure it out alone would be admirable if she were making progress, but it is becoming an obstacle that prevents her from getting the support she actually needs. The anxiety about being judged is understandable, but asking for help is a sign of self-awareness and intellectual honesty, not weakness."',tip:"Strong answers: (1) use at least two adjectives correctly in genuine sentences, (2) do not just label the emotions — explain WHY they are present and what they are causing, (3) offer a perspective that goes beyond the obvious."}
+]
+};
 
-  const answerHtml = isWrite
-    ? `<textarea class="write-area" id="wa" placeholder="Write your response here…">${state.written}</textarea>
-       <button class="check-btn" onclick="submitWrite()">Check answer</button>`
-    : `<div class="options">${q.options.map((o,i)=>`<button class="opt" id="opt${i}" onclick="pick(${i})">${o}</button>`).join('')}</div>`;
+let studentName="";
+let state={screen:"name",level:null,questions:[],qIndex:0,score:0,answered:false,missed:[],written:"",t0:0};
 
-  let fbHtml = '';
+document.addEventListener("DOMContentLoaded",()=>{
+  const i=$("name-input");if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter")startWithName();});
+  const t=$("teacher-pass");if(t)t.addEventListener("keydown",e=>{if(e.key==="Enter")checkPass();});
+});
+
+async function startWithName(){
+  const val=$("name-input").value.trim();
+  if(!val){toast("Please write your full name first.");return;}
+  const wrap=$("name-card-wrap");
+  wrap.innerHTML="<div style=\"text-align:center;padding:16px;font-size:13px;color:var(--text2)\">Checking...</div>";
+  const played=await checkPlayedToday(val);
+  if(played){
+    wrap.innerHTML=`<div class="blocked-card"><div class="blocked-title">Already played today</div><div class="blocked-sub">A session for <strong>${val}</strong> was already submitted today.<br><br>Each student can play once per day. Come back tomorrow for a new session, or ask your teacher if this is an error.</div></div>`;
+    return;
+  }
+  studentName=val;
+  const initials=val.split(" ").map(w=>w[0]||"").join("").toUpperCase().slice(0,2)||"??";
+  const pals=[["#0f9e72","#e0f5ee"],["#1a6fc4","#e8f2fb"],["#5b45c8","#eeecfd"],["#c47a10","#fdf0d8"]];
+  const [bg,ring]=pals[Math.floor(Math.random()*pals.length)];
+  const ava=$("home-ava");ava.textContent=initials;ava.style.background=bg;
+  $("ava-ring").style.background=ring;$("ava-ring").style.padding="3px";
+  $("home-uname").textContent=val.split(" ")[0];
+  buildHome();show("s-home");
+}
+function goHome(){show("s-home");}
+function buildHome(){
+  const lkBg={beginner:"#e0f5ee",elementary:"#e8f2fb",intermediate:"#fdf0d8",expert:"#fdeee9"};
+  $("level-grid").innerHTML=Object.entries(LEVELS).map(([k,v])=>`<button class="lv-card" onclick="startLevel('${k}')"><div class="lv-stripe" style="background:${v.fill}"></div><div class="lv-name" style="color:${v.color}">${v.name}</div><div class="lv-hint">${v.desc}</div><div class="lv-qs" style="background:${lkBg[k]};color:${v.dark}">${QUESTIONS[k].length} questions in bank</div><div class="lv-bg-shape" style="background:${v.fill}"></div></button>`).join("");
+}
+function startLevel(lv){
+  const qs=shuffle(QUESTIONS[lv]).slice(0,5).map(q=>{if(q.options){const{opts,correct}=shuffleOpts(q.options,q.correct);return{...q,options:opts,correct};}return q;});
+  state={screen:"game",level:lv,questions:qs,qIndex:0,score:0,answered:false,missed:[],written:"",t0:Date.now()};
+  show("s-game");renderQ();
+}
+function renderQ(){
+  const lv=LEVELS[state.level];const q=state.questions[state.qIndex];const isWrite=!q.options;
+  const prog=Math.round((state.qIndex/5)*100);
+  $("g-pill").textContent=lv.name;$("g-pill").style.cssText=`background:${lv.bg};color:${lv.dark}`;
+  $("g-prog").style.cssText=`width:${prog}%;background:${lv.fill}`;
+  $("g-frac").textContent=`Question ${state.qIndex+1} of 5`;
+  $("g-pts-lbl").textContent=`Score: ${state.score}`;
+  $("g-score").textContent=state.score;
+  const KEYS=["A","B","C","D"];
+  const ansHtml=isWrite
+    ?`<textarea class="write-area" id="wa" placeholder="Write your response here...">${state.written}</textarea><div class="write-footer"><span class="char-count" id="cc">0 characters</span><button class="submit-btn" onclick="submitWrite()">Submit answer</button></div>`
+    :`<div class="opts">${q.options.map((o,i)=>`<button class="opt" id="opt${i}" onclick="pick(${i})"><span class="opt-key">${KEYS[i]}</span><span class="opt-text">${o}</span></button>`).join("")}</div>`;
+  let fbHtml="";
   if(state.answered){
-    const ok = isWrite || state.lastOk;
-    fbHtml = `<div class="feedback ${ok?'ok':'bad'}">
-      <div class="fb-title">${isWrite?'Model answer':(ok?'Correct!':'Not quite.')}</div>
-      <div>${isWrite?`<em>${q.model}</em>`:q.why}</div>
-      ${isWrite&&q.tip?`<div class="fb-extra"><strong>What makes a strong answer:</strong> ${q.tip}</div>`:''}
-      ${!isWrite&&q.extra?`<div class="fb-extra"><strong>Also in real life:</strong> ${q.extra}</div>`:''}
-    </div>`;
+    const ok=isWrite||state.lastOk;
+    fbHtml=`<div class="fb-box ${ok?"ok":"bad"}"><div class="fb-head"><span class="fb-badge">${isWrite?"MODEL ANSWER":ok?"CORRECT":"INCORRECT"}</span><span class="fb-title">${isWrite?"Compare your response:":ok?"Well done!":"Here is the explanation:"}</span></div><div>${isWrite?`<em style="line-height:1.7;display:block">${q.model}</em>`:q.why}</div>${isWrite&&q.tip?`<div class="fb-extra"><div class="fb-extra-label">What makes a strong answer</div>${q.tip}</div>`:""}${!isWrite&&q.extra?`<div class="fb-extra"><div class="fb-extra-label">Also in real life</div>${q.extra}</div>`:""}</div>`;
   }
-
-  $('g-body').innerHTML = `
-    <div class="q-card">
-      <div class="q-meta">
-        <span class="tag">${q.subject}</span>
-        <span class="tag" style="font-style:italic">${q.word}</span>
-      </div>
-      <div class="scenario-label">The situation</div>
-      <div class="scenario-box">${q.scenario}</div>
-      <div class="q-prompt">${q.prompt}</div>
-      ${answerHtml}
-      ${fbHtml}
-    </div>
-    ${state.answered?`<button class="next-btn" onclick="nextQ()">${state.qIndex<4?'Next question →':'See my results →'}</button>`:''}`;
-
-  if(isWrite && !state.answered){
-    const wa = $('wa');
-    if(wa) wa.addEventListener('input', e=>{ state.written=e.target.value; });
-  }
-  if(state.answered && !isWrite){
-    q.options.forEach((_,i)=>{
-      const b=$('opt'+i);
-      if(!b) return;
-      b.disabled=true;
-      if(i===q.correct) b.classList.add('correct');
-      else if(i===state.lastPick) b.classList.add('wrong');
-    });
-  }
+  $("g-body").innerHTML=`<div class="q-card"><div class="q-meta"><span class="tag tag-s">${q.subject}</span><span class="tag tag-t">${q.pos}</span></div><div class="word-banner" style="background:${LEVELS[state.level].bg}"><div class="word-main" style="color:${LEVELS[state.level].dark}">${q.word}</div><div class="word-pos">${q.pos}</div></div><div class="scene-label">Situation <div class="scene-line"></div></div><div class="scene-box">${q.scenario}</div><div class="q-prompt">${q.prompt}</div>${ansHtml}${fbHtml}</div>${state.answered?`<button class="next-btn" onclick="nextQ()">${state.qIndex<4?"Next question":"See my results"} &rarr;</button>`:""}`;
+  if(isWrite&&!state.answered){const wa=$("wa"),cc=$("cc");if(wa)wa.addEventListener("input",e=>{state.written=e.target.value;if(cc)cc.textContent=e.target.value.length+" characters";});}
+  if(state.answered&&!isWrite){q.options.forEach((_,i)=>{const b=$("opt"+i);if(!b)return;b.disabled=true;if(i===q.correct)b.classList.add("correct");else if(i===state.lastPick)b.classList.add("wrong");});}
 }
+function pick(i){if(state.answered)return;const q=state.questions[state.qIndex];state.answered=true;state.lastOk=(i===q.correct);state.lastPick=i;if(state.lastOk){state.score+=20;toast("Correct! +20 points",1600);}else{state.missed.push(q);toast("Not quite — read the explanation.",2200);}renderQ();}
+function submitWrite(){const v=$("wa")?$("wa").value:state.written;if(!v.trim()){toast("Please write something first.");return;}if(v.trim().length<30){toast("Write at least 2 full sentences.");return;}state.written=v;state.answered=true;state.score+=20;renderQ();}
+function nextQ(){state.qIndex++;state.answered=false;state.written="";if(state.qIndex>=5){showResults();return;}renderQ();}
 
-function pick(i) {
-  if(state.answered) return;
-  const q = state.questions[state.qIndex];
-  state.answered = true; state.lastOk = (i===q.correct); state.lastPick = i;
-  if(state.lastOk) state.score++;
-  else state.missed.push(q);
-  renderQ();
-}
-
-function submitWrite() {
-  const v = $('wa')?$('wa').value:state.written;
-  if(!v.trim()){ toast('Please write something first!'); return; }
-  state.written=v; state.answered=true; state.score++;
-  renderQ();
-}
-
-function nextQ() {
-  state.qIndex++; state.answered=false; state.written='';
-  if(state.qIndex>=5){ showResults(); return; }
-  renderQ();
-}
-
-async function showResults() {
-  const lv  = LEVELS[state.level];
-  const pct = Math.round((state.score/5)*100);
-  const stars = pct>=90?3:pct>=80?2:pct>=60?1:0;
-  const msgs = ['Keep going — try again!','Good effort. Keep practicing!','Great work — almost there!','Excellent — you own these words!'];
-  const nextLv = NEXT[state.level];
-
-  $('r-body').innerHTML = `
-    <div class="res-level">${studentName} · ${lv.name} complete</div>
-    <div class="res-score" style="color:${lv.color}">${state.score}/5</div>
-    <div class="res-stars" style="color:#BA7517">${'★'.repeat(stars)+'☆'.repeat(3-stars)}</div>
-    <div class="res-msg">${msgs[stars]}</div>
-    <div class="saving-chip" id="save-status">Saving your score…</div>
-    ${pct>=80&&nextLv?`<div class="unlock-badge">🔓 ${LEVELS[nextLv].name} unlocked!</div><br>`:''}
-    ${state.missed.length?`<div class="review-section">
-      <div class="review-title">Words to review:</div>
-      ${state.missed.map(m=>`<div class="review-item">
-        <span class="review-word">${m.word}</span><span class="review-sub">${m.subject}</span>
-        <div class="review-why">${(m.why||m.tip||'').split('.')[0]}.</div>
-      </div>`).join('')}
-    </div>`:`<div style="font-size:14px;color:var(--green-text);background:var(--green-bg);padding:12px 18px;border-radius:8px;margin-bottom:20px">Perfect score! All words correct.</div>`}
-    <div class="action-row">
-      <button class="a-btn" onclick="startLevel('${state.level}')">Retry</button>
-      ${nextLv?`<button class="a-btn primary" onclick="startLevel('${nextLv}')">Try ${LEVELS[nextLv].name} ↗</button>`:''}
-      <button class="a-btn" onclick="goHome()">All levels</button>
-    </div>`;
-
-  show('s-results');
-
-  // Save to Supabase
-  await saveScore(studentName, state.level, state.score);
-  const chip = $('save-status');
-  if(chip){ chip.className='saved-chip'; chip.textContent='✓ Score saved!'; }
+async function showResults(){
+  const lv=LEVELS[state.level];const pct=state.score;
+  const stars=pct>=80?3:pct>=60?2:pct>=40?1:0;
+  const secs=Math.round((Date.now()-state.t0)/1000);
+  const msgs={3:"Outstanding performance. You truly own these words.",2:"Great work — you are very close to mastering this level.",1:"Good effort. A bit more practice and you will get there.",0:"These words need more practice. Try again — you can do it."};
+  const cc=pct>=60?lv.color:"#c44a28";const nextLv=NEXT[state.level];
+  $("r-body").innerHTML=`<div class="accent-bar"></div><div class="res-top"><div class="res-circle" style="border-color:${cc}"><div class="res-num" style="color:${cc}">${pct}</div><div class="res-label" style="color:${cc}">out of 100</div></div><div class="res-stars" style="color:var(--amber-mid)">${"★".repeat(stars)+"☆".repeat(3-stars)}</div><div class="res-msg">${msgs[stars]}</div><div class="res-sub">${lv.name} level &middot; ${state.questions.length-state.missed.length} correct out of 5</div><div class="res-bar-wrap"><div class="res-bar-fill" style="width:${pct}%;background:${cc}"></div></div></div><div class="save-status" id="save-st"><div class="save-dot"></div>Saving your score...</div><div class="stats-grid"><div class="stat-card"><div class="stat-val" style="color:${cc}">${pct}</div><div class="stat-lbl">Score</div></div><div class="stat-card"><div class="stat-val">${secs}s</div><div class="stat-lbl">Time</div></div><div class="stat-card"><div class="stat-val">${state.questions.length-state.missed.length}/5</div><div class="stat-lbl">Correct</div></div></div>${pct>=60&&nextLv?`<div class="unlock-banner">You unlocked ${LEVELS[nextLv].name} level!</div>`:""}${state.missed.length?`<div class="review-section"><div class="review-header"><div class="review-dot"></div>Words to review</div>${state.missed.map(m=>`<div class="review-item"><div class="review-word">${m.word}</div><div class="review-meta">${m.subject} &middot; ${m.pos}</div><div class="review-why">${(m.why||m.tip||"").split(".")[0]}.</div></div>`).join("")}</div>`:`<div style="background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:14px;padding:15px 18px;text-align:center;font-size:14px;font-weight:700;color:var(--ok-text);margin-bottom:22px">Perfect score — every question correct!</div>`}<div class="action-row"><button class="act-btn" onclick="startLevel('${state.level}')">Try again</button>${nextLv?`<button class="act-btn primary" onclick="startLevel('${nextLv}')">Try ${LEVELS[nextLv].name}</button>`:""}<button class="act-btn" onclick="goHome()">All levels</button></div>`;
+  show("s-results");
+  await saveScore(studentName,state.level,pct);
+  const chip=$("save-st");if(chip){chip.className="save-status saved";chip.innerHTML="<div class=\"save-dot\"></div>Score saved!";}
 }
 </script>
 </body>
