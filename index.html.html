@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Quest</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --teal:#1D9E75;--teal-bg:#E1F5EE;--teal-dark:#085041;
+    --blue:#185FA5;--blue-bg:#E6F1FB;--blue-dark:#0C447C;
+    --amber:#BA7517;--amber-bg:#FAEEDA;--amber-dark:#633806;
+    --coral:#993C1D;--coral-bg:#FAECE7;--coral-dark:#712B13;
+    --green-bg:#EAF3DE;--green-text:#27500A;--green-border:#639922;
+    --red-bg:#FCEBEB;--red-text:#791F1F;--red-border:#E24B4A;
+    --bg:#ffffff;--bg2:#f5f4f0;--bg3:#eeede8;
+    --text:#1a1a18;--text2:#5a5a56;--text3:#9a9994;
+    --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.2);
+    --radius:12px;--radius-sm:8px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{
+      --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2b;
+      --text:#e8e6df;--text2:#a8a69f;--text3:#6a6860;
+      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+      --teal-bg:#04342C;--blue-bg:#042C53;--amber-bg:#412402;--coral-bg:#4A1B0C;
+      --green-bg:#173404;--green-text:#C0DD97;--green-border:#3B6D11;
+      --red-bg:#501313;--red-text:#F7C1C1;--red-border:#A32D2D;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  #app{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+  .screen{display:none}.screen.active{display:block}
+
+  /* NAME SCREEN */
+  .name-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;gap:0}
+  .name-logo{width:56px;height:56px;border-radius:16px;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .name-logo svg{width:30px;height:30px}
+  .name-title{font-size:26px;font-weight:700;margin-bottom:8px}
+  .name-sub{font-size:14px;color:var(--text2);line-height:1.55;max-width:320px;margin:0 auto 32px}
+  .name-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
+  .name-label{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px;text-align:left}
+  .name-input{width:100%;padding:12px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s}
+  .name-input:focus{border-color:var(--teal)}
+  .name-btn{width:100%;margin-top:14px;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--teal);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+  .name-btn:hover{opacity:.9}
+  .name-btn:disabled{opacity:.5;cursor:not-allowed}
+  .name-footer{font-size:11px;color:var(--text3);margin-top:14px}
+
+  /* HOME */
+  .home-header{text-align:center;padding:28px 0 20px}
+  .home-avatar{width:44px;height:44px;border-radius:50%;background:var(--teal-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:14px;font-weight:700;color:var(--teal-dark)}
+  .home-title{font-size:22px;font-weight:700;margin-bottom:5px}
+  .home-sub{font-size:13px;color:var(--text2);line-height:1.5}
+  .level-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 14px}
+  .lv-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s;font-family:inherit}
+  .lv-card:hover{border-color:var(--border2);background:var(--bg2)}
+  .lv-bar{height:3px;border-radius:2px;margin-bottom:12px}
+  .lv-name{font-size:15px;font-weight:700;margin-bottom:4px}
+  .lv-hint{font-size:12px;color:var(--text2);line-height:1.4}
+  .lv-count{font-size:11px;color:var(--text3);margin-top:5px}
+  .home-footer{text-align:center;font-size:12px;color:var(--text3)}
+
+  /* GAME */
+  .game-topbar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+  .back-btn{background:none;border:none;cursor:pointer;color:var(--text2);font-size:18px;padding:2px 6px;border-radius:6px;line-height:1;font-family:inherit}
+  .back-btn:hover{background:var(--bg2)}
+  .lv-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+  .prog-track{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+  .prog-fill{height:100%;border-radius:3px;transition:width .4s ease}
+  .q-count{font-size:12px;color:var(--text3);white-space:nowrap}
+  .q-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:22px 20px;margin-bottom:12px}
+  .q-meta{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2)}
+  .scenario-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:7px}
+  .scenario-box{background:var(--bg2);border-radius:var(--radius-sm);padding:14px 16px;font-size:14px;line-height:1.65;margin-bottom:16px}
+  .scenario-box b{font-weight:700}
+  .q-prompt{font-size:15px;font-weight:600;line-height:1.45;margin-bottom:14px}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .opt{background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 13px;font-size:13px;line-height:1.4;text-align:left;cursor:pointer;color:var(--text);transition:border-color .12s,background .12s;font-family:inherit}
+  .opt:hover:not(:disabled){background:var(--bg2);border-color:var(--text3)}
+  .opt:disabled{cursor:default}
+  .opt.correct{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)}
+  .write-area{width:100%;padding:11px 13px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;min-height:90px;resize:vertical;background:var(--bg);color:var(--text);font-family:inherit;line-height:1.55;margin-top:4px}
+  .write-area:focus{outline:none;border-color:var(--teal)}
+  .check-btn{margin-top:8px;padding:9px 20px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit}
+  .check-btn:hover{background:var(--bg2)}
+  .feedback{border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;line-height:1.6;margin-top:12px}
+  .feedback.ok{background:var(--green-bg);color:var(--green-text)}
+  .feedback.bad{background:var(--red-bg);color:var(--red-text)}
+  .fb-title{font-weight:700;font-size:14px;margin-bottom:5px}
+  .fb-extra{margin-top:9px;padding-top:9px;border-top:1px solid rgba(0,0,0,.1);font-size:12px;opacity:.9}
+  .next-btn{display:block;width:100%;padding:13px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--bg2);font-size:14px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit;text-align:center;transition:background .12s}
+  .next-btn:hover{background:var(--bg3)}
+
+  /* RESULTS */
+  .results{text-align:center;padding:24px 0}
+  .res-level{font-size:12px;color:var(--text2);margin-bottom:6px}
+  .res-score{font-size:52px;font-weight:700;margin-bottom:4px}
+  .res-stars{font-size:28px;letter-spacing:2px;margin-bottom:8px}
+  .res-msg{font-size:14px;color:var(--text2);margin-bottom:20px}
+  .saving-chip{font-size:12px;color:var(--text3);margin-bottom:12px}
+  .saved-chip{font-size:12px;color:var(--teal);margin-bottom:12px;font-weight:600}
+  .unlock-badge{display:inline-block;font-size:13px;padding:8px 18px;border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green-text);margin-bottom:20px;font-weight:700}
+  .review-section{text-align:left;margin-bottom:22px}
+  .review-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+  .review-item{padding:10px 14px;border-radius:var(--radius-sm);background:var(--bg2);margin-bottom:7px}
+  .review-word{font-weight:700;font-size:14px}
+  .review-sub{font-size:10px;color:var(--text3);margin-left:6px}
+  .review-why{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.4}
+  .action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .a-btn{padding:10px 22px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;color:var(--text);font-family:inherit;transition:background .12s}
+  .a-btn:hover{background:var(--bg2)}
+  .a-btn.primary{border-color:var(--teal);color:var(--teal-dark);background:var(--teal-bg)}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:13px;font-weight:600;padding:10px 20px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+  #toast.show{opacity:1}
+
+  @media(max-width:420px){
+    .level-grid{grid-template-columns:1fr}
+    .options{grid-template-columns:1fr}
+    .action-row{flex-direction:column}
+    .a-btn{width:100%;text-align:center}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="screen active" id="s-name">
+    <div class="name-screen">
+      <div class="name-logo">
+        <svg viewBox="0 0 30 30" fill="none" stroke="#1D9E75" stroke-width="2.2" stroke-linecap="round">
+          <path d="M5 8h20M5 13h14M5 18h16M5 23h10"/>
+        </svg>
+      </div>
+      <h1 class="name-title">Vocabulary Quest</h1>
+      <p class="name-sub">Real-life vocabulary for 6th and 7th grade. Write your name to begin.</p>
+      <div class="name-card">
+        <div class="name-label">Your full name</div>
+        <input class="name-input" id="name-input" type="text" placeholder="e.g. Valentina Rodríguez" autocomplete="name" />
+        <button class="name-btn" id="name-btn" onclick="startWithName()">Start playing →</button>
+        <div class="name-footer">Your name and score will be saved for your teacher.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="s-home">
+    <div class="home-header">
+      <div class="home-avatar" id="home-avatar"></div>
+      <h2 class="home-title">Choose your level</h2>
+      <p class="home-sub">Each session has 5 real-life questions. Your score is saved automatically.</p>
+    </div>
+    <div class="level-grid" id="level-grid"></div>
+    <p class="home-footer">No download needed · Works on any device</p>
+  </div>
+
+  <div class="screen" id="s-game">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="goHome()">&#8592;</button>
+      <span class="lv-pill" id="g-pill"></span>
+      <div class="prog-track"><div class="prog-fill" id="g-prog"></div></div>
+      <span class="q-count" id="g-count"></span>
+    </div>
+    <div id="g-body"></div>
+  </div>
+
+  <div class="screen" id="s-results">
+    <div class="results" id="r-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────
+const { createClient } = supabase;
+const db = createClient(
+  'https://zdrxqsezxeusxffafsut.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkcnhxc2V6eGV1c3hmZmFmc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDYwNjIsImV4cCI6MjA5MTc4MjA2Mn0.HAB9g3etuP0b4SmbDdD0dcq0riwVizcepBkO8_BFhqE'
+);
+
+async function saveScore(student, level, score) {
+  try {
+    const { error } = await db.from('scores').insert({ student, level, score });
+    if (error) console.error('Supabase error:', error.message);
+  } catch(e) { console.error('Save failed:', e); }
+}
+
+// ── TOAST ────────────────────────────────────────────────
+function toast(msg, duration=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── DATA ─────────────────────────────────────────────────
+const LEVELS = {
+  beginner:     { name:'Beginner',     color:'#1D9E75', bg:'#E1F5EE', dark:'#085041', fill:'#1D9E75' },
+  elementary:   { name:'Elementary',   color:'#185FA5', bg:'#E6F1FB', dark:'#0C447C', fill:'#378ADD' },
+  intermediate: { name:'Intermediate', color:'#854F0B', bg:'#FAEEDA', dark:'#633806', fill:'#BA7517' },
+  expert:       { name:'Expert',       color:'#993C1D', bg:'#FAECE7', dark:'#712B13', fill:'#D85A30' }
+};
+const NEXT = { beginner:'elementary', elementary:'intermediate', intermediate:'expert', expert:null };
+const DESCS = {
+  beginner:     'Read a real situation. Pick what the word means.',
+  elementary:   'Spot which sentence uses the word correctly.',
+  intermediate: 'Fill the blank in a real-life paragraph.',
+  expert:       'Write your own response using the word.'
+};
+
+const QUESTIONS = {
+  beginner:[
+    {word:'organism',subject:'Science',
+     scenario:'You and your friends are watching a nature documentary. The narrator says: "Every <b>organism</b> in this rainforest depends on the others to survive."',
+     prompt:'Your friend asks what "organism" means. Which answer is correct?',
+     options:['Any living thing — a plant, animal, or bacterium','A type of tropical climate','A layer of rainforest soil','A machine that helps plants grow'],correct:0,
+     why:'An organism is any living thing. You, your pet, the grass outside — all organisms. The documentary is saying every living thing in the ecosystem is connected.',
+     extra:'You\'ll also hear this in climate news: "Millions of organisms face extinction due to habitat loss."'},
+    {word:'ratio',subject:'Math',
+     scenario:'You\'re at a school food sale. The juice sign reads: "Mixed in a <b>ratio</b> of 1 part juice to 3 parts water."',
+     prompt:'What does "ratio" mean in this context?',
+     options:['A comparison showing how much of each ingredient is used','The price per cup of juice','The total volume of liquid in the jug','The number of cups sold per hour'],correct:0,
+     why:'A ratio tells you the relationship between two quantities. 1:3 means for every 1 cup of juice, there are 3 cups of water. Ratios appear in cooking, maps, and sports stats every day.',
+     extra:'"Our school\'s student-to-teacher ratio is 25:1" means 25 students for every 1 teacher.'},
+    {word:'habitat',subject:'Science',
+     scenario:'Your city plans to build a shopping mall on an empty field. A news article says: "Construction will destroy the natural <b>habitat</b> of several bird species."',
+     prompt:'What is the article warning about?',
+     options:['The natural home where those birds live and raise their young','The migration route birds travel each year','The food source the birds depend on','The noise level that disturbs the birds'],correct:0,
+     why:'A habitat is the natural environment where a species lives, finds food, and reproduces. Destroying it forces animals out — or kills them if they have nowhere else to go.',
+     extra:'Environmental campaigns often say "Protect the habitat" — meaning protect the actual physical space where wildlife lives.'},
+    {word:'democracy',subject:'Social studies',
+     scenario:'Your class is voting on where to go for the end-of-year trip. Your teacher says: "This is how a <b>democracy</b> works — everyone\'s vote counts equally."',
+     prompt:'What does "democracy" mean here?',
+     options:['A system where people make decisions by voting','A system where only the teacher decides','A competition where one winner is chosen','A meeting where only older students can speak'],correct:0,
+     why:'"Democracy" literally means "rule by the people." Every person\'s vote carries the same weight.',
+     extra:'When people say a country "is a democracy," they mean citizens elect their leaders and rights are protected by law.'},
+    {word:'average',subject:'Math',
+     scenario:'You scored 70, 80, and 90 on three science tests. Your teacher says your <b>average</b> is 80.',
+     prompt:'What did your teacher calculate?',
+     options:['The sum of all scores divided by how many there are','The highest score you received','The score you got most often','The difference between your best and worst score'],correct:0,
+     why:'The average (mean) is found by adding all values and dividing by the count: (70+80+90)÷3 = 80. It gives one number that represents the whole group.',
+     extra:'"The average temperature this week was 22°C" — averages summarize data into one useful, comparable number.'},
+    {word:'evidence',subject:'Language arts',
+     scenario:'A rumor is spreading around school. Your friend says: "I\'m not going to believe that until I see actual <b>evidence</b>."',
+     prompt:'What is your friend asking for?',
+     options:['Facts or information that help prove whether something is true','A second opinion from a teacher','A vote from the class','A written apology from the person who started the rumor'],correct:0,
+     why:'"Evidence" is information that supports or disproves a claim. Your friend is being scientifically minded — requiring proof before accepting something as true.',
+     extra:'Evidence appears everywhere: in science (data), in law (proof at trial), and everyday arguments ("Do you have any evidence for that?").'},
+    {word:'predator',subject:'Science',
+     scenario:'A nature reserve posted: "We reintroduced wolves to control the deer population. As a natural <b>predator</b>, the wolf keeps the ecosystem balanced."',
+     prompt:'What does "predator" mean in this post?',
+     options:['An animal that hunts and eats other animals to survive','An animal that only eats plants','A species that is endangered','A type of bird that lives in forests'],correct:0,
+     why:'A predator is an animal that hunts others for food. Wolves are predators; deer are their prey. Reintroducing predators can restore balance to an ecosystem.',
+     extra:'In everyday language, "predator" can describe a person who exploits others, but in science it means a hunter in the food chain.'},
+    {word:'plot',subject:'Language arts',
+     scenario:'Your English teacher asks: "Before we discuss the themes of this novel, let\'s make sure everyone understands the <b>plot</b>."',
+     prompt:'What is your teacher asking you to know?',
+     options:['The sequence of events that happen in the story','The main message or lesson of the story','The time and place where the story takes place','The personality of the main character'],correct:0,
+     why:'The plot is what happens — the chain of events from beginning to end. It is different from the theme (meaning) or the setting (time and place).',
+     extra:'When someone says "Don\'t spoil the plot!" they mean don\'t reveal what happens in the story.'}
+  ],
+  elementary:[
+    {word:'migration',subject:'Social studies',
+     scenario:'A news article reads: "The <b>migration</b> of families from rural villages to the capital has doubled in a decade, putting pressure on schools and hospitals."',
+     prompt:'Which sentence uses "migration" the same way the article does?',
+     options:['The migration of workers to the city changed the local economy.','She studied migration for her math exam last night.','The migration of the soup made it taste better.','His migration of the argument convinced the class.'],correct:0,
+     why:'"Migration" is the movement of people or animals from one place to another. The correct option mirrors the article — workers moving to a new location.',
+     extra:'"Migration" works for birds (seasonal migration), people (economic migration), and tech (migrating files to a new computer).'},
+    {word:'variable',subject:'Math',
+     scenario:'Your science teacher says: "Keep everything the same in your experiment — except for the one <b>variable</b> you\'re testing, which is the amount of sunlight."',
+     prompt:'Which sentence uses "variable" the same way your teacher did?',
+     options:['The only variable in the test was how much water each plant got.','She bought a variable at the grocery store for dinner.','The variable outside was cold and windy.','He variable his shoes before gym class.'],correct:0,
+     why:'In an experiment, a variable is the one factor you change to see what happens. In math, a variable (like x) represents an unknown value.',
+     extra:'"Income is the key variable in whether a family can afford housing" — here variable means a changing factor that affects the outcome.'},
+    {word:'persuade',subject:'Language arts',
+     scenario:'You want your parents to extend your weekend curfew. Your sibling advises: "Don\'t just ask — <b>persuade</b> them. Show them you\'re responsible with real examples."',
+     prompt:'Which sentence uses "persuade" the same way your sibling did?',
+     options:['She used her safety record to persuade her parents to let her go.','He persuaded his lunch in the cafeteria quickly.','The weather persuaded all afternoon.','They persuaded the math problem on the board.'],correct:0,
+     why:'To persuade is to convince someone through reasoning, evidence, or argument. It is more than just asking — it involves making a strong case.',
+     extra:'Ads persuade you to buy. Politicians persuade voters. Lawyers persuade juries. Persuasion is one of the most used communication skills in real life.'},
+    {word:'conductor',subject:'Science',
+     scenario:'You touch a metal park bench on a hot sunny day and burn your hand. Your friend explains: "Metal is a great <b>conductor</b> — it transfers heat straight to your skin."',
+     prompt:'Which sentence uses "conductor" the same way your friend did?',
+     options:['Copper wire is a conductor, which is why it\'s used in electrical cables.','The conductor of the school orchestra raised her baton.','He was a conductor on the train from the city.','The conductor of the meeting spoke too quickly.'],correct:0,
+     why:'In science, a conductor is a material that allows heat or electricity to pass through easily. Metals are excellent conductors.',
+     extra:'When you use an oven mitt, you\'re protecting yourself from a heat conductor. Electricians choose conductors carefully to keep homes safe.'},
+    {word:'coherent',subject:'Language arts',
+     scenario:'You submit an essay and your teacher writes: "Your ideas are interesting, but the argument is not <b>coherent</b> — the paragraphs don\'t connect to each other."',
+     prompt:'Which sentence uses "coherent" the same way your teacher did?',
+     options:['A coherent presentation flows logically from one point to the next.','The coherent weather made it a perfect day for a picnic.','She coherent her backpack before leaving the house.','The coherent of the equation took three steps to solve.'],correct:0,
+     why:'"Coherent" means logically connected and easy to follow. Your teacher is saying your paragraphs feel disconnected — the ideas don\'t flow together as a unified whole.',
+     extra:'A coherent plan, a coherent argument, a coherent explanation — all mean the parts fit together in a way that makes clear sense.'},
+    {word:'urbanization',subject:'Social studies',
+     scenario:'Your geography textbook says: "<b>Urbanization</b> in Colombia has accelerated since the 1960s, with more than 80% of the population now living in cities."',
+     prompt:'Which sentence uses "urbanization" the same way the textbook does?',
+     options:['Rapid urbanization transformed the once-quiet town into a crowded city.','The urbanization of her speech impressed the judges.','He studied urbanization to prepare for the spelling test.','The urbanization outside was sunny and warm.'],correct:0,
+     why:'"Urbanization" is the process by which more people move from rural areas to cities, and cities grow larger. It affects housing, traffic, and the environment.',
+     extra:'Today, more than half the world\'s population lives in cities, up from 30% in 1950 — one of the biggest urbanization shifts in history.'},
+    {word:'probability',subject:'Math',
+     scenario:'Your phone\'s weather app shows a 70% chance of rain tomorrow. You\'re deciding whether to bring an umbrella to your outdoor sports day.',
+     prompt:'Which sentence uses "probability" the same way the weather app does?',
+     options:['The probability of rain was high enough to cancel the outdoor concert.','She probability her homework before dinner.','The probability outside was cold and cloudy.','He bought a probability at the school book fair.'],correct:0,
+     why:'"Probability" is a measure of how likely something is to happen. 70% means it rains in 7 out of 10 similar conditions — not a guarantee, but worth preparing for.',
+     extra:'Doctors use probability ("80% chance this treatment works"), and insurance companies calculate it to set prices.'},
+    {word:'amendment',subject:'Social studies',
+     scenario:'During a student council meeting, someone suggests changing the school\'s phone rules. The president says: "We can propose an <b>amendment</b> to the school code."',
+     prompt:'Which sentence uses "amendment" the same way the student president did?',
+     options:['The city council passed an amendment to update the noise regulations.','She ate her amendment before the test.','The amendment outside was cold and windy.','He amendment his backpack before leaving school.'],correct:0,
+     why:'An amendment is a formal change or addition to a rule, law, or document. Any official rule can be amended.',
+     extra:'When Colombia updates its constitution, those changes are called amendments too. The word comes from Latin "emendare" — to correct or improve.'}
+  ],
+  intermediate:[
+    {word:'adaptation',subject:'Science',
+     scenario:'You\'re watching a video about desert foxes. The narrator explains that the fox\'s huge ears release body heat to keep it cool in extreme temperatures.',
+     prompt:'Fill in the blank: The fox\'s large ears are a remarkable ___ to life in the desert, developed over thousands of generations.',
+     options:['adaptation','migration','hypothesis','correlation'],correct:0,
+     why:'An adaptation is a trait that evolved because it helps a species survive in its specific environment. The key idea: it developed over time because it solved a survival problem.',
+     extra:'"Working from home is an adaptation many companies made during the pandemic." Same core idea — adjusting to a new situation.'},
+    {word:'inflation',subject:'Social studies',
+     scenario:'Your parents are complaining that groceries cost much more than two years ago. The news anchor says: "Families are feeling the impact of <b>inflation</b>, with food prices up 18% since last year."',
+     prompt:'Fill in the blank: When your school lunch rises from $2 to $3 over two years without the portion getting bigger, that is an example of ___.',
+     options:['inflation','migration','sovereignty','legislation'],correct:0,
+     why:'Inflation is the general increase in prices over time, meaning your money buys less than it used to.',
+     extra:'A dollar in 1990 could buy roughly what $2.30 buys today — that\'s the cumulative effect of inflation over decades.'},
+    {word:'correlation',subject:'Math',
+     scenario:'A school health report shows students who sleep more than 8 hours tend to score higher on tests. The report notes, however, that sleeping more does not necessarily cause better grades.',
+     prompt:'Fill in the blank: The data shows a ___ between sleep and test scores, but not a proven cause-and-effect relationship.',
+     options:['correlation','variable','ratio','hypothesis'],correct:0,
+     why:'A correlation means two things tend to change together. But correlation does not mean one causes the other.',
+     extra:'"Ice cream sales and drowning rates both rise in summer — there\'s a correlation, but ice cream doesn\'t cause drowning." The real cause is hot weather.'},
+    {word:'rhetoric',subject:'Language arts',
+     scenario:'You\'re watching a politician give a speech. They keep repeating emotional phrases and making big promises with no specific plans. Your parent says: "That\'s all just <b>rhetoric</b>."',
+     prompt:'Fill in the blank: The candidate\'s speech was full of ___ — powerful, emotional language, but no concrete policy details.',
+     options:['rhetoric','allegory','syntax','coherence'],correct:0,
+     why:'Rhetoric is the art of using language persuasively. "Just rhetoric" usually means language designed to impress without real substance.',
+     extra:'Advertisers use rhetoric constantly. "New and improved!" is rhetoric — emotionally appealing but vague. Learning to spot it helps you think critically.'},
+    {word:'sovereignty',subject:'Social studies',
+     scenario:'You read this headline: "Small island nation rejects foreign company\'s offer to manage its national water supply, citing <b>sovereignty</b> concerns."',
+     prompt:'Fill in the blank: The island refused because handing over its water supply would compromise its ___ — its right to make its own decisions.',
+     options:['sovereignty','democracy','legislation','migration'],correct:0,
+     why:'"Sovereignty" means a nation\'s right to govern itself without outside interference. Control of basic resources like water is a core element of sovereignty.',
+     extra:'Sovereignty debates come up when countries join international organizations, sign trade agreements, or allow foreign military bases on their soil.'},
+    {word:'biodiversity',subject:'Science',
+     scenario:'Your city is debating whether to replace an old overgrown park with a parking lot. An environmental group argues the park supports dozens of plant and insect species found nowhere else in the city.',
+     prompt:'Fill in the blank: Building on the park would dramatically reduce the ___ of the urban area, making the local ecosystem fragile.',
+     options:['biodiversity','habitat','adaptation','organism'],correct:0,
+     why:'"Biodiversity" refers to the variety of life — different species, genetic diversity within species, and variety of ecosystems. High biodiversity makes ecosystems more resilient.',
+     extra:'A single crop farm has very low biodiversity. A rainforest has extreme biodiversity. When biodiversity drops, entire food chains can collapse.'},
+    {word:'inference',subject:'Math',
+     scenario:'Your school surveyed 80 randomly chosen students about sleep habits. Based on those results, the report made predictions about all 800 students in the school.',
+     prompt:'Fill in the blank: The researchers used ___ to draw conclusions about the whole school from a sample of 80 students.',
+     options:['inference','correlation','probability','variable'],correct:0,
+     why:'An inference is a conclusion you draw from evidence rather than direct observation. Statistical inference means using a sample to make educated conclusions about a larger group.',
+     extra:'"Based on the tire tracks, the detective inferred it was a large SUV." In daily life, we make inferences constantly — filling in what we don\'t know with what we do.'},
+    {word:'legislation',subject:'Social studies',
+     scenario:'Student activists campaigned for a policy banning single-use plastics in the cafeteria. After months of advocacy, the school board approved the rule. A newspaper called it "a small piece of <b>legislation</b>."',
+     prompt:'Fill in the blank: The students celebrated because their campaign had resulted in actual ___ — a formal rule backed by authority.',
+     options:['legislation','rhetoric','migration','sovereignty'],correct:0,
+     why:'"Legislation" means a formal rule created through an official process. The key word is "formal" — it\'s a rule with real authority and consequences.',
+     extra:'"Climate legislation passed in Parliament today" — the word signals a formal legal process has been completed, not just that people agreed on something.'}
+  ],
+  expert:[
+    {word:'biodiversity',subject:'Science',
+     scenario:'Your city is debating replacing an old overgrown park with a new parking lot. An environmental group argues the park supports dozens of plant and insect species that would disappear.',
+     prompt:'Write 2–3 sentences explaining why this park matters, using "biodiversity" correctly. Show you understand its meaning — do not just define it.',
+     model:'The overgrown park is a rare urban space with high biodiversity — it sustains many different plant, insect, and bird species that cannot survive in paved areas. Destroying it would reduce the overall biodiversity of the city, making the local ecosystem less resilient to disease and climate shifts. Once lost, this kind of variety is extremely difficult to restore.',
+     tip:'Strong answers show: (1) biodiversity means variety of living things, not just "many animals," (2) a connection to the park scenario, and (3) why losing it matters beyond just being sad.'},
+    {word:'sovereignty',subject:'Social studies',
+     scenario:'You read: "Small island nation rejects foreign company\'s offer to manage its national water supply, citing sovereignty concerns."',
+     prompt:'In 2–3 sentences, explain what sovereignty means and why it is relevant to this specific situation. Use the word naturally.',
+     model:'Sovereignty is a nation\'s right to govern itself and control its own resources without interference from outside forces. Allowing a foreign company to manage the water supply would mean handing a critical national resource to an entity not accountable to the island\'s citizens — a clear compromise of sovereignty. For a small nation, protecting sovereignty often means choosing independence over short-term economic convenience.',
+     tip:'Strong answers show: (1) sovereignty = self-governance and control, (2) why water control is a sovereignty issue specifically, and (3) what is at stake if sovereignty is compromised.'},
+    {word:'rhetoric',subject:'Language arts',
+     scenario:'A social media post goes viral claiming a new food additive causes serious illness. It uses alarming language and dramatic images — but cites no scientific studies. Thousands of people share it.',
+     prompt:'Write 2–3 sentences analyzing this post using the word "rhetoric." What kind of rhetoric is being used, and why does it work on people?',
+     model:'The post uses fear-based rhetoric — emotional language, dramatic visuals, and personal anecdotes — designed to trigger a gut reaction before readers can evaluate the evidence. This type of rhetoric works because humans respond more strongly to stories and fear than to statistics and studies. Recognizing the rhetoric does not mean the claim is false, but it should prompt you to demand scientific evidence before sharing.',
+     tip:'Strong answers: (1) name the specific type of rhetoric, (2) explain why it bypasses critical thinking, and (3) distinguish between manipulative rhetoric and legitimate persuasion.'},
+    {word:'correlation',subject:'Math',
+     scenario:'A classmate argues: "Students who own smartphones get worse grades — I saw a graph showing schools with higher smartphone use have lower test scores. Phones should be banned."',
+     prompt:'Write 2–3 sentences responding to your classmate. Use the word "correlation" to identify exactly what is missing from their argument.',
+     model:'The graph shows a correlation between smartphone use and lower test scores — meaning the two tend to occur together — but that alone does not prove smartphones cause the drop. It is possible both are caused by a third factor: schools in lower-income areas may have fewer resources and more permissive device policies. To justify a ban, you would need controlled evidence showing phones directly cause lower performance.',
+     tip:'Strong answers: (1) use "correlation" correctly, (2) state that correlation ≠ causation, and (3) propose a third variable or describe what stronger evidence would look like.'},
+    {word:'adaptation',subject:'Science',
+     scenario:'Electric scooters have flooded your city. Within months, local bicycle repair shops started offering scooter services, and street food vendors relocated near charging stations.',
+     prompt:'Write 2–3 sentences using "adaptation" to describe what is happening — and explain whether this is the same meaning as biological adaptation, or a different use.',
+     model:'The repair shops and food vendors are showing behavioral adaptation — changing what they do in response to a new condition in their environment in order to survive economically. This mirrors biological adaptation in its core logic: both involve adjusting to environmental pressures to remain viable. The key difference is that biological adaptation happens over generations through natural selection, while human behavioral adaptation can occur within days through conscious decision-making.',
+     tip:'Strong answers: (1) apply adaptation correctly to the human/economic context, (2) connect it to biological adaptation, and (3) identify at least one meaningful difference.'},
+    {word:'inflation',subject:'Social studies',
+     scenario:'Your younger cousin asks why the same sneakers your older sister bought for $60 three years ago now cost $85. Your cousin says: "Did the sneakers get better?"',
+     prompt:'Write 2–3 sentences explaining inflation to your cousin using a clear, real-life explanation. Use the word "inflation" naturally.',
+     model:'The sneakers probably did not get much better — the price went up mainly because of inflation, which is the gradual rise in prices across the economy over time. When inflation happens, the same amount of money buys less than it used to, so companies charge more for the same product. Inflation is normal in small amounts, but when it rises quickly, people\'s savings and salaries lose value faster than they can keep up.',
+     tip:'Strong answers: (1) explain inflation as a general price rise, not just one product, (2) connect it to purchasing power, and (3) use the cousin scenario concretely.'},
+    {word:'legislation',subject:'Social studies',
+     scenario:'Students successfully campaigned for a rule requiring all food sold on campus to show clear nutritional labels. The school board made it official policy.',
+     prompt:'Write 2–3 sentences using "legislation." Also explain why it matters that this became formal legislation rather than just a recommendation.',
+     model:'The students\' campaign resulted in real legislation — a formal rule approved by an authority body that all food vendors on campus are now legally required to follow. This matters because a recommendation can be ignored, but legislation carries consequences: vendors who do not comply can face penalties. Turning a good idea into legislation is how social change becomes permanent and enforceable.',
+     tip:'Strong answers: (1) use legislation to mean a formal rule through an official process, (2) explain the difference from an informal agreement, and (3) connect it to why formalization matters.'},
+    {word:'inference',subject:'Math',
+     scenario:'Your school surveyed 80 randomly selected students about sleep habits. Based on those results, the report concluded "most students sleep fewer than 7 hours on school nights."',
+     prompt:'Write 2–3 sentences explaining what the researchers did using "inference." Also mention one reason this inference might not be completely reliable.',
+     model:'The researchers used statistical inference to draw conclusions about all 800 students based on data from only 80 — a classic example of using a sample to make predictions about a larger group. This inference could be unreliable if the 80 students were not truly representative — for example, if they were all from the same grade or volunteered rather than being randomly selected. A good inference requires a sample that accurately reflects the variety in the full population.',
+     tip:'Strong answers: (1) explain inference as drawing conclusions beyond what was directly observed, (2) apply it to sampling, and (3) identify a specific reason the inference might be flawed.'}
+  ]
+};
+
+// ── STATE ────────────────────────────────────────────────
+let studentName = '';
+let state = { screen:'name', level:null, questions:[], qIndex:0, score:0, answered:false, missed:[], written:'' };
+
+// ── UTILS ────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const show = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); };
+const shuffle = a => a.slice().sort(()=>Math.random()-.5);
+
+// Enter key on name input
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = $('name-input');
+  if(inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') startWithName(); });
+});
+
+function startWithName() {
+  const val = $('name-input').value.trim();
+  if(!val){ toast('Please write your name first!'); return; }
+  studentName = val;
+  // Show initials avatar
+  const initials = val.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  $('home-avatar').textContent = initials;
+  buildHome();
+  show('s-home');
+}
+
+function goHome() { show('s-home'); }
+
+function buildHome() {
+  $('level-grid').innerHTML = Object.entries(LEVELS).map(([k,v])=>`
+    <button class="lv-card" onclick="startLevel('${k}')">
+      <div class="lv-bar" style="background:${v.fill}"></div>
+      <div class="lv-name" style="color:${v.color}">${v.name}</div>
+      <div class="lv-hint">${DESCS[k]}</div>
+      <div class="lv-count">${QUESTIONS[k].length} questions available</div>
+    </button>`).join('');
+}
+
+function startLevel(lv) {
+  state = { screen:'game', level:lv, questions:shuffle(QUESTIONS[lv]).slice(0,5), qIndex:0, score:0, answered:false, missed:[], written:'' };
+  show('s-game');
+  renderQ();
+}
+
+function renderQ() {
+  const lv = LEVELS[state.level];
+  const q  = state.questions[state.qIndex];
+  const isWrite = !q.options;
+  const prog = Math.round((state.qIndex/5)*100);
+
+  $('g-pill').textContent = lv.name;
+  $('g-pill').style.cssText = `background:${lv.bg};color:${lv.dark}`;
+  $('g-prog').style.cssText = `width:${prog}%;background:${lv.fill}`;
+  $('g-count').textContent  = `${state.qIndex+1} / 5`;
+
+  const answerHtml = isWrite
+    ? `<textarea class="write-area" id="wa" placeholder="Write your response here…">${state.written}</textarea>
+       <button class="check-btn" onclick="submitWrite()">Check answer</button>`
+    : `<div class="options">${q.options.map((o,i)=>`<button class="opt" id="opt${i}" onclick="pick(${i})">${o}</button>`).join('')}</div>`;
+
+  let fbHtml = '';
+  if(state.answered){
+    const ok = isWrite || state.lastOk;
+    fbHtml = `<div class="feedback ${ok?'ok':'bad'}">
+      <div class="fb-title">${isWrite?'Model answer':(ok?'Correct!':'Not quite.')}</div>
+      <div>${isWrite?`<em>${q.model}</em>`:q.why}</div>
+      ${isWrite&&q.tip?`<div class="fb-extra"><strong>What makes a strong answer:</strong> ${q.tip}</div>`:''}
+      ${!isWrite&&q.extra?`<div class="fb-extra"><strong>Also in real life:</strong> ${q.extra}</div>`:''}
+    </div>`;
+  }
+
+  $('g-body').innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="tag">${q.subject}</span>
+        <span class="tag" style="font-style:italic">${q.word}</span>
+      </div>
+      <div class="scenario-label">The situation</div>
+      <div class="scenario-box">${q.scenario}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${answerHtml}
+      ${fbHtml}
+    </div>
+    ${state.answered?`<button class="next-btn" onclick="nextQ()">${state.qIndex<4?'Next question →':'See my results →'}</button>`:''}`;
+
+  if(isWrite && !state.answered){
+    const wa = $('wa');
+    if(wa) wa.addEventListener('input', e=>{ state.written=e.target.value; });
+  }
+  if(state.answered && !isWrite){
+    q.options.forEach((_,i)=>{
+      const b=$('opt'+i);
+      if(!b) return;
+      b.disabled=true;
+      if(i===q.correct) b.classList.add('correct');
+      else if(i===state.lastPick) b.classList.add('wrong');
+    });
+  }
+}
+
+function pick(i) {
+  if(state.answered) return;
+  const q = state.questions[state.qIndex];
+  state.answered = true; state.lastOk = (i===q.correct); state.lastPick = i;
+  if(state.lastOk) state.score++;
+  else state.missed.push(q);
+  renderQ();
+}
+
+function submitWrite() {
+  const v = $('wa')?$('wa').value:state.written;
+  if(!v.trim()){ toast('Please write something first!'); return; }
+  state.written=v; state.answered=true; state.score++;
+  renderQ();
+}
+
+function nextQ() {
+  state.qIndex++; state.answered=false; state.written='';
+  if(state.qIndex>=5){ showResults(); return; }
+  renderQ();
+}
+
+async function showResults() {
+  const lv  = LEVELS[state.level];
+  const pct = Math.round((state.score/5)*100);
+  const stars = pct>=90?3:pct>=80?2:pct>=60?1:0;
+  const msgs = ['Keep going — try again!','Good effort. Keep practicing!','Great work — almost there!','Excellent — you own these words!'];
+  const nextLv = NEXT[state.level];
+
+  $('r-body').innerHTML = `
+    <div class="res-level">${studentName} · ${lv.name} complete</div>
+    <div class="res-score" style="color:${lv.color}">${state.score}/5</div>
+    <div class="res-stars" style="color:#BA7517">${'★'.repeat(stars)+'☆'.repeat(3-stars)}</div>
+    <div class="res-msg">${msgs[stars]}</div>
+    <div class="saving-chip" id="save-status">Saving your score…</div>
+    ${pct>=80&&nextLv?`<div class="unlock-badge">🔓 ${LEVELS[nextLv].name} unlocked!</div><br>`:''}
+    ${state.missed.length?`<div class="review-section">
+      <div class="review-title">Words to review:</div>
+      ${state.missed.map(m=>`<div class="review-item">
+        <span class="review-word">${m.word}</span><span class="review-sub">${m.subject}</span>
+        <div class="review-why">${(m.why||m.tip||'').split('.')[0]}.</div>
+      </div>`).join('')}
+    </div>`:`<div style="font-size:14px;color:var(--green-text);background:var(--green-bg);padding:12px 18px;border-radius:8px;margin-bottom:20px">Perfect score! All words correct.</div>`}
+    <div class="action-row">
+      <button class="a-btn" onclick="startLevel('${state.level}')">Retry</button>
+      ${nextLv?`<button class="a-btn primary" onclick="startLevel('${nextLv}')">Try ${LEVELS[nextLv].name} ↗</button>`:''}
+      <button class="a-btn" onclick="goHome()">All levels</button>
+    </div>`;
+
+  show('s-results');
+
+  // Save to Supabase
+  await saveScore(studentName, state.level, state.score);
+  const chip = $('save-status');
+  if(chip){ chip.className='saved-chip'; chip.textContent='✓ Score saved!'; }
+}
+</script>
+</body>
+</html>
