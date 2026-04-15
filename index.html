@@ -429,7 +429,7 @@ function startLevel(lv){
     if(q.options){var r=shufOpts(q.options,q.correct);return Object.assign({},q,{options:r.opts,correct:r.cor});}
     return Object.assign({},q);
   });
-  st={level:lv,questions:qs,qi:0,score:0,correct:0,answered:false,missed:[],written:'',t0:Date.now()};
+  st={level:lv,questions:qs,qi:0,score:0,correct:0,wrong:0,answered:false,missed:[],written:'',t0:Date.now()};
   showScr('s-game');renderQ();
 }
 function goHome(){showScr('s-home');}
@@ -477,9 +477,17 @@ function renderQ(){
 function doPick(i){
   if(st.answered)return;
   var q=st.questions[st.qi];
-  st.answered=true;st.lastok=(i===q.correct);st.lastpick=i;
-  if(st.lastok){st.score+=PTS_PER_Q;st.correct++;toast('Correct! +'+PTS_PER_Q+' points',1600);}
-  else{st.missed.push(q);toast('Not quite — read the explanation.',2200);}
+  st.answered=true;
+  st.lastok=(i===q.correct);
+  st.lastpick=i;
+  if(st.lastok){
+    st.score+=PTS_PER_Q;
+    st.correct+=1;
+    toast('Correct! +'+PTS_PER_Q+' points',1600);
+  } else {
+    st.wrong+=1;
+    toast('Not quite — read the explanation.',2200);
+  }
   renderQ();
 }
 function doSubmitWrite(){
@@ -507,7 +515,7 @@ async function doResults(){
     rvh='<div style="background:#e8f7ef;border:1.5px solid #3daa6f;border-radius:13px;padding:14px 16px;text-align:center;font-size:14px;font-weight:700;color:#145c35;margin-bottom:20px">Perfect score — every question correct!</div>';
   }
   var sh='&#9733;'.repeat(stars)+'&#9734;'.repeat(3-stars);
-  g('rbody').innerHTML='<div class="rainbow"></div><div class="restop"><div class="rescirc" style="border-color:'+cc+'"><div class="resnum" style="color:'+cc+'">'+pct+'</div><div class="reslbl" style="color:'+cc+'">out of 100</div></div><div class="resstars" style="color:#c47a10">'+sh+'</div><div class="resmsg">'+msgs[stars]+'</div><div class="ressub">'+lv.name+' level &middot; '+(5-st.missed.length)+' correct of 5</div><div class="resbarw"><div class="resbarf" style="width:'+pct+'%;background:'+cc+'"></div></div></div><div class="saverow" id="saverow"><div class="sdot"></div>Saving your score...</div><div class="statsg"><div class="statc"><div class="statv" style="color:'+cc+'">'+pct+'</div><div class="statl">Score</div></div><div class="statc"><div class="statv">'+secs+'s</div><div class="statl">Time</div></div><div class="statc"><div class="statv">'+(5-st.missed.length)+'/5</div><div class="statl">Correct</div></div></div>'+(pct>=60&&nxt?'<div class="unlk">You unlocked '+LEVELS[nxt].name+' level!</div>':'')+rvh+'<div class="actrow"><button class="actbtn" id="rbtn">Try again</button>'+(nxt?'<button class="actbtn pri" id="nlbtn">Try '+LEVELS[nxt].name+'</button>':'')+'<button class="actbtn" id="hbtn">Main menu</button></div>';
+  g('rbody').innerHTML='<div class="rainbow"></div><div class="restop"><div class="rescirc" style="border-color:'+cc+'"><div class="resnum" style="color:'+cc+'">'+pct+'</div><div class="reslbl" style="color:'+cc+'">out of 100</div></div><div class="resstars" style="color:#c47a10">'+sh+'</div><div class="resmsg">'+msgs[stars]+'</div><div class="ressub">'+lv.name+' level &middot; '+st.correct+' correct of '+st.questions.length+'</div><div class="resbarw"><div class="resbarf" style="width:'+pct+'%;background:'+cc+'"></div></div></div><div class="saverow" id="saverow"><div class="sdot"></div>Saving your score...</div><div class="statsg"><div class="statc"><div class="statv" style="color:'+cc+'">'+pct+'</div><div class="statl">Score</div></div><div class="statc"><div class="statv">'+secs+'s</div><div class="statl">Time</div></div><div class="statc"><div class="statv">'+st.correct+' / '+st.questions.length+'</div><div class="statl">Correct</div></div></div>'+(pct>=60&&nxt?'<div class="unlk">You unlocked '+LEVELS[nxt].name+' level!</div>':'')+rvh+'<div class="actrow"><button class="actbtn" id="rbtn">Try again</button>'+(nxt?'<button class="actbtn pri" id="nlbtn">Try '+LEVELS[nxt].name+'</button>':'')+'<button class="actbtn" id="hbtn">Main menu</button></div>';
   showScr('s-results');
   var rb=g('rbtn');if(rb)rb.addEventListener('click',function(){startLevel(st.level);});
   var nl=g('nlbtn');if(nl)nl.addEventListener('click',function(){startLevel(nxt);});
