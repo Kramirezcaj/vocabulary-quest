@@ -6,206 +6,205 @@
 <title>Vocabulary Quest</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+
 :root{
-  --teal:#0f9e72;--teal-light:#e0f5ee;--teal-mid:#5dcaa5;
-  --blue:#1a6fc4;--blue-light:#e8f2fb;
-  --amber:#c47a10;--amber-light:#fdf0d8;--amber-mid:#f0b840;
-  --coral:#c44a28;--coral-light:#fdeee9;--coral-mid:#f0896a;
-  --purple:#5b45c8;--purple-light:#eeecfd;
-  --ok-bg:#e8f7ef;--ok-border:#3daa6f;--ok-text:#145c35;
-  --err-bg:#fdeaea;--err-border:#d94f4f;--err-text:#7a1a1a;
-  --bg:#f7f6f2;--card:#ffffff;--card2:#f0efe9;
-  --text:#18180f;--text2:#6b6a60;--text3:#b0aea4;
-  --border:#e2e0d8;--border2:#c8c6bc;
-  --r:16px;--rs:10px;
+  --tl:#0f9e72;--tl-l:#e0f5ee;--tl-m:#5dcaa5;--tl-d:#085041;
+  --bl:#1a6fc4;--bl-l:#e8f2fb;--bl-d:#0c447c;
+  --am:#c47a10;--am-l:#fdf0d8;--am-d:#633806;
+  --co:#c44a28;--co-l:#fdeee9;--co-d:#712b13;
+  --pu:#5b45c8;--pu-l:#eeecfd;
+  --ok-bg:#e8f7ef;--ok-b:#3daa6f;--ok-t:#145c35;
+  --er-bg:#fdeaea;--er-b:#d94f4f;--er-t:#7a1a1a;
+  --bg:#f7f6f2;--card:#fff;--c2:#f0efe9;--c3:#e4e3dd;
+  --tx:#18180f;--tx2:#6b6a60;--tx3:#b0aea4;
+  --bd:#e2e0d8;--bd2:#c8c6bc;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-#app{max-width:700px;margin:0 auto;padding:24px 18px 72px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+#app{max-width:680px;margin:0 auto;padding:20px 16px 72px}
 .screen{display:none}.screen.active{display:block}
-.accent-bar{height:4px;border-radius:2px;margin-bottom:28px;background:linear-gradient(90deg,var(--teal),var(--blue),var(--amber),var(--coral))}
+.rainbow{height:4px;border-radius:2px;margin-bottom:24px;background:linear-gradient(90deg,#0f9e72,#1a6fc4,#c47a10,#c44a28)}
 
-/* NAME */
-.name-outer{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.name-logo{width:56px;height:56px;border-radius:18px;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
-.name-logo svg{width:28px;height:28px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round}
-.name-title{font-size:36px;font-weight:900;letter-spacing:-1.5px;text-align:center;margin-bottom:6px;line-height:1.1}
-.name-title em{font-style:normal;color:var(--teal)}
-.name-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.65;max-width:360px;margin:0 auto 32px}
-.name-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:30px 26px;width:100%;max-width:400px;text-align:left}
-.field-label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
-.field-input{width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-.field-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,158,114,.12)}
-.cta-btn{width:100%;margin-top:14px;padding:15px;border-radius:var(--rs);border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:transform .12s,box-shadow .12s;letter-spacing:.01em;color:#fff}
-.cta-btn.teal{background:var(--teal)}.cta-btn.blue{background:var(--blue)}
-.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
-.hint-text{font-size:11px;color:var(--text3);margin-top:11px;text-align:center;line-height:1.5}
-.teacher-link-btn{margin-top:20px;background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px}
-.color-dots{display:flex;gap:8px;justify-content:center;margin-top:26px}
+/* NAME SCREEN */
+.name-outer{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.name-logo{width:52px;height:52px;border-radius:16px;background:#0f9e72;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.name-logo svg{width:26px;height:26px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round}
+.name-title{font-size:34px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;line-height:1.1;color:var(--tx)}
+.name-title span{color:#0f9e72}
+.name-sub{font-size:14px;color:var(--tx2);line-height:1.65;max-width:340px;margin:0 auto 28px}
+.name-card{background:var(--card);border:1.5px solid var(--bd);border-radius:20px;padding:26px 22px;width:100%;max-width:385px;text-align:left}
+.flbl{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.finp{width:100%;padding:12px 14px;border:1.5px solid var(--bd2);border-radius:10px;font-size:15px;background:var(--bg);color:var(--tx);font-family:inherit;outline:none;transition:border-color .2s}
+.finp:focus{border-color:#0f9e72}
+.bigbtn{width:100%;margin-top:12px;padding:14px;border-radius:10px;border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;transition:opacity .15s,transform .12s}
+.bigbtn:hover{opacity:.88;transform:translateY(-1px)}
+.bigbtn.green{background:#0f9e72}
+.bigbtn.blue{background:#1a6fc4}
+.hint{font-size:11px;color:var(--tx3);margin-top:10px;text-align:center}
+.tlink{margin-top:16px;background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px}
+.cdots{display:flex;gap:7px;justify-content:center;margin-top:22px}
 .cdot{width:8px;height:8px;border-radius:50%}
-.blocked-card{background:var(--err-bg);border:1.5px solid var(--err-border);border-radius:18px;padding:24px;max-width:400px;width:100%;text-align:center;margin-top:16px}
-.blocked-title{font-size:16px;font-weight:800;color:var(--err-text);margin-bottom:8px}
-.blocked-sub{font-size:13px;color:var(--err-text);line-height:1.6;opacity:.85}
+.blocked{background:var(--er-bg);border:1.5px solid var(--er-b);border-radius:18px;padding:22px;max-width:385px;width:100%;text-align:center;margin-top:14px}
+.blocked-h{font-size:15px;font-weight:800;color:var(--er-t);margin-bottom:7px}
+.blocked-p{font-size:13px;color:var(--er-t);line-height:1.6;opacity:.85}
 
 /* TEACHER LOGIN */
 .tlogin-outer{min-height:90vh;display:flex;align-items:center;justify-content:center}
-.tlogin-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:32px 28px;width:100%;max-width:380px;text-align:center}
-.tlogin-icon{width:52px;height:52px;border-radius:16px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
-.tlogin-icon svg{width:24px;height:24px;stroke:var(--blue);stroke-width:2;fill:none;stroke-linecap:round}
-.tlogin-title{font-size:20px;font-weight:800;margin-bottom:6px}
-.tlogin-sub{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:22px}
-.error-msg{font-size:12px;color:var(--err-text);margin-top:8px;display:none}
-.back-btn-text{background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:14px;display:block;width:100%;text-align:center}
+.tlogin-card{background:var(--card);border:1.5px solid var(--bd);border-radius:20px;padding:30px 26px;width:100%;max-width:370px;text-align:center}
+.tlogin-icon{width:50px;height:50px;border-radius:15px;background:var(--bl-l);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.tlogin-icon svg{width:22px;height:22px;stroke:#1a6fc4;stroke-width:2;fill:none;stroke-linecap:round}
+.tlogin-h{font-size:19px;font-weight:800;margin-bottom:5px}
+.tlogin-p{font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:20px}
+.err-msg{font-size:12px;color:var(--er-t);margin-top:8px;display:none}
+.back-link{background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:12px;display:block;text-align:center}
 
 /* HOME */
-.home-topbar{display:flex;align-items:center;gap:14px;padding:20px 0 16px}
-.ava-ring{border-radius:50%;padding:3px;flex-shrink:0}
-.ava{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff}
-.home-greeting{font-size:13px;color:var(--text2);margin-bottom:2px}
-.home-uname{font-size:20px;font-weight:800;letter-spacing:-.3px}
-.home-desc{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.55;max-width:480px}
-.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.lv-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:22px 20px 18px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;font-family:inherit;position:relative;overflow:hidden}
-.lv-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.1);border-color:var(--border2)}
-.lv-stripe{height:5px;border-radius:3px;margin-bottom:16px;width:100%}
-.lv-name{font-size:17px;font-weight:800;margin-bottom:5px;letter-spacing:-.2px}
-.lv-hint{font-size:12px;color:var(--text2);line-height:1.45}
-.lv-qs{font-size:11px;font-weight:700;margin-top:10px;padding:3px 10px;border-radius:8px;display:inline-block}
-.lv-bg-shape{position:absolute;bottom:-16px;right:-16px;width:72px;height:72px;border-radius:50%;opacity:.06}
-.home-footer{text-align:center;font-size:11px;color:var(--text3);padding-top:2px}
+.home-top{display:flex;align-items:center;gap:13px;padding:18px 0 14px}
+.ava-wrap{border-radius:50%;padding:3px;flex-shrink:0}
+.ava{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff}
+.home-g{font-size:13px;color:var(--tx2);margin-bottom:1px}
+.home-n{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.home-desc{font-size:13px;color:var(--tx2);margin-bottom:18px;line-height:1.55}
+.lv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.lv-card{background:var(--card);border:1.5px solid var(--bd);border-radius:18px;padding:20px 18px;cursor:pointer;text-align:left;transition:transform .15s,box-shadow .15s,border-color .15s;font-family:inherit;position:relative;overflow:hidden}
+.lv-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.1);border-color:var(--bd2)}
+.lv-stripe{height:4px;border-radius:2px;margin-bottom:14px}
+.lv-name{font-size:16px;font-weight:800;margin-bottom:4px;letter-spacing:-.2px}
+.lv-hint{font-size:12px;color:var(--tx2);line-height:1.4}
+.lv-badge{font-size:11px;font-weight:700;margin-top:9px;padding:3px 9px;border-radius:8px;display:inline-block}
+.lv-shape{position:absolute;bottom:-14px;right:-14px;width:64px;height:64px;border-radius:50%;opacity:.07}
+.home-ft{text-align:center;font-size:11px;color:var(--tx3);padding-top:2px}
 
 /* GAME */
-.game-topbar{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-.nav-back{background:var(--card);border:1.5px solid var(--border);cursor:pointer;color:var(--text2);font-size:14px;padding:7px 12px;border-radius:10px;font-family:inherit;transition:background .12s}
-.nav-back:hover{background:var(--card2)}
-.lv-pill{font-size:11px;font-weight:800;padding:5px 13px;border-radius:20px;letter-spacing:.04em}
-.prog-area{flex:1;display:flex;flex-direction:column;gap:4px}
-.prog-track{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.prog-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.prog-label{font-size:11px;color:var(--text3);display:flex;justify-content:space-between}
-.score-pill{font-size:13px;font-weight:800;padding:5px 12px;border-radius:20px;background:var(--card);border:1.5px solid var(--border);white-space:nowrap;min-width:52px;text-align:center}
-.q-card{background:var(--card);border:1.5px solid var(--border);border-radius:22px;padding:26px 22px;margin-bottom:14px}
-.q-meta{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
-.tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:9px;letter-spacing:.04em}
-.tag-s{background:var(--card2);color:var(--text2)}
-.tag-t{background:var(--purple-light);color:var(--purple)}
-.word-banner{border-radius:14px;padding:16px 20px;margin-bottom:16px;text-align:center}
-.word-main{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
-.word-pos{font-size:11px;font-weight:600;opacity:.65;letter-spacing:.04em;text-transform:uppercase}
-.scene-label{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.scene-line{flex:1;height:1px;background:var(--border)}
-.scene-box{background:var(--card2);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;padding:15px 17px;font-size:14px;line-height:1.72;margin-bottom:16px}
-.scene-box b{font-weight:800;color:var(--teal)}
-.q-prompt{font-size:15px;font-weight:700;line-height:1.45;margin-bottom:16px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.opt{background:var(--bg);border:1.5px solid var(--border2);border-radius:12px;padding:13px 14px 13px 10px;font-size:13px;line-height:1.45;text-align:left;cursor:pointer;color:var(--text);transition:all .15s;font-family:inherit;display:flex;align-items:flex-start;gap:9px}
-.opt:hover:not(:disabled){background:var(--teal-light);border-color:var(--teal-mid);transform:translateY(-1px)}
+.g-top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.g-back{background:var(--card);border:1.5px solid var(--bd);cursor:pointer;color:var(--tx2);font-size:14px;padding:7px 12px;border-radius:9px;font-family:inherit;transition:background .12s;white-space:nowrap}
+.g-back:hover{background:var(--c2)}
+.g-pill{font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+.g-prog-wrap{flex:1;display:flex;flex-direction:column;gap:3px}
+.g-track{height:6px;background:var(--c3);border-radius:3px;overflow:hidden}
+.g-fill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.g-meta{font-size:11px;color:var(--tx3);display:flex;justify-content:space-between}
+.g-score{font-size:13px;font-weight:800;padding:4px 11px;border-radius:18px;background:var(--card);border:1.5px solid var(--bd);white-space:nowrap;min-width:50px;text-align:center}
+
+.q-card{background:var(--card);border:1.5px solid var(--bd);border-radius:20px;padding:24px 20px;margin-bottom:12px}
+.q-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:9px;letter-spacing:.04em}
+.tag-s{background:var(--c2);color:var(--tx2)}
+.tag-t{background:var(--pu-l);color:var(--pu)}
+.word-box{border-radius:12px;padding:14px 18px;margin-bottom:14px;text-align:center}
+.word-h{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:2px}
+.word-p{font-size:10px;font-weight:700;opacity:.6;letter-spacing:.05em;text-transform:uppercase}
+.scene-hd{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--tx3);text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.scene-line{flex:1;height:1px;background:var(--bd)}
+.scene{background:var(--c2);border-left:4px solid #0f9e72;border-radius:0 10px 10px 0;padding:13px 15px;font-size:14px;line-height:1.7;margin-bottom:14px}
+.scene em{font-style:normal;font-weight:700;color:#0f9e72}
+.q-prompt{font-size:15px;font-weight:700;line-height:1.45;margin-bottom:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.opt{background:var(--bg);border:1.5px solid var(--bd2);border-radius:11px;padding:12px 13px 12px 10px;font-size:13px;line-height:1.4;text-align:left;cursor:pointer;color:var(--tx);transition:all .14s;font-family:inherit;display:flex;align-items:flex-start;gap:8px}
+.opt:hover:not(:disabled){background:var(--tl-l);border-color:var(--tl-m);transform:translateY(-1px)}
 .opt:disabled{cursor:default}
-.opt.correct{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-text)}
-.opt.wrong{background:var(--err-bg);border-color:var(--err-border);color:var(--err-text)}
-.opt-key{min-width:24px;height:24px;border-radius:7px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;color:var(--text2)}
-.opt.correct .opt-key{background:var(--ok-border);color:#fff}
-.opt.wrong .opt-key{background:var(--err-border);color:#fff}
-.opt-text{flex:1;padding-top:1px}
-.write-area{width:100%;padding:13px 15px;border:1.5px solid var(--border2);border-radius:12px;font-size:14px;min-height:105px;resize:vertical;background:var(--bg);color:var(--text);font-family:inherit;line-height:1.65;transition:border-color .2s,box-shadow .2s;margin-top:4px}
-.write-area:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,158,114,.1)}
-.write-footer{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
-.char-count{font-size:11px;color:var(--text3)}
-.submit-btn{padding:10px 22px;border-radius:10px;border:1.5px solid var(--teal);background:var(--teal-light);font-size:13px;font-weight:700;cursor:pointer;color:var(--teal);font-family:inherit;transition:all .15s}
-.submit-btn:hover{background:var(--teal);color:#fff}
-.fb-box{border-radius:14px;padding:16px 18px;font-size:13px;line-height:1.68;margin-top:14px;border:1.5px solid}
-.fb-box.ok{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-text)}
-.fb-box.bad{background:var(--err-bg);border-color:var(--err-border);color:var(--err-text)}
-.fb-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
-.fb-badge{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.04em}
-.fb-box.ok .fb-badge{background:var(--ok-border);color:#fff}
-.fb-box.bad .fb-badge{background:var(--err-border);color:#fff}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+.opt.bad{background:var(--er-bg);border-color:var(--er-b);color:var(--er-t)}
+.opt-k{min-width:22px;height:22px;border-radius:6px;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;color:var(--tx2);transition:background .14s}
+.opt.ok .opt-k{background:var(--ok-b);color:#fff}
+.opt.bad .opt-k{background:var(--er-b);color:#fff}
+.opt-t{flex:1;padding-top:1px}
+.write-box textarea{width:100%;padding:12px 14px;border:1.5px solid var(--bd2);border-radius:11px;font-size:14px;min-height:100px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;line-height:1.6;margin-top:4px;transition:border-color .2s}
+.write-box textarea:focus{outline:none;border-color:#0f9e72}
+.write-ft{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.cc{font-size:11px;color:var(--tx3)}
+.sub-btn{padding:10px 20px;border-radius:9px;border:1.5px solid #0f9e72;background:var(--tl-l);font-size:13px;font-weight:700;cursor:pointer;color:#0f9e72;font-family:inherit;transition:all .14s}
+.sub-btn:hover{background:#0f9e72;color:#fff}
+
+.fb{border-radius:13px;padding:15px 17px;font-size:13px;line-height:1.65;margin-top:12px;border:1.5px solid}
+.fb.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
+.fb.bad{background:var(--er-bg);border-color:var(--er-b);color:var(--er-t)}
+.fb-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.fb-badge{padding:3px 9px;border-radius:7px;font-size:10px;font-weight:800;letter-spacing:.05em}
+.fb.ok .fb-badge{background:var(--ok-b);color:#fff}
+.fb.bad .fb-badge{background:var(--er-b);color:#fff}
 .fb-title{font-weight:800;font-size:14px}
-.fb-extra{margin-top:10px;padding:10px 13px;border-radius:10px;background:rgba(0,0,0,.04);font-size:12px;line-height:1.6}
-.fb-extra-label{font-weight:700;margin-bottom:3px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.7}
-.next-btn{display:block;width:100%;margin-top:3px;padding:14px;border-radius:16px;border:1.5px solid var(--border2);background:var(--card);font-size:14px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;text-align:center;transition:all .18s}
-.next-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal);transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,158,114,.25)}
+.fb-extra{margin-top:9px;padding:9px 12px;border-radius:9px;background:rgba(0,0,0,.04);font-size:12px;line-height:1.6}
+.fb-el{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;opacity:.7;margin-bottom:3px}
+
+.next-btn{display:block;width:100%;margin-top:2px;padding:13px;border-radius:14px;border:1.5px solid var(--bd2);background:var(--card);font-size:14px;font-weight:700;cursor:pointer;color:var(--tx);font-family:inherit;text-align:center;transition:all .16s}
+.next-btn:hover{background:#0f9e72;color:#fff;border-color:#0f9e72;transform:translateY(-2px);box-shadow:0 6px 18px rgba(15,158,114,.25)}
 
 /* RESULTS */
-.results-wrap{padding:16px 0 8px}
-.res-top{text-align:center;margin-bottom:28px}
-.res-circle{width:120px;height:120px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid}
-.res-num{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1}
-.res-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;opacity:.7}
-.res-stars{font-size:26px;letter-spacing:4px;margin-bottom:10px}
-.res-msg{font-size:16px;font-weight:700;margin-bottom:8px}
-.res-sub{font-size:13px;color:var(--text2);line-height:1.55;max-width:340px;margin:0 auto}
-.res-bar-wrap{max-width:260px;height:8px;background:var(--card2);border-radius:4px;overflow:hidden;margin:16px auto 6px;border:1px solid var(--border)}
-.res-bar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.save-status{font-size:12px;color:var(--text3);text-align:center;margin:8px 0 18px;display:flex;align-items:center;justify-content:center;gap:6px}
-.save-status.saved{color:var(--teal);font-weight:700}
-.save-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
-.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center}
-.stat-val{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
-.stat-lbl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase}
-.unlock-banner{background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:14px;padding:14px 18px;text-align:center;margin-bottom:20px;font-size:14px;font-weight:700;color:var(--ok-text)}
-.review-section{margin-bottom:24px}
-.review-header{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.review-dot{width:6px;height:6px;border-radius:50%;background:var(--coral)}
-.review-item{background:var(--card);border:1.5px solid var(--border);border-left:4px solid var(--coral-mid);border-radius:12px;padding:12px 15px;margin-bottom:9px}
-.review-word{font-weight:800;font-size:14px;margin-bottom:2px}
-.review-meta{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
-.review-why{font-size:12px;color:var(--text2);line-height:1.5}
-.action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.act-btn{padding:12px 24px;border-radius:12px;border:1.5px solid var(--border2);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;transition:all .15s}
-.act-btn:hover{background:var(--card2);transform:translateY(-1px)}
-.act-btn.primary{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
-.act-btn.primary:hover{background:var(--teal);color:#fff}
+.res-wrap{padding:14px 0 6px}
+.res-top{text-align:center;margin-bottom:24px}
+.res-circle{width:116px;height:116px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid}
+.res-num{font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1}
+.res-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:2px;opacity:.7}
+.res-stars{font-size:24px;letter-spacing:4px;margin-bottom:8px}
+.res-msg{font-size:15px;font-weight:700;margin-bottom:7px}
+.res-sub{font-size:13px;color:var(--tx2);max-width:320px;margin:0 auto}
+.res-bar-w{max-width:240px;height:7px;background:var(--c2);border-radius:4px;overflow:hidden;margin:14px auto 5px;border:1px solid var(--bd)}
+.res-bar-f{height:100%;border-radius:4px;transition:width 1.2s ease}
+.save-row{font-size:12px;color:var(--tx3);text-align:center;margin:7px 0 16px;display:flex;align-items:center;justify-content:center;gap:5px}
+.save-row.saved{color:#0f9e72;font-weight:700}
+.sdot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.stats-g{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:20px}
+.stat-c{background:var(--card);border:1.5px solid var(--bd);border-radius:13px;padding:13px 8px;text-align:center}
+.stat-v{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:2px}
+.stat-l{font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.unlock-b{background:var(--ok-bg);border:1.5px solid var(--ok-b);border-radius:13px;padding:13px 16px;text-align:center;margin-bottom:18px;font-size:13px;font-weight:700;color:var(--ok-t)}
+.rev-sec{margin-bottom:22px}
+.rev-hd{font-size:13px;font-weight:700;color:var(--tx2);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.rev-dot{width:6px;height:6px;border-radius:50%;background:var(--co)}
+.rev-item{background:var(--card);border:1.5px solid var(--bd);border-left:4px solid #f0896a;border-radius:11px;padding:11px 14px;margin-bottom:8px}
+.rev-w{font-weight:800;font-size:14px;margin-bottom:1px}
+.rev-m{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.rev-why{font-size:12px;color:var(--tx2);line-height:1.45}
+.act-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.act-btn{padding:11px 22px;border-radius:11px;border:1.5px solid var(--bd2);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;color:var(--tx);font-family:inherit;transition:all .14s}
+.act-btn:hover{background:var(--c2);transform:translateY(-1px)}
+.act-btn.pri{border-color:#0f9e72;color:#0f9e72;background:var(--tl-l)}
+.act-btn.pri:hover{background:#0f9e72;color:#fff}
 
 /* DASHBOARD */
-.dash-topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;flex-wrap:wrap;gap:10px}
-.dash-title{font-size:22px;font-weight:900;letter-spacing:-.3px}
-.dash-live{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-top:3px}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.dash-exit{padding:8px 16px;border-radius:10px;border:1.5px solid var(--border2);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;color:var(--text2);font-family:inherit}
-.dash-exit:hover{background:var(--card2)}
-.metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
-.m-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px 14px}
-.m-stripe{height:3px;border-radius:2px;margin-bottom:12px}
-.m-val{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:3px}
-.m-lbl{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
-.m-sub{font-size:11px;color:var(--text3);margin-top:3px}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.d-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px}
-.d-card-title{font-size:14px;font-weight:700;margin-bottom:16px}
-.d-card.full{grid-column:1/-1}
-.d-card-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.refresh-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--bg);font-size:11px;font-weight:700;cursor:pointer;color:var(--text2);font-family:inherit;transition:all .15s}
-.refresh-btn:hover{background:var(--teal-light);color:var(--teal);border-color:var(--teal-mid)}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:12px;color:var(--text2);width:96px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar-track{flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.bar-fill{height:100%;border-radius:4px;transition:width .9s ease}
-.bar-val{font-size:11px;color:var(--text2);width:36px;text-align:right;flex-shrink:0;font-weight:600}
-.stu-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.stu-tbl th{font-size:10px;font-weight:700;color:var(--text3);text-align:left;padding:7px 10px;border-bottom:1.5px solid var(--border);text-transform:uppercase;letter-spacing:.05em}
-.stu-tbl td{padding:10px 10px;border-bottom:1px solid var(--border)}
-.stu-tbl tbody tr:last-child td{border-bottom:none}
-.stu-tbl tbody tr:hover td{background:var(--bg)}
-.lv-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
-.score-track{display:inline-block;width:56px;height:5px;border-radius:3px;background:var(--card2);overflow:hidden;vertical-align:middle;margin-left:6px;border:1px solid var(--border)}
-.score-fill{height:100%;border-radius:3px}
-.star-display{color:var(--amber-mid);font-size:12px;letter-spacing:1px}
-.perf-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;display:inline-block}
-.empty-dash{text-align:center;padding:32px;color:var(--text3);font-size:14px}
-.loading-dash{text-align:center;padding:20px;color:var(--text3);font-size:13px}
+.dash-top{display:flex;align-items:center;justify-content:space-between;padding:18px 0 14px;flex-wrap:wrap;gap:10px}
+.dash-h{font-size:21px;font-weight:900;letter-spacing:-.3px}
+.dash-live{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--tx2);margin-top:2px}
+.ldot{width:6px;height:6px;border-radius:50%;background:#0f9e72;animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.dash-exit{padding:7px 14px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;color:var(--tx2);font-family:inherit}
+.dash-exit:hover{background:var(--c2)}
+.met-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.met-c{background:var(--card);border:1.5px solid var(--bd);border-radius:14px;padding:15px 13px}
+.met-s{height:3px;border-radius:2px;margin-bottom:11px}
+.met-v{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:2px}
+.met-l{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.met-sub{font-size:11px;color:var(--tx3);margin-top:2px}
+.dash-g{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.dc{background:var(--card);border:1.5px solid var(--bd);border-radius:16px;padding:18px}
+.dc-h{font-size:14px;font-weight:700;margin-bottom:14px}
+.dc.full{grid-column:1/-1}
+.dc-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.ref-btn{padding:5px 13px;border-radius:7px;border:1px solid var(--bd2);background:var(--bg);font-size:11px;font-weight:700;cursor:pointer;color:var(--tx2);font-family:inherit;transition:all .14s}
+.ref-btn:hover{background:var(--tl-l);color:#0f9e72;border-color:var(--tl-m)}
+.bar-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.bar-l{font-size:12px;color:var(--tx2);width:92px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-t{flex:1;height:7px;background:var(--c2);border-radius:3px;overflow:hidden;border:1px solid var(--bd)}
+.bar-f{height:100%;border-radius:3px;transition:width .8s ease}
+.bar-v{font-size:11px;color:var(--tx2);width:34px;text-align:right;flex-shrink:0;font-weight:600}
+.stbl{width:100%;border-collapse:collapse;font-size:13px}
+.stbl th{font-size:10px;font-weight:700;color:var(--tx3);text-align:left;padding:6px 9px;border-bottom:1.5px solid var(--bd);text-transform:uppercase;letter-spacing:.05em}
+.stbl td{padding:9px 9px;border-bottom:1px solid var(--bd)}
+.stbl tbody tr:last-child td{border-bottom:none}
+.stbl tbody tr:hover td{background:var(--bg)}
+.lvdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.sctrack{display:inline-block;width:52px;height:4px;border-radius:2px;background:var(--c2);overflow:hidden;vertical-align:middle;margin-left:5px}
+.scfill{height:100%;border-radius:2px}
+.perf-b{font-size:10px;font-weight:700;padding:2px 7px;border-radius:7px;display:inline-block}
+.empty-d{text-align:center;padding:28px;color:var(--tx3);font-size:14px}
 
-#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:13px;font-weight:700;padding:12px 24px;border-radius:26px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--tx);color:#fff;font-size:13px;font-weight:700;padding:11px 22px;border-radius:24px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
 #toast.show{opacity:1}
-
-@media(max-width:480px){
-  .level-grid,.opts,.dash-grid,.metrics-grid{grid-template-columns:1fr}
-  .action-row{flex-direction:column}
-  .act-btn{width:100%;text-align:center}
-  .stats-grid{grid-template-columns:repeat(3,1fr)}
-  .d-card.full{grid-column:auto}
+@media(max-width:460px){
+  .lv-grid,.opts,.dash-g,.met-g{grid-template-columns:1fr}
+  .act-row{flex-direction:column}.act-btn{width:100%;text-align:center}
+  .dc.full{grid-column:auto}
 }
 </style>
 </head>
@@ -215,18 +214,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
 <div class="screen active" id="s-name">
   <div class="name-outer">
     <div class="name-logo"><svg viewBox="0 0 28 28"><path d="M4 6h20M4 12h14M4 18h17M4 24h10"/></svg></div>
-    <h1 class="name-title">Vocabulary<br><em>Quest</em></h1>
-    <p class="name-sub">Cross-curricular English for grades 6 &amp; 7. Phrasal verbs, modal verbs, conditionals, adjectives, adverbs, reported speech and more.</p>
-    <div id="name-card-wrap">
+    <h1 class="name-title">Vocabulary <span>Quest</span></h1>
+    <p class="name-sub">Real-life English for grades 6 and 7. Phrasal verbs, modal verbs, conditionals, adjectives, adverbs, reported speech and more.</p>
+    <div id="name-area">
       <div class="name-card">
-        <div class="field-label">Your full name</div>
-        <input class="field-input" id="name-input" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name"/>
-        <button class="cta-btn teal" onclick="startWithName()">Start playing</button>
-        <div class="hint-text">Your name and score are saved automatically for your teacher.</div>
+        <div class="flbl">Your full name</div>
+        <input class="finp" id="name-inp" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name">
+        <button class="bigbtn green" id="start-btn">Start playing</button>
+        <p class="hint">Your name and score are saved automatically for your teacher.</p>
       </div>
     </div>
-    <button class="teacher-link-btn" onclick="showTeacherLogin()">Teacher access</button>
-    <div class="color-dots">
+    <button class="tlink" id="teacher-link">Teacher access</button>
+    <div class="cdots">
       <div class="cdot" style="background:#0f9e72"></div>
       <div class="cdot" style="background:#1a6fc4"></div>
       <div class="cdot" style="background:#c47a10"></div>
@@ -235,314 +234,1233 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backgrou
   </div>
 </div>
 
-<div class="screen" id="s-teacher-login">
+<div class="screen" id="s-tlogin">
   <div class="tlogin-outer">
     <div class="tlogin-card">
       <div class="tlogin-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-      <div class="tlogin-title">Teacher Dashboard</div>
-      <div class="tlogin-sub">Enter your access password to view real-time student results and class progress.</div>
-      <div class="field-label" style="text-align:left">Password</div>
-      <input class="field-input" id="teacher-pass" type="password" placeholder="Enter password"/>
-      <button class="cta-btn blue" onclick="checkPass()">View dashboard</button>
-      <div class="error-msg" id="pass-err">Incorrect password. Please try again.</div>
-      <button class="back-btn-text" onclick="show('s-name')">Back to student login</button>
+      <div class="tlogin-h">Teacher Dashboard</div>
+      <p class="tlogin-p">Enter your access password to view real-time student results and class progress.</p>
+      <div class="flbl" style="text-align:left">Password</div>
+      <input class="finp" id="t-pass" type="password" placeholder="Enter password">
+      <button class="bigbtn blue" id="t-login-btn">View dashboard</button>
+      <p class="err-msg" id="pass-err">Incorrect password. Please try again.</p>
+      <button class="back-link" id="t-back">Back to student login</button>
     </div>
   </div>
 </div>
 
-<div class="screen" id="s-dashboard">
-  <div class="accent-bar"></div>
-  <div class="dash-topbar">
+<div class="screen" id="s-dash">
+  <div class="rainbow"></div>
+  <div class="dash-top">
     <div>
-      <div class="dash-title">Teacher Dashboard</div>
-      <div class="dash-live"><div class="live-dot"></div>Live results &mdash; refreshes every 30 seconds</div>
+      <div class="dash-h">Teacher Dashboard</div>
+      <div class="dash-live"><div class="ldot"></div>Live - refreshes every 30 seconds</div>
     </div>
-    <button class="dash-exit" onclick="exitDash()">Exit dashboard</button>
+    <button class="dash-exit" id="dash-exit-btn">Exit</button>
   </div>
-  <div class="metrics-grid">
-    <div class="m-card"><div class="m-stripe" style="background:#0f9e72"></div><div class="m-val" id="m-total">--</div><div class="m-lbl">Students today</div></div>
-    <div class="m-card"><div class="m-stripe" style="background:#1a6fc4"></div><div class="m-val" id="m-avg">--</div><div class="m-lbl">Average score</div><div class="m-sub">out of 100</div></div>
-    <div class="m-card"><div class="m-stripe" style="background:#c47a10"></div><div class="m-val" id="m-pass">--</div><div class="m-lbl">Pass rate</div><div class="m-sub">scored 60 or above</div></div>
-    <div class="m-card"><div class="m-stripe" style="background:#c44a28"></div><div class="m-val" id="m-top">--</div><div class="m-lbl">Top level</div><div class="m-sub">most played today</div></div>
+  <div class="met-g">
+    <div class="met-c"><div class="met-s" style="background:#0f9e72"></div><div class="met-v" id="m-tot">--</div><div class="met-l">Students today</div></div>
+    <div class="met-c"><div class="met-s" style="background:#1a6fc4"></div><div class="met-v" id="m-avg">--</div><div class="met-l">Average score</div><div class="met-sub">out of 100</div></div>
+    <div class="met-c"><div class="met-s" style="background:#c47a10"></div><div class="met-v" id="m-pass">--</div><div class="met-l">Pass rate</div><div class="met-sub">scored 60+</div></div>
+    <div class="met-c"><div class="met-s" style="background:#c44a28"></div><div class="met-v" id="m-top">--</div><div class="met-l">Top level</div></div>
   </div>
-  <div class="dash-grid">
-    <div class="d-card"><div class="d-card-title">Average score by level</div><div id="dash-bylevel"><div class="loading-dash">Loading...</div></div></div>
-    <div class="d-card"><div class="d-card-title">Score distribution</div><div id="dash-dist"><div class="loading-dash">Loading...</div></div></div>
-    <div class="d-card full">
-      <div class="d-card-toprow">
-        <div class="d-card-title" style="margin:0">All student results today</div>
-        <button class="refresh-btn" onclick="loadDash()">Refresh now</button>
-      </div>
-      <div id="dash-table"><div class="loading-dash">Loading results...</div></div>
+  <div class="dash-g">
+    <div class="dc"><div class="dc-h">Score by level</div><div id="d-bylv"></div></div>
+    <div class="dc"><div class="dc-h">Score distribution</div><div id="d-dist"></div></div>
+    <div class="dc full">
+      <div class="dc-toprow"><div class="dc-h" style="margin:0">All results today</div><button class="ref-btn" id="ref-btn">Refresh</button></div>
+      <div id="d-tbl"></div>
     </div>
   </div>
 </div>
 
 <div class="screen" id="s-home">
-  <div class="accent-bar"></div>
-  <div class="home-topbar">
-    <div class="ava-ring" id="ava-ring"><div class="ava" id="home-ava"></div></div>
-    <div><div class="home-greeting">Welcome,</div><div class="home-uname" id="home-uname"></div></div>
+  <div class="rainbow"></div>
+  <div class="home-top">
+    <div class="ava-wrap" id="ava-wrap"><div class="ava" id="ava"></div></div>
+    <div><div class="home-g">Welcome,</div><div class="home-n" id="home-n"></div></div>
   </div>
-  <p class="home-desc">Choose your level. Each session gives you 5 questions drawn randomly from the full bank. Questions and answer order are different for every student.</p>
-  <div class="level-grid" id="level-grid"></div>
-  <p class="home-footer">No download required &middot; Works on any device &middot; Free</p>
+  <p class="home-desc">Choose your level. Each session gives you 5 questions drawn randomly - different order for every student.</p>
+  <div class="lv-grid" id="lv-grid"></div>
+  <p class="home-ft">No download required - Works on any device - Free</p>
 </div>
 
 <div class="screen" id="s-game">
-  <div class="game-topbar">
-    <button class="nav-back" onclick="goHome()">&#8592; Back</button>
-    <span class="lv-pill" id="g-pill"></span>
-    <div class="prog-area">
-      <div class="prog-track"><div class="prog-fill" id="g-prog"></div></div>
-      <div class="prog-label"><span id="g-frac"></span><span id="g-pts-lbl"></span></div>
+  <div class="g-top">
+    <button class="g-back" id="g-back-btn">&#8592; Back</button>
+    <span class="g-pill" id="g-pill"></span>
+    <div class="g-prog-wrap">
+      <div class="g-track"><div class="g-fill" id="g-fill"></div></div>
+      <div class="g-meta"><span id="g-frac"></span><span id="g-pts"></span></div>
     </div>
-    <div class="score-pill" id="g-score">0</div>
+    <div class="g-score" id="g-score">0</div>
   </div>
   <div id="g-body"></div>
 </div>
 
 <div class="screen" id="s-results">
-  <div class="results-wrap" id="r-body"></div>
+  <div class="res-wrap" id="r-body"></div>
 </div>
 
 </div>
 <div id="toast"></div>
 <script>
-const SURL="https://zdrxqsezxeusxffafsut.supabase.co";
-const SKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkcnhxc2V6eGV1c3hmZmFmc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDYwNjIsImV4cCI6MjA5MTc4MjA2Mn0.HAB9g3etuP0b4SmbDdD0dcq0riwVizcepBkO8_BFhqE";
-const TPASS="vocab2025";
-const {createClient}=supabase;
-const db=createClient(SURL,SKEY);
-const $=id=>document.getElementById(id);
-const show=id=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id).classList.add("active");};
-const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
-function shuffleOpts(opts,correct){const arr=opts.map((t,i)=>({t,ok:i===correct}));const sh=shuffle(arr);return{opts:sh.map(o=>o.t),correct:sh.findIndex(o=>o.ok)};}
-function toast(msg,d=2600){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),d);}
-function todayISO(){return new Date().toISOString().slice(0,10);}
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const i=$("name-input");if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter")startWithName();});
-  const t=$("teacher-pass");if(t)t.addEventListener("keydown",e=>{if(e.key==="Enter")checkPass();});
-});
+const SUPABASE_URL = 'https://zdrxqsezxeusxffafsut.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkcnhxc2V6eGV1c3hmZmFmc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDYwNjIsImV4cCI6MjA5MTc4MjA2Mn0.HAB9g3etuP0b4SmbDdD0dcq0riwVizcepBkO8_BFhqE';
+const TEACHER_PASS = 'vocab2025';
 
-async function checkPlayedToday(name){
-  try{
-    const today=todayISO();
-    const{data}=await db.from("scores").select("id").ilike("student",name.trim()).gte("created_at",today+"T00:00:00.000Z").limit(1);
-    return data&&data.length>0;
-  }catch{return false;}
-}
-async function saveScore(student,level,score){
-  try{await db.from("scores").insert({student:student.trim(),level,score});}catch(e){console.error(e);}
-}
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function showTeacherLogin(){show("s-teacher-login");setTimeout(()=>$("teacher-pass")&&$("teacher-pass").focus(),80);}
-function checkPass(){
-  if($("teacher-pass").value===TPASS){$("pass-err").style.display="none";show("s-dashboard");loadDash();if(dTimer)clearInterval(dTimer);dTimer=setInterval(loadDash,30000);}
-  else{$("pass-err").style.display="block";}
-}
-let dTimer=null;
-function exitDash(){if(dTimer){clearInterval(dTimer);dTimer=null;}show("s-name");}
-
-const LVC={beginner:"#0f9e72",elementary:"#1a6fc4",intermediate:"#c47a10",expert:"#c44a28"};
-const LVN={beginner:"Beginner",elementary:"Elementary",intermediate:"Intermediate",expert:"Expert"};
-const LVL={beginner:"#e0f5ee",elementary:"#e8f2fb",intermediate:"#fdf0d8",expert:"#fdeee9"};
-
-async function loadDash(){
-  try{
-    const today=todayISO();
-    const{data,error}=await db.from("scores").select("*").gte("created_at",today+"T00:00:00.000Z").order("created_at",{ascending:false});
-    if(error||!data){$("dash-table").innerHTML="<div class='empty-dash'>Could not load data. Check your connection.</div>";return;}
-    renderDash(data);
-  }catch(e){$("dash-table").innerHTML="<div class='empty-dash'>Connection error.</div>";}
-}
-
-function renderDash(rows){
-  const total=rows.length;
-  const avg=total?Math.round(rows.reduce((a,r)=>a+r.score,0)/total):0;
-  const pass=rows.filter(r=>r.score>=60).length;
-  const passRate=total?Math.round(pass/total*100):0;
-  const lvC={};rows.forEach(r=>{lvC[r.level]=(lvC[r.level]||0)+1;});
-  const topLv=Object.entries(lvC).sort((a,b)=>b[1]-a[1])[0];
-  $("m-total").textContent=total;
-  $("m-avg").textContent=avg;
-  $("m-pass").textContent=total?passRate+"%":"--";
-  $("m-top").textContent=topLv?LVN[topLv[0]]||topLv[0]:"--";
-  const lvOrd=["beginner","elementary","intermediate","expert"];
-  let byLv="";
-  lvOrd.forEach(lv=>{
-    const r=rows.filter(x=>x.level===lv);if(!r.length)return;
-    const a=Math.round(r.reduce((s,x)=>s+x.score,0)/r.length);
-    byLv+=`<div class="bar-row"><span class="bar-lbl">${LVN[lv]}</span><div class="bar-track"><div class="bar-fill" style="width:${a}%;background:${LVC[lv]}"></div></div><span class="bar-val">${a}</span></div>`;
-  });
-  $("dash-bylevel").innerHTML=byLv||"<div class='empty-dash'>No data yet</div>";
-  const bkts=[{l:"90-100",mn:90,mx:100,c:"#0f9e72"},{l:"70-89",mn:70,mx:89,c:"#3daa6f"},{l:"50-69",mn:50,mx:69,c:"#c47a10"},{l:"0-49",mn:0,mx:49,c:"#c44a28"}];
-  let dist="";
-  bkts.forEach(b=>{
-    const cnt=rows.filter(r=>r.score>=b.mn&&r.score<=b.mx).length;
-    const pct=total?Math.round(cnt/total*100):0;
-    dist+=`<div class="bar-row"><span class="bar-lbl">${b.l}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.c}"></div></div><span class="bar-val">${cnt}</span></div>`;
-  });
-  $("dash-dist").innerHTML=dist;
-  if(!rows.length){$("dash-table").innerHTML="<div class='empty-dash'>No students have played today yet.</div>";return;}
-  const sf=s=>s>=80?"★★★":s>=60?"★★☆":s>=40?"★☆☆":"☆☆☆";
-  const pf=s=>s>=80?["Excellent","#0f9e72","#e0f5ee"]:s>=60?["Good","#c47a10","#fdf0d8"]:["Needs work","#c44a28","#fdeee9"];
-  const tr=rows.map(r=>{
-    const tm=new Date(r.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
-    const [pl,pc,pb]=pf(r.score);
-    return`<tr><td style="font-weight:700">${r.student}</td><td><span class="lv-dot" style="background:${LVC[r.level]||"#888"}"></span>${LVN[r.level]||r.level}</td><td><strong>${r.score}</strong>/100<div class="score-track"><div class="score-fill" style="width:${r.score}%;background:${r.score>=60?"#0f9e72":"#c44a28"}"></div></div></td><td class="star-display">${sf(r.score)}</td><td><span class="perf-badge" style="background:${pb};color:${pc}">${pl}</span></td><td style="color:var(--text3);font-size:12px">${tm}</td></tr>`;
-  }).join("");
-  $("dash-table").innerHTML=`<table class="stu-tbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>${tr}</tbody></table>`;
-}
-
-const LEVELS={
-  beginner:    {name:"Beginner",    color:"#0f9e72",bg:"#e0f5ee",dark:"#085041",fill:"#0f9e72",desc:"Read a real situation. Choose what the word means."},
-  elementary:  {name:"Elementary",  color:"#1a6fc4",bg:"#e8f2fb",dark:"#0C447C",fill:"#1a6fc4",desc:"Which sentence uses the word correctly?"},
-  intermediate:{name:"Intermediate",color:"#c47a10",bg:"#fdf0d8",dark:"#633806",fill:"#c47a10",desc:"Fill the blank in a real-life context."},
-  expert:      {name:"Expert",      color:"#c44a28",bg:"#fdeee9",dark:"#712B13",fill:"#c44a28",desc:"Write your own sentences and responses."}
+const QUESTIONS = {
+  "beginner": [
+    {
+      "word": "give up",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your friend has been trying to learn guitar for two weeks. He keeps making mistakes and says: <em>I just want to give up.</em>",
+      "prompt": "What does <strong>give up</strong> mean here?",
+      "options": [
+        "To stop trying because something is too hard",
+        "To give a present to someone",
+        "To stand up from your seat",
+        "To finish all the food on your plate"
+      ],
+      "correct": 0,
+      "why": "Give up means to quit or stop trying. It is one of the most common phrasal verbs in English.",
+      "extra": "Also in real life: Do not give up on your dreams — used constantly in sports, school, and motivation."
+    },
+    {
+      "word": "extremely",
+      "pos": "Adverb",
+      "subject": "Daily life",
+      "scenario": "You come home after a long day of school and sports practice. You tell your mom: I am <em>extremely</em> tired — I can barely keep my eyes open.",
+      "prompt": "What does <strong>extremely</strong> tell us about how tired you are?",
+      "options": [
+        "You are very very tired — more intense than just quite or a bit",
+        "You are only slightly tired",
+        "You were tired yesterday too",
+        "You are tired in a strange way"
+      ],
+      "correct": 0,
+      "why": "Extremely is an adverb that intensifies adjectives. It means to a very great degree — stronger than very or really.",
+      "extra": "Also: extremely important, extremely difficult, extremely fast — adverbs of degree make your English far more expressive."
+    },
+    {
+      "word": "must",
+      "pos": "Modal verb",
+      "subject": "School",
+      "scenario": "Your teacher says: You <em>must</em> submit your lab report by Friday. It is a mandatory requirement for passing this unit.",
+      "prompt": "What does <strong>must</strong> express in this sentence?",
+      "options": [
+        "A strong obligation — something required, not optional",
+        "A polite suggestion from the teacher",
+        "A possibility that could happen",
+        "A habit the teacher has every week"
+      ],
+      "correct": 0,
+      "why": "Must expresses strong obligation or necessity. When a teacher says you must, it is not optional.",
+      "extra": "Also: You must be 18 to vote / You must wear a seatbelt — must always means a mandatory requirement."
+    },
+    {
+      "word": "careless",
+      "pos": "Adjective",
+      "subject": "School",
+      "scenario": "Your teacher returns your essay: Your ideas are great, but the work was <em>careless</em> — there are spelling mistakes on every page you could have caught by rereading.",
+      "prompt": "What does <strong>careless</strong> describe here?",
+      "options": [
+        "Not paying enough attention — the mistakes were avoidable",
+        "Very creative and original thinking",
+        "Too difficult to understand",
+        "Written very quickly"
+      ],
+      "correct": 0,
+      "why": "Careless means not giving enough attention to what you are doing. The person could do better but did not make the effort.",
+      "extra": "Also: careless mistake is one of the most common phrases in school feedback. The opposite is careful."
+    },
+    {
+      "word": "might",
+      "pos": "Modal verb",
+      "subject": "Daily life",
+      "scenario": "The sky is gray and cloudy. You think: It <em>might</em> rain this afternoon — I am really not sure whether to bring an umbrella.",
+      "prompt": "What does <strong>might</strong> express here?",
+      "options": [
+        "A weak possibility — something that could happen but is uncertain",
+        "A strong rule that must be followed",
+        "Something that definitely happened yesterday",
+        "A confirmed plan you are certain about"
+      ],
+      "correct": 0,
+      "why": "Might expresses weak possibility — something could happen but you are not sure. It is weaker than may and much weaker than will.",
+      "extra": "Also: I might go to the party means not sure yet. I will go means certain. This difference is crucial in everyday English."
+    },
+    {
+      "word": "look up",
+      "pos": "Phrasal verb",
+      "subject": "School",
+      "scenario": "You find a word you do not understand in your textbook. Your teacher says: Do not skip it — <em>look it up</em> in the dictionary before continuing.",
+      "prompt": "What does <strong>look up</strong> mean here?",
+      "options": [
+        "To search for information in a reference source",
+        "To raise your eyes toward the ceiling",
+        "To improve gradually over time",
+        "To admire or respect someone very much"
+      ],
+      "correct": 0,
+      "why": "Look up means to search for information — in a dictionary, on Google, or in any reference. It is one of the most practical phrasal verbs for students.",
+      "extra": "Also: I looked it up online — probably the most common thing you say when you do not know something."
+    },
+    {
+      "word": "reliable",
+      "pos": "Adjective",
+      "subject": "School",
+      "scenario": "Your teacher says: Always use <em>reliable</em> sources — Wikipedia alone is not enough. Find official studies or reputable newspapers.",
+      "prompt": "What does <strong>reliable</strong> mean here?",
+      "options": [
+        "Consistently trustworthy and accurate — you can depend on it",
+        "Very old and well-known to everyone",
+        "Free and easy to access online",
+        "Written exclusively by scientists"
+      ],
+      "correct": 0,
+      "why": "Reliable means consistently trustworthy. A reliable source gives accurate information every time.",
+      "extra": "Also: Is this a reliable source? is the most important critical thinking question when doing research."
+    },
+    {
+      "word": "should",
+      "pos": "Modal verb",
+      "subject": "Health",
+      "scenario": "Your doctor says: You <em>should</em> drink at least eight glasses of water per day — it is strongly recommended for your health.",
+      "prompt": "What does <strong>should</strong> express in this sentence?",
+      "options": [
+        "Advice or recommendation — a good idea but not strictly required",
+        "A strict rule with serious legal consequences",
+        "Something physically impossible to do",
+        "A repeated past habit"
+      ],
+      "correct": 0,
+      "why": "Should expresses advice or recommendation. It is weaker than must — you will not be punished for ignoring it, but it is wise to follow.",
+      "extra": "Also: You should study more means advice. You must study means strict requirement. Very different meanings."
+    },
+    {
+      "word": "break down",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your dad pulls over on the road trip and says: The car just <em>broke down</em> — the engine stopped working completely.",
+      "prompt": "What does <strong>broke down</strong> mean here?",
+      "options": [
+        "A machine stopped functioning and needs repair",
+        "The car reached very high speed",
+        "Someone started crying uncontrollably",
+        "The road surface was damaged"
+      ],
+      "correct": 0,
+      "why": "Break down for machines means to stop working. It can also mean to collapse emotionally, but here it describes a mechanical failure.",
+      "extra": "Also: My laptop broke down right before my exam — one of the most stressful moments for a student."
+    },
+    {
+      "word": "hang out",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your friend texts: Hey, do you want to <em>hang out</em> later? We could go to the mall or just stay home and watch something.",
+      "prompt": "What does <strong>hang out</strong> mean?",
+      "options": [
+        "To spend relaxed casual time with friends",
+        "To dry clothes outside on a line",
+        "To wait for someone at a specific location",
+        "To climb up to a high place"
+      ],
+      "correct": 0,
+      "why": "Hang out means to spend casual relaxed time together. It is one of the most common informal expressions in everyday English.",
+      "extra": "Also: We hung out all weekend — this is exactly the natural English you will use and hear outside the classroom every day."
+    },
+    {
+      "word": "can",
+      "pos": "Permission verb",
+      "subject": "School",
+      "scenario": "You need the bathroom during class. You raise your hand and ask: <em>Can</em> I go to the bathroom, please?",
+      "prompt": "What does <strong>can</strong> express in this sentence?",
+      "options": [
+        "A request for permission to do something",
+        "A physical ability you possess",
+        "A strong obligation to follow",
+        "An uncertain future possibility"
+      ],
+      "correct": 0,
+      "why": "In informal spoken English, can is very commonly used to ask for permission. It is universally accepted in everyday speech.",
+      "extra": "Also: Can I borrow your charger? / Can I sit here? — asking permission with can is natural and polite in any everyday situation."
+    },
+    {
+      "word": "gradually",
+      "pos": "Adverb",
+      "subject": "Science",
+      "scenario": "Your biology teacher explains: Global temperatures are not rising suddenly — they are <em>gradually</em> increasing year by year, making the danger harder to notice.",
+      "prompt": "What does <strong>gradually</strong> tell us about how temperatures are rising?",
+      "options": [
+        "Slowly and steadily in small steps over a long period",
+        "Very suddenly and dramatically",
+        "In a confusing and unpredictable pattern",
+        "Rapidly at an increasing speed"
+      ],
+      "correct": 0,
+      "why": "Gradually means slowly step by step over time. It describes a process that happens in small stages — the opposite of suddenly.",
+      "extra": "Also: She gradually improved her English / The situation gradually got better — gradual change is one of the most important concepts in science."
+    },
+    {
+      "word": "come across",
+      "pos": "Phrasal verb",
+      "subject": "Technology",
+      "scenario": "You are scrolling through social media and stop on a post. You tell your friend: I just <em>came across</em> this amazing video about ocean pollution — I was not even looking for it.",
+      "prompt": "What does <strong>came across</strong> mean?",
+      "options": [
+        "To find or encounter something by chance without looking for it",
+        "To cross a bridge or road to the other side",
+        "To feel angry or aggressive toward someone",
+        "To understand something completely"
+      ],
+      "correct": 0,
+      "why": "Come across means to find or encounter something unexpectedly without searching for it. It suggests a pleasant or interesting discovery.",
+      "extra": "Also: I came across my old diary while cleaning my room — the kind of unexpected discovery that brings back memories."
+    },
+    {
+      "word": "turn down",
+      "pos": "Phrasal verb",
+      "subject": "Social studies",
+      "scenario": "Your student council proposed a new uniform design. The principal said: I appreciate the effort, but I have to <em>turn it down</em> — it does not meet the school guidelines.",
+      "prompt": "What does <strong>turn down</strong> mean here?",
+      "options": [
+        "To refuse or reject a proposal or request",
+        "To lower the volume of music or sound",
+        "To fold the corner of a page in a book",
+        "To physically change direction"
+      ],
+      "correct": 0,
+      "why": "Turn down means to reject or say no to something — an offer, invitation, proposal, or request.",
+      "extra": "Also: She turned down a scholarship to stay with her family — people turn things down for many personal and professional reasons."
+    },
+    {
+      "word": "may",
+      "pos": "Permission verb",
+      "subject": "School",
+      "scenario": "In a formal school debate, the moderator announces: You <em>may</em> begin presenting your argument whenever you are ready.",
+      "prompt": "What does <strong>may</strong> express in this formal context?",
+      "options": [
+        "Formal permission — you are officially allowed to act",
+        "A strong obligation you must fulfill",
+        "A repeated past habit of the speaker",
+        "An uncertain future possibility"
+      ],
+      "correct": 0,
+      "why": "May is the formal way to grant or request permission. It is considered more polite than can and is preferred in academic and professional situations.",
+      "extra": "Also: May I come in? is the most formal and polite way to ask to enter a room. Teachers and professionals prefer may."
+    },
+    {
+      "word": "take over",
+      "pos": "Phrasal verb",
+      "subject": "Social studies",
+      "scenario": "The student council president graduated. The vice-president announces: I am going to <em>take over</em> as president until we hold new elections.",
+      "prompt": "What does <strong>take over</strong> mean here?",
+      "options": [
+        "To assume control or responsibility for something",
+        "To carry a heavy object from one place to another",
+        "To win a sports competition by a large margin",
+        "To repeat a school year because you failed"
+      ],
+      "correct": 0,
+      "why": "Take over means to assume control leadership or management of something. Used in business, politics, and everyday life.",
+      "extra": "Also: A larger company took over the small local business — corporate takeovers appear in business news constantly."
+    }
+  ],
+  "elementary": [
+    {
+      "word": "put off",
+      "pos": "Phrasal verb",
+      "subject": "School",
+      "scenario": "You have a project due Friday. Your friend says on Monday: I keep <em>putting it off</em> — I will start tomorrow. By Thursday he still has not started.",
+      "prompt": "Which sentence uses <strong>put off</strong> the same way?",
+      "options": [
+        "She always puts off studying until the night before the exam.",
+        "He put off his shoes before entering the house.",
+        "They put off the lights to save electricity.",
+        "She put off an impressive performance in the play."
+      ],
+      "correct": 0,
+      "why": "Put off means to delay or postpone something you should do now. This habit is called procrastination.",
+      "extra": "Also: Stop putting it off and just do it — you have definitely heard this from a parent or teacher."
+    },
+    {
+      "word": "incredibly",
+      "pos": "Adverb",
+      "subject": "Daily life",
+      "scenario": "You watched a documentary about the Amazon. You tell your friend: It was <em>incredibly</em> beautiful — I had no idea how many species live there.",
+      "prompt": "Which sentence uses <strong>incredibly</strong> the same way?",
+      "options": [
+        "The view from the mountain was incredibly breathtaking.",
+        "She incredibly finished her homework before dinner.",
+        "The incredibly outside was warm and sunny.",
+        "He bought an incredibly at the school book fair."
+      ],
+      "correct": 0,
+      "why": "Incredibly is an adverb that intensifies adjectives to a very high degree with a sense of amazement and surprise.",
+      "extra": "Also: incredibly fast, incredibly kind, incredibly difficult — degree adverbs make your English sound natural and expressive."
+    },
+    {
+      "word": "bring up",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "The family dinner is going well. Then your uncle suddenly brings up your bad grades from last semester and the whole atmosphere changes.",
+      "prompt": "Which sentence uses <strong>bring up</strong> the same way?",
+      "options": [
+        "She brought up the salary problem during the meeting and the mood shifted.",
+        "He brought up his younger sister to the second floor.",
+        "They brought up fresh vegetables from the garden.",
+        "She brought up her luggage to the hotel room."
+      ],
+      "correct": 0,
+      "why": "Bring up in its figurative sense means to introduce a topic into a conversation — often an uncomfortable or sensitive one.",
+      "extra": "Also: Do not bring that up again — you say this when you want someone to stop mentioning something embarrassing."
+    },
+    {
+      "word": "should have",
+      "pos": "Modal verb",
+      "subject": "School",
+      "scenario": "You failed your test because you spent the weekend playing video games. Your teacher says: You <em>should have</em> studied more — you had the whole weekend.",
+      "prompt": "Which sentence uses <strong>should have</strong> the same way?",
+      "options": [
+        "I should have saved my document before the computer crashed.",
+        "She should have a new pencil case for the school year.",
+        "They should have the exam results by end of week.",
+        "He should have been at school right now."
+      ],
+      "correct": 0,
+      "why": "Should have plus past participle expresses regret or criticism about a past action that was the right thing to do but was not done.",
+      "extra": "Also: I should have left earlier — now I am late. / You should have told me sooner. — essential for expressing regret."
+    },
+    {
+      "word": "work out",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "You and your best friend had a big argument. Today she texts: Can we talk? I really want to <em>work things out</em> between us.",
+      "prompt": "Which sentence uses <strong>work out</strong> the same way she used it?",
+      "options": [
+        "After months of talks, the two countries finally worked out a peace agreement.",
+        "She works out at the gym every morning before school.",
+        "The math problem worked out to exactly forty-two.",
+        "He worked out the yard by mowing the grass."
+      ],
+      "correct": 0,
+      "why": "Work out has three meanings: to exercise, to resolve a conflict, or to result in a particular way. Here it means to resolve a conflict.",
+      "extra": "Also: I hope it all works out for you means you hope everything resolves itself well."
+    },
+    {
+      "word": "said that (reported)",
+      "pos": "Reported verb",
+      "subject": "Language arts",
+      "scenario": "Your friend told you: I absolutely love science class. You want to tell another classmate what she said.",
+      "prompt": "Which sentence correctly reports what your friend said?",
+      "options": [
+        "She said that she loved science class.",
+        "She said that she loves science class now.",
+        "She told: I love science class.",
+        "She said me that she love science."
+      ],
+      "correct": 0,
+      "why": "In reported speech tenses shift back: love becomes loved. The structure is said that plus clause. Told with a colon is wrong.",
+      "extra": "Also: The president said that the situation had improved. — reported speech is essential for summaries and academic writing."
+    },
+    {
+      "word": "stubborn",
+      "pos": "Adjective",
+      "subject": "Daily life",
+      "scenario": "You try to convince your brother to try a new food. No matter what you say he flatly refuses to even taste it.",
+      "prompt": "Which sentence uses <strong>stubborn</strong> the same way?",
+      "options": [
+        "She was so stubborn that she refused to change her position even when everyone disagreed.",
+        "The stubborn weather made it perfect for swimming.",
+        "He stubborn his shoes before entering class.",
+        "The stubborn part of the equation required three steps."
+      ],
+      "correct": 0,
+      "why": "Stubborn describes someone who refuses to change their opinion even when given good reasons. Can be negative or positive depending on context.",
+      "extra": "Also: Stubbornly is the adverb. Stubbornness is the noun. A stubborn personality can be both a strength and a weakness."
+    },
+    {
+      "word": "could have",
+      "pos": "Modal verb",
+      "subject": "Daily life",
+      "scenario": "You accidentally sent an embarrassing message to the wrong person. Your friend says: You <em>could have</em> double-checked before pressing send!",
+      "prompt": "Which sentence uses <strong>could have</strong> the same way?",
+      "options": [
+        "The accident could have been avoided if the driver had been paying attention.",
+        "She could have a new phone if her grades improve.",
+        "They could have dinner ready before eight if they start now.",
+        "He could have very good reasons for being late."
+      ],
+      "correct": 0,
+      "why": "Could have plus past participle expresses a lost opportunity — something possible in the past that did not happen.",
+      "extra": "Also: We could have won if we had trained harder. — used in reflections arguments and regrets about missed opportunities."
+    },
+    {
+      "word": "asked whether (reported)",
+      "pos": "Reported verb",
+      "subject": "Social studies",
+      "scenario": "During a class debate, a student asked the teacher: Can we have more time to prepare our arguments?",
+      "prompt": "Which sentence correctly reports the question?",
+      "options": [
+        "She asked whether they could have more time to prepare.",
+        "She asked if they can have more time now.",
+        "She asked: Can we have more time?",
+        "She said that can we have more time."
+      ],
+      "correct": 0,
+      "why": "Reported questions use asked plus if or whether. Tense shifts: can becomes could. The question mark is removed.",
+      "extra": "Also: She asked me if I had finished my homework. / He asked whether the exam would be difficult. — essential in formal writing."
+    },
+    {
+      "word": "set up",
+      "pos": "Phrasal verb",
+      "subject": "Technology",
+      "scenario": "You got a new phone. Your cousin says: Let me <em>set it up</em> for you — I will install your apps and connect it to the WiFi.",
+      "prompt": "Which sentence uses <strong>set up</strong> the same way?",
+      "options": [
+        "The teacher set up the projector before the presentation began.",
+        "She set up quickly from the chair when she heard the noise.",
+        "He set up a tall ladder to reach the roof.",
+        "They set up their arms when they finished the race."
+      ],
+      "correct": 0,
+      "why": "Set up means to prepare install or configure something so it is ready to use.",
+      "extra": "Also: I need to set up a new email account / She set up the meeting for Thursday — constant in digital and professional life."
+    },
+    {
+      "word": "overwhelmed",
+      "pos": "Adjective",
+      "subject": "School",
+      "scenario": "It is exam week. You have five tests, a project due, and sports practice every day. You message your friend: I feel completely <em>overwhelmed</em> — I do not even know where to begin.",
+      "prompt": "Which sentence uses <strong>overwhelmed</strong> the same way?",
+      "options": [
+        "She felt overwhelmed by the amount of work before the Friday deadline.",
+        "The overwhelmed weather made the afternoon very pleasant.",
+        "He overwhelmed his backpack before leaving for school.",
+        "The overwhelmed part of the equation required a calculator."
+      ],
+      "correct": 0,
+      "why": "Overwhelmed means having too much to deal with at once — feeling unable to manage the quantity or intensity of demands placed on you.",
+      "extra": "Also: Overwhelmingly is the adverb — The proposal was overwhelmingly approved. Very common in news about elections."
+    },
+    {
+      "word": "give away",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your class is playing a guessing game. A teammate accidentally says something revealing. Your teacher says: Careful — you almost <em>gave it away</em>!",
+      "prompt": "Which sentence uses <strong>give away</strong> the same way the teacher used it?",
+      "options": [
+        "His nervous laughter gave away the fact that he already knew the answer.",
+        "She gave away her old clothes to a charity organization.",
+        "He gave away the first-place trophy to the second-place team.",
+        "They gave away free samples at the outdoor festival."
+      ],
+      "correct": 0,
+      "why": "Give away has two meanings: to donate something, or to unintentionally reveal a secret. Here the teacher uses the second meaning.",
+      "extra": "Also: Spoiler alert — do not give away the ending of the movie. This is the version you will use with films and books."
+    },
+    {
+      "word": "told us (reported)",
+      "pos": "Reported verb",
+      "subject": "Language arts",
+      "scenario": "Your English teacher announced: We are going to have an important grammar test next Monday.",
+      "prompt": "Which sentence correctly reports what the teacher said?",
+      "options": [
+        "The teacher told us that we were going to have a test the following Monday.",
+        "The teacher told us that we are going to have a test next Monday.",
+        "The teacher said us we would have a test.",
+        "The teacher told: We are going to have a test Monday."
+      ],
+      "correct": 0,
+      "why": "Told requires a person object: told us. Tenses shift: are going to have becomes were going to have. Time shifts: next Monday becomes the following Monday.",
+      "extra": "Also: She told me that she was feeling tired. / He told them that the meeting had been postponed. — fundamental in formal and informal reported speech."
+    },
+    {
+      "word": "anxious",
+      "pos": "Adjective",
+      "subject": "School",
+      "scenario": "Tomorrow is your English oral presentation. You cannot sleep. You keep thinking about forgetting your lines.",
+      "prompt": "Which sentence uses <strong>anxious</strong> the same way?",
+      "options": [
+        "She felt anxious before the job interview because she really wanted the position.",
+        "The anxious weather made it impossible to go outside.",
+        "He anxious his backpack before the school trip.",
+        "The anxious part of the problem was hardest to solve."
+      ],
+      "correct": 0,
+      "why": "Anxious means feeling worried nervous or uneasy about something uncertain that is about to happen.",
+      "extra": "Also: Anxiously is the adverb. Anxiety is the noun — very important in health and everyday conversations about stress."
+    },
+    {
+      "word": "fall behind",
+      "pos": "Phrasal verb",
+      "subject": "School",
+      "scenario": "Your math class is moving fast. Your teacher warns: If you miss too many sessions without catching up, you will <em>fall behind</em> the rest of the class.",
+      "prompt": "Which sentence uses <strong>fall behind</strong> the same way?",
+      "options": [
+        "He missed two weeks of school and fell behind in all his subjects.",
+        "She fell behind a bush during hide-and-seek.",
+        "They fell behind the sofa watching TV.",
+        "He fell behind his brother because he was shorter."
+      ],
+      "correct": 0,
+      "why": "Fall behind means to make less progress than expected or than the rest of the group.",
+      "extra": "Also: Do not fall behind on your monthly payments — banks and financial institutions use this expression constantly."
+    },
+    {
+      "word": "go through",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your friend's parents are getting divorced. She says quietly: It is really hard. I never thought I would have to <em>go through</em> something like this.",
+      "prompt": "Which sentence uses <strong>go through</strong> in the same emotional sense?",
+      "options": [
+        "He went through a very difficult period after losing his job unexpectedly.",
+        "She went through the tunnel on her bicycle.",
+        "They went through the door one by one.",
+        "He went through his pockets looking for his phone."
+      ],
+      "correct": 0,
+      "why": "Go through in an emotional sense means to experience something difficult or painful. It shows empathy and deep understanding.",
+      "extra": "Also: What you are going through sounds really hard — this is how you express genuine support to a friend in English."
+    }
+  ],
+  "intermediate": [
+    {
+      "word": "If I were you",
+      "pos": "Conditional expression",
+      "subject": "Daily life",
+      "scenario": "Your friend wants to text her ex saying she misses him. You think it is a bad idea. She asks for your advice.",
+      "prompt": "Fill in the blank: <strong>___</strong>, I would not send that message — it will only make things more complicated.",
+      "options": [
+        "If I were you",
+        "If I will be you",
+        "If I am you",
+        "If I would be you"
+      ],
+      "correct": 0,
+      "why": "If I were you is a fixed second conditional used to give advice. It uses were — not was — for all persons. This is the subjunctive mood.",
+      "extra": "Also: If I were you I would speak to the teacher directly. — one of the most polite and natural ways to give advice in English."
+    },
+    {
+      "word": "look forward to",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "Your English teacher says: I genuinely look forward to seeing how much you have all improved by the end of the year.",
+      "prompt": "Fill in the blank: I am really <strong>___</strong> the school science trip next month.",
+      "options": [
+        "looking forward to",
+        "looking up to",
+        "looking carefully into",
+        "looking anxiously out for"
+      ],
+      "correct": 0,
+      "why": "Look forward to means to feel excited or positive about something in the future. Always followed by a noun or gerund.",
+      "extra": "Also: I look forward to hearing from you ends almost every formal English email. Very important professional vocabulary."
+    },
+    {
+      "word": "unless",
+      "pos": "Conditional expression",
+      "subject": "Social studies",
+      "scenario": "Your economics teacher says: Countries will continue to depend on fossil fuels <em>unless</em> they invest in renewable energy sources now.",
+      "prompt": "Fill in the blank: You will not improve your English <strong>___</strong> you practice it every day outside the classroom.",
+      "options": [
+        "unless",
+        "even if",
+        "whenever",
+        "although"
+      ],
+      "correct": 0,
+      "why": "Unless means if not. It introduces a negative condition. You will not improve unless you practice means you will only improve if you practice.",
+      "extra": "Also: Unless you leave right now we will miss the train. / I will not go unless you come too. — extremely common in conditional statements."
+    },
+    {
+      "word": "should have",
+      "pos": "Modal verb",
+      "subject": "School",
+      "scenario": "Your group submitted a project without proofreading it. Your teacher says: You <em>should have</em> reviewed it more carefully — the errors were avoidable.",
+      "prompt": "Fill in the blank: I <strong>___</strong> my files before the computer crashed — now I have lost three hours of work.",
+      "options": [
+        "should have backed up",
+        "must have backed up",
+        "might have backed",
+        "could backing up"
+      ],
+      "correct": 0,
+      "why": "Should have plus past participle expresses regret about something that was the right action but was not done.",
+      "extra": "Also: I should have eaten breakfast — now I cannot concentrate. / You should have called me sooner."
+    },
+    {
+      "word": "as long as",
+      "pos": "Conditional expression",
+      "subject": "School",
+      "scenario": "Your teacher says before the field trip: You can use your phones for photos, <em>as long as</em> you stay quiet and respectful during the guided explanations.",
+      "prompt": "Fill in the blank: You can borrow my laptop <strong>___</strong> you return it before six — I need it for my online study session.",
+      "options": [
+        "as long as",
+        "as much as",
+        "as soon as",
+        "as well as"
+      ],
+      "correct": 0,
+      "why": "As long as introduces a condition that must be maintained for something to be permitted.",
+      "extra": "Also: I will help you as long as you also make an effort. / You can stay up late as long as your homework is done."
+    },
+    {
+      "word": "could have",
+      "pos": "Modal verb",
+      "subject": "Daily life",
+      "scenario": "Your team lost a match by one goal. Your coach says: We <em>could have</em> won if we had maintained our concentration in the second half.",
+      "prompt": "Fill in the blank: The environmental damage <strong>___</strong> been prevented if the company had followed the safety regulations.",
+      "options": [
+        "could have",
+        "should have",
+        "must have",
+        "would been"
+      ],
+      "correct": 0,
+      "why": "Could have plus past participle expresses a lost possibility — something that was possible in the past but did not happen.",
+      "extra": "Also: You could have told me sooner — I would have helped. — used in arguments and reflections about missed opportunities."
+    },
+    {
+      "word": "come up with",
+      "pos": "Phrasal verb",
+      "subject": "School",
+      "scenario": "Your teacher says: By Friday, your team needs to <em>come up with</em> an original idea for your science fair experiment.",
+      "prompt": "Fill in the blank: After two hours of brainstorming, she finally managed to <strong>___</strong> a creative solution to the problem.",
+      "options": [
+        "come up with",
+        "come down with",
+        "come across with",
+        "come around with"
+      ],
+      "correct": 0,
+      "why": "Come up with means to think of or produce an idea, plan, or solution through effort and creative thinking.",
+      "extra": "Also: Who came up with that brilliant idea? / We need to come up with a new strategy. — constant in school projects and work meetings."
+    },
+    {
+      "word": "must have",
+      "pos": "Modal verb",
+      "subject": "Daily life",
+      "scenario": "You come home and the kitchen is spotless, dinner is ready, and there are fresh flowers on the table. Your sister was home all day.",
+      "prompt": "Fill in the blank: She is not answering her phone. She <strong>___</strong> her phone on silent — it is out of character to ignore messages.",
+      "options": [
+        "must have left",
+        "should have left",
+        "could have left",
+        "might left"
+      ],
+      "correct": 0,
+      "why": "Must have plus past participle expresses a strong logical deduction about the past — almost certain something happened based on evidence.",
+      "extra": "Also: It must have rained last night — the streets are flooded. Deductive reasoning with past modals is essential in everyday logic."
+    },
+    {
+      "word": "provided that",
+      "pos": "Conditional expression",
+      "subject": "Social studies",
+      "scenario": "The school board announced: Students will be permitted to use devices during lunch, <em>provided that</em> they follow the digital conduct policy at all times.",
+      "prompt": "Fill in the blank: The agreement will be ratified <strong>___</strong> all nations commit to reducing their emissions by thirty percent.",
+      "options": [
+        "provided that",
+        "even though",
+        "regardless of",
+        "in addition to"
+      ],
+      "correct": 0,
+      "why": "Provided that is a formal conditional meaning only if the stated condition is fully met. More formal and precise than if.",
+      "extra": "Also: You will receive the scholarship provided that you maintain a high average. — appears constantly in contracts and formal agreements."
+    },
+    {
+      "word": "deal with",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "You have been avoiding a difficult conversation with a friend. Your sister says: You cannot keep running away — you need to <em>deal with</em> it directly.",
+      "prompt": "Fill in the blank: The new school policy was designed to more effectively <strong>___</strong> cases of bullying and harassment.",
+      "options": [
+        "deal with",
+        "deal for",
+        "deal on",
+        "deal by"
+      ],
+      "correct": 0,
+      "why": "Deal with means to handle manage or confront a problem or difficult situation. It implies action rather than avoidance.",
+      "extra": "Also: I will deal with it later — something most of us say when we are not ready to face a problem. One of the most important life skills."
+    },
+    {
+      "word": "stand up for",
+      "pos": "Phrasal verb",
+      "subject": "Social studies",
+      "scenario": "A new student is being mocked and excluded. Most students stay completely silent or look away.",
+      "prompt": "Fill in the blank: When the rest of the class was silent, she was the only one who <strong>___</strong> the new student being unfairly treated.",
+      "options": [
+        "stood up for",
+        "stood up to carefully",
+        "stood out for clearly",
+        "stood in for bravely"
+      ],
+      "correct": 0,
+      "why": "Stand up for means to defend or advocate for someone or a principle especially when it is difficult or socially risky.",
+      "extra": "Also: Stand up for what you believe in even when you are standing alone. — connected to human rights and everyday moral decisions."
+    },
+    {
+      "word": "wish I had",
+      "pos": "Conditional expression",
+      "subject": "School",
+      "scenario": "You forgot to charge your phone. It dies when you need it most. You say: I <em>wish</em> I had charged it last night — I always forget this.",
+      "prompt": "Fill in the blank: She <strong>___</strong> more consistently throughout the semester — the final exam was much harder than expected.",
+      "options": [
+        "wishes she had studied",
+        "wishes she studies",
+        "is wishing to study",
+        "wished to have studied"
+      ],
+      "correct": 0,
+      "why": "Wish plus past perfect expresses regret about the past that cannot be changed. Wishes she had studied means she did not study enough and regrets it.",
+      "extra": "Also: I wish I had taken that opportunity. / I wish I had said something instead of staying silent. — essential for emotional and reflective English."
+    },
+    {
+      "word": "bring up",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "The family dinner is warm and relaxed. Then your aunt raises the topic of your poor academic performance last term and the atmosphere shifts uncomfortably.",
+      "prompt": "Fill in the blank: The employee decided to <strong>___</strong> the issue of unfair working conditions during the formal meeting.",
+      "options": [
+        "bring up",
+        "bring down",
+        "bring around",
+        "bring off"
+      ],
+      "correct": 0,
+      "why": "Bring up means to introduce a topic — particularly a sensitive or important one — into a conversation or meeting.",
+      "extra": "Also: Please do not bring up the argument from yesterday — you will use this phrase constantly in family and professional conversations."
+    },
+    {
+      "word": "not only but also",
+      "pos": "Adverb expression",
+      "subject": "Science",
+      "scenario": "Your science teacher explains: Plastic pollution is <em>not only</em> killing marine wildlife <em>but also</em> contaminating the seafood that humans eat daily.",
+      "prompt": "Fill in the blank: Regular exercise is <strong>___</strong> essential for a healthy body <strong>___</strong> critically important for positive mental health.",
+      "options": [
+        "not only / but also",
+        "either / or",
+        "neither / nor",
+        "both / and"
+      ],
+      "correct": 0,
+      "why": "Not only but also emphasizes that two things are true simultaneously with the second adding force to the first. It strengthens arguments considerably.",
+      "extra": "Also: She is not only an exceptional athlete but also a brilliant student. — a powerful structure for persuasive writing and presentations."
+    },
+    {
+      "word": "fall behind",
+      "pos": "Phrasal verb",
+      "subject": "School",
+      "scenario": "Your math teacher warns at the start of a demanding new unit: If you miss sessions and do not catch up independently you will quickly <em>fall behind</em> the rest.",
+      "prompt": "Fill in the blank: After being seriously ill for three weeks, he found that he had significantly <strong>___</strong> in his coursework.",
+      "options": [
+        "fallen behind",
+        "fallen over",
+        "fallen through",
+        "fallen apart"
+      ],
+      "correct": 0,
+      "why": "Fall behind means to make less progress than the expected standard or than others in the group.",
+      "extra": "Also: Do not fall behind on your credit card payments — the interest accumulates very quickly. Banks use this expression regularly."
+    },
+    {
+      "word": "turn down",
+      "pos": "Phrasal verb",
+      "subject": "Daily life",
+      "scenario": "You applied for a part-time job at a bookstore. A week later you receive an email saying: We appreciate your application but we have decided to <em>turn it down</em> at this time.",
+      "prompt": "Fill in the blank: She worked extremely hard for the promotion, so everyone was surprised when the company decided to <strong>___</strong> her application.",
+      "options": [
+        "turn down",
+        "turn off",
+        "turn around",
+        "turn over"
+      ],
+      "correct": 0,
+      "why": "Turn down means to reject or refuse something formally. It is used for job applications, proposals, offers, and requests.",
+      "extra": "Also: He turned down a very well-paid job offer because he did not want to move to another city. People turn things down every day."
+    }
+  ],
+  "expert": [
+    {
+      "word": "If I were you",
+      "pos": "Conditional expression",
+      "subject": "Daily life",
+      "scenario": "Your classmate has been arguing loudly with his teacher in front of the whole class. The situation keeps escalating and it is making things worse. He asks you for advice after class.",
+      "prompt": "Write 2-3 sentences giving him honest constructive advice using If I were you correctly. Show you understand both the grammar AND the real social situation.",
+      "model": "If I were you, I would go and apologize to the teacher privately after school today — continuing to argue in front of everyone made the situation much worse. If I were in your position, I would explain that you were frustrated but acknowledge that your reaction was disproportionate. Teachers generally respect students who can reflect on their behavior and take responsibility for it.",
+      "tip": "Strong answers: (1) use If I were you correctly with would plus bare infinitive, (2) give specific realistic advice, (3) show understanding of the social dynamics not just the grammar."
+    },
+    {
+      "word": "should have and could have",
+      "pos": "Modal verb",
+      "subject": "School",
+      "scenario": "Your group project received a disappointing grade. Looking back honestly, you left everything until the last two days, did not divide tasks fairly, and never reviewed the final version before submitting.",
+      "prompt": "Write 2-3 sentences reflecting honestly using both should have and could have naturally. Show the difference between the two structures.",
+      "model": "We should have started working at least two weeks earlier — we had more than enough time and there is no excuse for waiting. We could have divided the workload more fairly from the beginning, which would have reduced the pressure on the people who ended up doing most of the work. Most importantly, we should have reviewed the final draft together before submitting, because many of the errors were completely avoidable.",
+      "tip": "Strong answers: (1) show should have means the right thing that was neglected, (2) show could have means an available option not taken, (3) use both naturally in different sentences."
+    },
+    {
+      "word": "reported speech",
+      "pos": "Reported verb",
+      "subject": "Language arts",
+      "scenario": "In a debate about phone use, Student A said: Phones are useful tools and banning them sends the wrong message. Student B responded: The evidence shows phones reduce concentration and learning outcomes.",
+      "prompt": "Write 2-3 sentences accurately reporting what both students said. Use correct reported speech, tense shifts, and reporting verbs beyond just said.",
+      "model": "Student A argued that phones were useful educational tools and that banning them entirely sent the wrong message to students. Student B countered by pointing out that the research clearly showed phones in classrooms reduced both concentration and learning outcomes for the majority of students. Both presented their positions passionately though they approached the issue from fundamentally different perspectives.",
+      "tip": "Strong answers: (1) use reporting verbs beyond said — argued, claimed, pointed out, countered, (2) apply correct tense backshifts throughout, (3) change pronouns and time references accurately."
+    },
+    {
+      "word": "not only but also",
+      "pos": "Adverb expression",
+      "subject": "Science",
+      "scenario": "Your city council is debating whether to build an urban park or a shopping complex on an undeveloped area. The shopping complex would generate tax revenue and create hundreds of jobs.",
+      "prompt": "Write 2-3 sentences defending the park using not only but also at least once. Make a genuinely persuasive argument that addresses the economic benefits of the alternative.",
+      "model": "Investing in the urban park would not only provide residents with essential green space for physical and mental health but also create a natural habitat that significantly increases local biodiversity in what is currently a barren surface. Urban parks not only reduce air pollution and regulate temperatures during heat waves but also generate long-term economic value through higher property prices and improved public health outcomes. The shopping complex would create jobs in the short term, but the park would deliver lasting social and environmental benefits for generations.",
+      "tip": "Strong answers: (1) use not only but also correctly to link two distinct advantages, (2) engage seriously with the economic argument for the alternative, (3) make a persuasive case with real-world logic."
+    },
+    {
+      "word": "unless, provided that, as long as",
+      "pos": "Conditional expression",
+      "subject": "Social studies",
+      "scenario": "Your school is considering allowing extended lunch breaks outside school grounds only under specific conditions related to behavior grades and parental consent.",
+      "prompt": "Write 2-3 sentences explaining under what conditions this policy should be permitted using at least two of these expressions: unless, provided that, as long as. Show you understand their distinct meanings.",
+      "model": "Students should be permitted to leave school grounds during lunch provided that they have maintained a satisfactory academic record and have written parental consent on file. The policy should apply to all qualifying students as long as they return before afternoon classes and behave responsibly in the surrounding community. However, the privilege should be immediately suspended unless students continue to meet all the established requirements — it must be understood as conditional not permanent.",
+      "tip": "Strong answers: (1) use each expression with its correct distinct meaning, (2) apply them to the specific school policy scenario, (3) show that privileges come with clear responsibilities."
+    },
+    {
+      "word": "gradual and gradually",
+      "pos": "Adjective and Adverb",
+      "subject": "Science",
+      "scenario": "You are writing a persuasive essay about why climate change is so difficult for governments to respond to urgently even though the scientific evidence is overwhelming.",
+      "prompt": "Write 2-3 sentences explaining the psychological and political difficulty of responding to gradual change. Use gradual or gradually naturally.",
+      "model": "One fundamental reason climate change is politically difficult to address is that its effects are gradual — temperatures rise by fractions of a degree each year and ecosystems deteriorate gradually over decades rather than collapsing overnight. Human beings and political systems are wired to respond urgently to sudden dramatic crises but consistently struggle to mobilize the same urgency against threats that unfold gradually and are easy to dismiss in any single year. This is why scientists emphasize cumulative data over long periods — the gradual change only becomes truly alarming when you see the full trajectory.",
+      "tip": "Strong answers: (1) use gradual or gradually in context of slow change over time, (2) connect it to the psychological or political challenge, (3) go beyond description to genuine analytical insight."
+    },
+    {
+      "word": "wish I had",
+      "pos": "Conditional expression",
+      "subject": "Daily life",
+      "scenario": "You are in your most important exam week. Looking back honestly you realize you spent too much time on social media and socializing instead of studying consistently over the past three months.",
+      "prompt": "Write 2-3 sentences expressing genuine specific regret using wish plus past perfect correctly. Be honest and specific — not generic.",
+      "model": "I genuinely wish I had spent even thirty minutes each evening reviewing my notes instead of spending hours scrolling through social media — a habit that consumed far more time than I ever consciously realized. I also wish I had attended the extra study sessions the teacher offered in October because the topics covered then are exactly the ones I am struggling with most right now. Most of all I wish I had taken the first month of the term more seriously because those early habits were incredibly difficult to change once they were established.",
+      "tip": "Strong answers: (1) use wish plus had plus past participle correctly, (2) be specific — mention real choices real consequences real time periods, (3) show genuine reflection not just formulaic sentences."
+    },
+    {
+      "word": "overwhelmed, anxious, stubborn",
+      "pos": "Adjective",
+      "subject": "School",
+      "scenario": "A classmate tells you privately: I know I should ask the teacher for help because I do not understand this topic but I feel too embarrassed to admit it in front of everyone. I keep telling myself I can figure it out alone.",
+      "prompt": "Write 2-3 sentences using at least two of these adjectives — overwhelmed, anxious, stubborn — to analyze your classmate's situation. Go beyond just describing the feelings.",
+      "model": "Your classmate is clearly feeling overwhelmed by material she does not understand but her reluctance to ask for help is making the situation significantly worse. She is also being stubborn in a counterproductive way — her determination to figure it out alone would be admirable if she were making progress but it is becoming an obstacle that prevents her from getting the support she actually needs. The anxiety about being judged is completely understandable but asking for help is a sign of self-awareness and intellectual honesty not weakness.",
+      "tip": "Strong answers: (1) use at least two adjectives correctly in genuine sentences, (2) do not just label the emotions — explain WHY they are present and what they are causing, (3) offer a perspective that goes beyond the obvious."
+    }
+  ]
 };
-const NEXT={beginner:"elementary",elementary:"intermediate",intermediate:"expert",expert:null};
 
-const QUESTIONS={
-beginner:[
-  {word:"give up",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend has been trying to learn guitar for two weeks. He keeps making mistakes and says: "I just want to <b>give up</b>."',prompt:'What does "give up" mean here?',options:["To stop trying because something feels too hard","To give a present to someone","To stand up from a chair","To finish all the food on your plate"],correct:0,why:'"Give up" means to quit or stop trying. It is one of the most common phrasal verbs in English.',extra:'Also in real life: "Don't give up on your dreams!" — used constantly in sports, school, and motivation.'},
-  {word:"extremely",pos:"Adverb",subject:"Daily life",scenario:'You come home after a long day. You tell your mom: "I'm <b>extremely</b> tired — I can barely keep my eyes open."',prompt:'What does "extremely" tell us about how tired you are?',options:["You are very, very tired — more than just quite or a bit","You are only slightly tired","You were tired yesterday too","You are tired in a strange way"],correct:0,why:'"Extremely" is an adverb that intensifies adjectives. It means to a very great degree — stronger than "very."',extra:'Also: "extremely important," "extremely difficult" — adverbs of degree make your English much more expressive.'},
-  {word:"must",pos:"Modal verb",subject:"School",scenario:'Your teacher says: "You <b>must</b> submit your lab report by Friday. It is a mandatory requirement."',prompt:'What does "must" express?',options:["A strong obligation — something required, not optional","A polite suggestion","A possibility that could happen","A habit the teacher has"],correct:0,why:'"Must" expresses strong obligation. When a teacher says "you must," it is not optional.',extra:'Also: "You must be 18 to vote" / "You must wear a seatbelt" — must means a mandatory requirement.'},
-  {word:"careless",pos:"Adjective",subject:"School",scenario:'Your teacher returns your essay: "Your ideas are great, but the work was <b>careless</b> — spelling mistakes on every page you could have caught by rereading."',prompt:'What does "careless" describe here?',options:["Not paying enough attention — mistakes were avoidable","Very creative and original","Too difficult to understand","Written very quickly"],correct:0,why:'"Careless" means not giving enough attention. The person could do better but did not make the effort.',extra:'Also: "careless mistake" is one of the most common phrases in school feedback. The opposite is "careful."'},
-  {word:"might",pos:"Modal verb",subject:"Daily life",scenario:'You are deciding whether to bring an umbrella. The sky is gray. You think: "It <b>might</b> rain this afternoon — I'm not sure."',prompt:'What does "might" express here?',options:["A weak possibility — something that could happen but is uncertain","A strong rule that must be followed","Something that definitely happened","A confirmed plan you are certain about"],correct:0,why:'"Might" expresses weak possibility. It is weaker than "may" and much weaker than "will."',extra:'Also: "I might go to the party" = not sure yet. "I will go" = certain. Big difference!'},
-  {word:"look up",pos:"Phrasal verb",subject:"School",scenario:'You find a word you do not understand. Your teacher says: "Do not skip it — <b>look it up</b> in the dictionary."',prompt:'What does "look up" mean here?',options:["To search for information in a reference","To raise your eyes toward the ceiling","To improve gradually over time","To admire or respect someone"],correct:0,why:'"Look up" means to search for information — in a dictionary, on Google, or in any reference source.',extra:'Also: "I looked it up online" — probably the most common thing you say when you don't know something.'},
-  {word:"reliable",pos:"Adjective",subject:"School",scenario:'Your teacher says: "Use <b>reliable</b> sources — Wikipedia alone is not enough. Find official studies or reputable newspapers."',prompt:'What does "reliable" mean here?',options:["Consistently trustworthy and accurate","Very old and well-known","Free and easy to access online","Written only by scientists"],correct:0,why:'"Reliable" means consistently trustworthy. A reliable source gives accurate information every time.',extra:'Also: "Is this a reliable source?" is the most important critical thinking question when doing research.'},
-  {word:"should",pos:"Modal verb",subject:"Health",scenario:'Your doctor says: "You <b>should</b> drink at least eight glasses of water per day — it is not a law, but it is strongly recommended."',prompt:'What does "should" express?',options:["Advice or recommendation — a good idea but not required","A strict rule with serious consequences","Something physically impossible","A repeated past habit"],correct:0,why:'"Should" expresses advice or recommendation. It is weaker than "must" — you won't be punished for ignoring it, but it is wise to follow it.',extra:'Also: "You should study more" = advice. "You must study" = strict requirement. Very different meanings!'},
-  {word:"break down",pos:"Phrasal verb",subject:"Daily life",scenario:'Your dad pulls over on the road trip. He says: "The car just <b>broke down</b> — the engine stopped working."',prompt:'What does "broke down" mean here?',options:["A machine stopped functioning and needs repair","The car reached very high speed","Someone started crying","The road was damaged"],correct:0,why:'"Break down" for machines means to stop working. It can also mean to collapse emotionally, but here it describes a mechanical failure.',extra:'Also: "My laptop broke down right before my exam" — one of the most stressful moments for a student!'},
-  {word:"hang out",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend texts: "Hey, do you want to <b>hang out</b> later? We could go to the mall or just stay home."',prompt:'What does "hang out" mean?',options:["To spend relaxed, casual time with friends","To dry your clothes outside","To wait for someone at a location","To climb up something high"],correct:0,why:'"Hang out" means to spend casual, relaxed time together. It is one of the most common informal expressions in English.',extra:'Also: "We hung out all weekend" — this is everyday natural English you will use constantly.'},
-  {word:"can",pos:"Permission verb",subject:"School",scenario:'You need the bathroom. You ask: "<b>Can</b> I go to the bathroom, please?"',prompt:'What does "can" express here?',options:["A request for permission to do something","A physical ability you possess","A strong obligation to follow","An uncertain future possibility"],correct:0,why:'In informal English, "can" is very commonly used to ask for permission.',extra:'Also: "Can I borrow your charger?" / "Can I sit here?" — asking permission with "can" is natural and polite in everyday situations.'},
-  {word:"gradually",pos:"Adverb",subject:"Science",scenario:'Your biology teacher explains: "Global temperatures are not rising suddenly — they are <b>gradually</b> increasing year by year, making the problem harder to notice."',prompt:'What does "gradually" tell us about how temperatures are rising?',options:["Slowly and steadily, in small steps over a long period","Very suddenly and dramatically","In a confusing, unpredictable pattern","Rapidly at an increasing speed"],correct:0,why:'"Gradually" means slowly, step by step over time. It is the opposite of "suddenly" or "abruptly."',extra:'Also: "She gradually improved her English" / "The situation gradually got better" — gradual change is everywhere in science and social studies.'},
-  {word:"come across",pos:"Phrasal verb",subject:"Technology",scenario:'You are scrolling and you stop on a post. You tell your friend: "I just <b>came across</b> this amazing video about ocean pollution — I was not looking for it."',prompt:'What does "came across" mean?',options:["To find or encounter something by chance","To cross a bridge or road","To feel angry with someone","To understand something perfectly"],correct:0,why:'"Come across" means to find or encounter something unexpectedly, without searching for it.',extra:'Also: "I came across my old diary while cleaning" — the kind of unexpected discovery that brings back memories.'},
-  {word:"turn down",pos:"Phrasal verb",subject:"Social studies",scenario:'Your student council proposed a new school uniform. The principal said: "I appreciate the effort, but I have to <b>turn it down</b>."',prompt:'What does "turn down" mean here?',options:["To refuse or reject a proposal or request","To lower the volume of music","To fold the corner of a page","To physically change direction"],correct:0,why:'"Turn down" means to reject or say no to something — an offer, invitation, proposal, or request.',extra:'Also: "She turned down a scholarship to stay with her family" — people turn things down for many personal reasons.'},
-  {word:"may",pos:"Permission verb",subject:"School",scenario:'In a formal school debate, the moderator announces: "You <b>may</b> begin presenting your argument whenever you are ready."',prompt:'What does "may" express in this formal context?',options:["Formal permission — you are officially allowed to act","A strong obligation you must fulfill","A repeated past habit","An uncertain future possibility"],correct:0,why:'"May" is the formal way to grant or request permission. More polite and correct than "can" in academic, professional, and formal settings.',extra:'Also: "May I come in?" is the most formal and polite way to ask to enter a room.'},
-  {word:"take over",pos:"Phrasal verb",subject:"Social studies",scenario:'The student council president graduated. The vice-president announces: "I am going to <b>take over</b> as president until we hold new elections."',prompt:'What does "take over" mean here?',options:["To assume control or responsibility for something","To carry a heavy object somewhere","To win a sports competition","To repeat a school year"],correct:0,why:'"Take over" means to assume control, leadership, or management of something.',extra:'Also: "A larger company took over the small local business" — corporate takeovers are reported in business news constantly.'}
-],
-elementary:[
-  {word:"put off",pos:"Phrasal verb",subject:"School",scenario:'You have a project due Friday. Your friend says on Monday: "I keep <b>putting it off</b> — I'll start tomorrow." By Thursday he still hasn't started.',prompt:'Which sentence uses "put off" the same way?',options:["She always puts off studying until the night before the exam, then panics.","He put off his shoes before entering the house.","They put off the lights to save electricity.","She put off an impressive performance in the play."],correct:0,why:'"Put off" means to delay or postpone something you should do now. This habit is called procrastination.',extra:'Also: "Stop putting it off and just do it!" — you have definitely heard this from a parent or teacher.'},
-  {word:"incredibly",pos:"Adverb",subject:"Daily life",scenario:'You watched a documentary about the Amazon. You tell your friend: "It was <b>incredibly</b> beautiful — I had no idea how many species live there."',prompt:'Which sentence uses "incredibly" the same way?',options:["The view from the mountain was incredibly breathtaking.","She incredibly her homework before dinner.","The incredibly outside was warm and sunny.","He bought an incredibly at the book fair."],correct:0,why:'"Incredibly" is an adverb that intensifies adjectives to a very high degree, with a sense of amazement.',extra:'Also: "incredibly fast," "incredibly kind," "incredibly difficult" — degree adverbs make your English sound natural and expressive.'},
-  {word:"bring up",pos:"Phrasal verb",subject:"Daily life",scenario:'The family dinner is going well. Then your uncle suddenly brings up your bad grades from last semester, and the whole atmosphere changes.',prompt:'Which sentence uses "bring up" the same way?',options:["She brought up the salary problem during the meeting and the mood shifted.","He brought up his younger sister to the second floor.","They brought up fresh vegetables from the garden.","She brought up her luggage to the hotel room."],correct:0,why:'"Bring up" in its figurative sense means to introduce a topic into a conversation — often an uncomfortable one.',extra:'Also: "Don't bring that up again!" — you say this when you want someone to stop mentioning something embarrassing.'},
-  {word:"should have",pos:"Modal verb",subject:"School",scenario:'You failed your test because you spent the weekend playing video games. Your teacher says: "You <b>should have</b> studied more — you had the whole weekend."',prompt:'Which sentence uses "should have" the same way?',options:["I should have saved my document before the computer crashed — now I lost everything.","She should have a new pencil case for the school year.","They should have the exam results by the end of the week.","He should have been at school right now."],correct:0,why:'"Should have + past participle" expresses regret or criticism about a past action that was the right thing to do but was not done.',extra:'Also: "I should have left earlier — now I'm late." / "You should have told me sooner." — essential for expressing regret.'},
-  {word:"work out",pos:"Phrasal verb",subject:"Daily life",scenario:'You and your best friend had a big argument. Today she texts: "Can we talk? I really want to <b>work things out</b> between us."',prompt:'Which sentence uses "work out" the same way she used it?',options:["After months of talks, the two countries finally worked out a peace agreement.","She works out at the gym every morning.","The math problem worked out to exactly 42.","He worked out the yard by mowing the grass."],correct:0,why:'"Work out" has three meanings: to exercise, to resolve a conflict, or to result in a particular way. Here it means to resolve a conflict.',extra:'Also: "I hope it all works out for you" means you hope everything resolves itself well.'},
-  {word:"reported speech",pos:"Reported verb",subject:"Language arts",scenario:'Your friend told you: "I absolutely love science class." You want to tell another classmate what she said.',prompt:'Which sentence correctly reports what your friend said?',options:['"She said that she loved science class."','"She said that she loves science class now."','"She told: I love science class."','"She said me that she love science."'],correct:0,why:'In reported speech, tenses shift back: "love" becomes "loved." The structure is "said that + clause." "Told:" with a colon is wrong.',extra:'Also: "The president said that the situation had improved." — reported speech is essential for summaries and academic writing.'},
-  {word:"stubborn",pos:"Adjective",subject:"Daily life",scenario:'You try to convince your brother to try a new food. No matter what you say, he refuses to even taste it.',prompt:'Which sentence uses "stubborn" the same way?',options:["She was so stubborn that she refused to change her position even when everyone disagreed.","The stubborn weather made it perfect for swimming.","He stubborn his shoes before entering class.","The stubborn part of the equation required three steps."],correct:0,why:'"Stubborn" describes someone who refuses to change their opinion even when given good reasons. Can be negative (obstinate) or positive (determined).',extra:'Also: "Stubbornly" is the adverb. "Stubbornness" is the noun. A stubborn personality can be both a strength and a weakness.'},
-  {word:"could have",pos:"Modal verb",subject:"Daily life",scenario:'You accidentally sent an embarrassing message to the wrong person. Your friend says: "You <b>could have</b> double-checked before pressing send!"',prompt:'Which sentence uses "could have" the same way?',options:["The accident could have been avoided if the driver had been paying attention.","She could have a new phone if her grades improve.","They could have dinner ready before eight if they start now.","He could have very good reasons for being late."],correct:0,why:'"Could have + past participle" expresses a lost opportunity — something possible in the past that did not happen.',extra:'Also: "We could have won if we had trained harder." — used constantly in reflections, arguments, and regrets.'},
-  {word:"asked (reported)",pos:"Reported verb",subject:"Social studies",scenario:'During a class debate, a student asked the teacher: "Can we have more time to prepare our arguments?"',prompt:'Which sentence correctly reports the question?',options:["She asked whether they could have more time to prepare.","She asked if they can have more time now.","She asked: Can we have more time?","She said that can we have more time."],correct:0,why:'Reported questions use "asked + if/whether." Tense shifts: "can" becomes "could." The question mark is removed.',extra:'Also: "She asked me if I had finished my homework." / "He asked whether the exam would be difficult." — essential in formal writing.'},
-  {word:"set up",pos:"Phrasal verb",subject:"Technology",scenario:'You got a new phone. Your cousin says: "Let me <b>set it up</b> for you — I'll install your apps and connect it to the WiFi."',prompt:'Which sentence uses "set up" the same way?',options:["The teacher set up the projector before the presentation began.","She set up quickly from the chair when she heard the noise.","He set up a ladder to reach the roof.","They set up their arms when they finished the race."],correct:0,why:'"Set up" means to prepare, install, or configure something so it is ready to use.',extra:'Also: "I need to set up a new email account" / "She set up the meeting for Thursday" — constant in digital and professional life.'},
-  {word:"overwhelmed",pos:"Adjective",subject:"School",scenario:'It is exam week. You have five tests, a project due, and sports practice. You message your friend: "I feel completely <b>overwhelmed</b> — I don't even know where to begin."',prompt:'Which sentence uses "overwhelmed" the same way?',options:["She felt overwhelmed by the amount of work before the Friday deadline.","The overwhelmed weather made the afternoon pleasant.","He overwhelmed his backpack before leaving for school.","The overwhelmed part of the equation required a calculator."],correct:0,why:'"Overwhelmed" means having too much to deal with at once — feeling unable to manage the quantity or intensity of demands.',extra:'Also: "Overwhelmingly" is the adverb — "The proposal was overwhelmingly approved." Very common in news about elections.'},
-  {word:"give away",pos:"Phrasal verb",subject:"Daily life",scenario:'Your class is playing a guessing game. A teammate accidentally says something revealing. Your teacher says: "Careful — you almost <b>gave it away</b>!"',prompt:'Which sentence uses "give away" the same way?',options:["His nervous laughter gave away the fact that he already knew the answer.","She gave away her old clothes to charity.","He gave away the trophy to second place.","They gave away free samples at the festival."],correct:0,why:'"Give away" means either to donate something, or to unintentionally reveal a secret. Here the teacher uses the second meaning.',extra:'Also: "Spoiler alert — don't give away the ending!" — the version you will use with movies and books.'},
-  {word:"told (reported)",pos:"Reported verb",subject:"Language arts",scenario:'Your English teacher announced: "We are going to have an important grammar test next Monday."',prompt:'Which sentence correctly reports what the teacher said?',options:["The teacher told us that we were going to have a test the following Monday.","The teacher told us that we are going to have a test next Monday.","The teacher said us we would have a test.","The teacher told: We are going to have a test Monday."],correct:0,why:'"Told" requires a person object: "told us." Tenses shift: "are going to have" becomes "were going to have." Time expressions shift: "next Monday" becomes "the following Monday."',extra:'Also: "She told me that she was feeling tired." / "He told them that the meeting had been postponed." — fundamental in formal and informal reported speech.'},
-  {word:"anxious",pos:"Adjective",subject:"School",scenario:'Tomorrow is your English oral presentation. You cannot sleep. You keep thinking about forgetting your lines.',prompt:'Which sentence uses "anxious" the same way?',options:["She felt anxious before the job interview because she really wanted the position.","The anxious weather made it impossible to go outside.","He anxious his backpack before the school trip.","The anxious part of the problem was hardest to solve."],correct:0,why:'"Anxious" means feeling worried, nervous, or uneasy about something uncertain that is about to happen.',extra:'Also: "Anxiously" is the adverb. "Anxiety" is the noun — very important in health and everyday conversations about stress.'},
-  {word:"fall behind",pos:"Phrasal verb",subject:"School",scenario:'Your math class is moving fast. Your teacher warns: "If you miss too many sessions without catching up, you will <b>fall behind</b>."',prompt:'Which sentence uses "fall behind" the same way?',options:["He missed two weeks of school and fell behind in all his subjects.","She fell behind a bush during hide-and-seek.","They fell behind the sofa watching TV.","He fell behind his brother because he was shorter."],correct:0,why:'"Fall behind" means to make less progress than expected or than the rest of the group.',extra:'Also: "Don't fall behind on your payments" — banks and financial institutions use this constantly.'},
-  {word:"go through",pos:"Phrasal verb",subject:"Daily life",scenario:'Your friend's parents are getting divorced. She says quietly: "It's really hard. I never thought I'd have to <b>go through</b> something like this."',prompt:'Which sentence uses "go through" in the same emotional sense?',options:["He went through a very difficult period after losing his job.","She went through the tunnel on her bicycle.","They went through the door one by one.","He went through his pockets looking for his phone."],correct:0,why:'"Go through" in emotional sense means to experience something difficult or painful. It shows empathy and deep understanding.',extra:'Also: "What you're going through sounds really hard" — this is how you express genuine support to a friend in English.'}
-],
-intermediate:[
-  {word:"If I were you",pos:"Conditional expression",subject:"Daily life",scenario:"Your friend wants to text her ex saying she misses him. You think it's a bad idea. She asks for your advice.",prompt:'Fill in the blank: "___, I would not send that message — it will only make things more complicated."',options:["If I were you","If I will be you","If I am you","If I would be you"],correct:0,why:'"If I were you" is a fixed second conditional used to give advice. It uses "were" — not "was" — for all persons. This is the subjunctive mood.',extra:'Also: "If I were you, I'd speak to the teacher directly." — one of the most polite and natural ways to give advice in English.'},
-  {word:"look forward to",pos:"Phrasal verb",subject:"Daily life",scenario:'Your English teacher says: "I <b>look forward to</b> seeing how much you have all improved by the end of the year."',prompt:'Fill in the blank: "I'm really ___ the school science trip next month — I've never visited a research center."',options:["looking forward to","looking up to","looking carefully into","looking anxiously out for"],correct:0,why:'"Look forward to" means to feel excited about something in the future. Always followed by a noun or gerund (-ing verb).',extra:'Also: "I look forward to hearing from you" ends almost every formal English email. VERY important professional vocabulary.'},
-  {word:"unless",pos:"Conditional expression",subject:"Social studies",scenario:'Your economics teacher says: "Countries will continue to depend on fossil fuels <b>unless</b> they invest in renewable energy now."',prompt:'Fill in the blank: "You will not improve your English ___ you practice it every day outside the classroom."',options:["unless","even if","whenever","although"],correct:0,why:'"Unless" means "if not." It introduces a negative condition. "You won't improve unless you practice" = "You will only improve IF you practice."',extra:'Also: "Unless you leave now, we will miss the train." / "I won't go unless you come too." — extremely common in conditional statements.'},
-  {word:"should have",pos:"Modal verb",subject:"School",scenario:'Your group submitted a project without proofreading it. Your teacher says: "You <b>should have</b> reviewed it more carefully — the errors were avoidable."',prompt:'Fill in the blank: "I ___ my files before the computer crashed — now I have lost three hours of work."',options:["should have backed up","must have backed up","might have backed","could backing up"],correct:0,why:'"Should have + past participle" expresses regret about something that was the right action but was not done.',extra:'Also: "I should have eaten breakfast — now I can't concentrate." / "You should have called me sooner."'},
-  {word:"as long as",pos:"Conditional expression",subject:"School",scenario:'Your teacher says before the field trip: "You can use your phones for photos, <b>as long as</b> you stay quiet during the guided tour."',prompt:'Fill in the blank: "You can borrow my laptop ___ you return it before six — I need it for my online class."',options:["as long as","as much as","as soon as","as well as"],correct:0,why:'"As long as" introduces a condition that must be maintained for something to be permitted.',extra:'Also: "I will help you as long as you also make an effort." / "You can stay up late as long as your homework is done."'},
-  {word:"could have",pos:"Modal verb",subject:"Daily life",scenario:'Your team lost a match by one goal. Your coach says: "We <b>could have</b> won if we had maintained our concentration in the second half."',prompt:'Fill in the blank: "The environmental damage ___ been prevented if the company had followed the safety regulations."',options:["could have","should have","must have","would been"],correct:0,why:'"Could have + past participle" expresses a lost possibility — something that was possible but did not happen.',extra:'Also: "You could have told me sooner — I would have helped!" — used in arguments and reflections about missed opportunities.'},
-  {word:"come up with",pos:"Phrasal verb",subject:"School",scenario:'Your teacher says: "By Friday, your team needs to <b>come up with</b> an original idea for your science fair experiment."',prompt:'Fill in the blank: "After two hours of brainstorming, she finally managed to ___ a creative solution to the problem."',options:["come up with","come down with","come across with","come around with"],correct:0,why:'"Come up with" means to think of or produce an idea, plan, or solution through effort and creative thinking.',extra:'Also: "Who came up with that brilliant idea?" / "We need to come up with a new strategy." — constant in school and work.'},
-  {word:"must have",pos:"Modal verb",subject:"Daily life",scenario:'You come home and the kitchen is spotless, dinner is ready, and there are fresh flowers on the table.',prompt:'Fill in the blank: "She is not answering her phone. She ___ her phone on silent — it is completely out of character to ignore messages."',options:["must have left","should have left","could have left","might left"],correct:0,why:'"Must have + past participle" expresses a strong logical deduction about the past — almost certain something happened based on evidence.',extra:'Also: "It must have rained last night — the streets are flooded." — deductive reasoning with past modals is essential in science and everyday logic.'},
-  {word:"provided that",pos:"Conditional expression",subject:"Social studies",scenario:'The school board announced: "Students will be permitted to use devices during lunch, <b>provided that</b> they follow the digital conduct policy at all times."',prompt:'Fill in the blank: "The international agreement will be ratified ___ all member nations commit to reducing emissions by thirty percent."',options:["provided that","even though","regardless of","in addition to"],correct:0,why:'"Provided that" is a formal conditional meaning "only if the condition is fully met." More formal and precise than "if."',extra:'Also: "You will receive the scholarship provided that you maintain a 4.0 average." — appears constantly in contracts and formal agreements.'},
-  {word:"deal with",pos:"Phrasal verb",subject:"Daily life",scenario:'You have been avoiding a difficult conversation with a friend. Your sister says: "You cannot keep running away — you need to <b>deal with</b> it."',prompt:'Fill in the blank: "The school's new policy was designed to more effectively ___ cases of bullying and harassment."',options:["deal with","deal for","deal on","deal by"],correct:0,why:'"Deal with" means to handle, manage, or confront a problem or difficult situation. It implies action rather than avoidance.',extra:'Also: "I'll deal with it later" — something most of us say when we are not ready to face a problem. One of the most important life skills.'},
-  {word:"stand up for",pos:"Phrasal verb",subject:"Social studies",scenario:'A new student is being mocked. Most students stay silent or look away.',prompt:'Fill in the blank: "When the rest of the class was silent, she was the only one who ___ the new student being unfairly treated."',options:["stood up for","stood carefully up to","stood clearly out for","stood bravely in for"],correct:0,why:'"Stand up for" means to defend or advocate for someone or a principle — especially when it is difficult or unpopular to do so.',extra:'Also: "Stand up for what you believe in, even when you are standing alone." — deeply connected to human rights and everyday moral decisions.'},
-  {word:"wish + past",pos:"Conditional expression",subject:"School",scenario:'You forgot to charge your phone. It dies when you need it most. You say: "I <b>wish</b> I had charged it last night — I always forget!"',prompt:'Fill in the blank: "She ___ more consistently throughout the semester — the final exam was much harder than expected."',options:["wishes she had studied","wishes she studies","is wishing to study","wished to have studied"],correct:0,why:'"Wish + past perfect (had + past participle)" expresses regret about the past that cannot be changed.',extra:'Also: "I wish I had taken that opportunity." / "I wish I had said something instead of staying silent." — essential for emotional and reflective English.'},
-  {word:"bring up",pos:"Phrasal verb",subject:"Daily life",scenario:'The family dinner conversation is warm. Then your aunt suddenly raises the topic of your poor performance last term and the atmosphere shifts.',prompt:'Fill in the blank: "The employee decided to ___ the issue of unfair working conditions at the formal meeting with management."',options:["bring up","bring down","bring around","bring off"],correct:0,why:'"Bring up" means to introduce a topic — particularly a sensitive or important one — into a conversation or meeting.',extra:'Also: "Please don't bring up the argument from yesterday." — you will use this constantly in family and professional conversations.'},
-  {word:"not only but also",pos:"Adverb expression",subject:"Science",scenario:'Your science teacher explains: "Plastic pollution is <b>not only</b> killing marine wildlife <b>but also</b> contaminating the seafood that humans eat daily."',prompt:'Fill in the blank: "Regular exercise is ___ essential for a healthy body ___ critically important for positive mental health."',options:["not only / but also","either / or","neither / nor","both / and"],correct:0,why:'"Not only... but also" emphasizes that two things are true simultaneously, with the second adding force to the first. It strengthens arguments considerably.',extra:'Also: "She is not only an exceptional athlete but also a brilliant student." — a powerful structure for persuasive writing and presentations.'},
-  {word:"fall behind",pos:"Phrasal verb",subject:"School",scenario:'Your math teacher warns at the start of a new unit: "If you miss sessions and do not catch up, you will quickly <b>fall behind</b> the rest of the class."',prompt:'Fill in the blank: "After being seriously ill for three weeks, he found that he had significantly ___ in his coursework and needed extra support."',options:["fallen behind","fallen over","fallen through","fallen apart"],correct:0,why:'"Fall behind" means to make less progress than the expected standard or than others in the group.',extra:'Also: "Don't fall behind on your credit card payments — the interest accumulates quickly." — banks use this expression regularly.'}
-],
-expert:[
-  {word:"If I were you",pos:"Conditional expression",subject:"Daily life",scenario:"Your classmate has been arguing loudly with his teacher in front of the whole class. The situation is escalating. He asks you for advice after class.",prompt:'Write 2-3 sentences giving him honest, constructive advice using "If I were you" correctly and naturally. Show you understand both the grammar AND the real social situation.',model:'"If I were you, I would go and apologize to the teacher privately after school today — continuing to argue in front of everyone just made the situation much worse. If I were in your position, I would explain that you were frustrated, but acknowledge that your reaction was disproportionate. Teachers generally respect students who can reflect on their behavior and take responsibility for it."',tip:"Strong answers: (1) use 'If I were you' correctly with would + bare infinitive, (2) give specific and realistic advice for the actual situation, (3) show understanding of the social dynamics, not just the grammar."},
-  {word:"should have / could have",pos:"Modal verb",subject:"School",scenario:"Your group project received a disappointing grade. Looking back, you left everything until the last two days, did not divide tasks fairly, and never reviewed the final version together.",prompt:'Write 2-3 sentences reflecting honestly using both "should have" and "could have" naturally. Show the difference between the two structures.',model:'"We should have started working at least two weeks earlier — we had more than enough time and there is no excuse for waiting until the last moment. We could have divided the workload more fairly from the beginning, which would have reduced the pressure on the people who ended up doing most of the work. Most importantly, we should have reviewed the final draft together before submitting, because many of the errors were completely avoidable."',tip:"Strong answers: (1) show 'should have' = the right thing that was neglected, (2) show 'could have' = an available option not taken, (3) use both naturally in different sentences."},
-  {word:"reported speech",pos:"Reported verb",subject:"Language arts",scenario:'In a debate about phone use, Student A said: "Phones are useful tools and banning them sends the wrong message." Student B responded: "The evidence shows phones reduce concentration and learning outcomes."',prompt:"Write 2-3 sentences accurately reporting what both students said. Use correct reported speech, tense shifts, and reporting verbs beyond just 'said.'",model:'"Student A argued that phones were useful educational tools and that banning them entirely sent the wrong message to students. Student B countered by pointing out that the research clearly showed phones in classrooms reduced both concentration and learning outcomes for the majority of students. Both students presented their positions passionately, though they approached the issue from fundamentally different perspectives."',tip:"Strong answers: (1) use appropriate reporting verbs beyond 'said' — argued, claimed, pointed out, countered, (2) apply correct tense backshifts, (3) change pronouns and time references accurately."},
-  {word:"not only but also",pos:"Adverb expression",subject:"Science",scenario:"Your city council is debating whether to build an urban park or a shopping complex on an undeveloped area. The shopping complex would generate tax revenue and create hundreds of jobs.",prompt:'Write 2-3 sentences defending the park using "not only... but also" at least once. Make a genuinely persuasive argument.',model:'"Investing in the urban park would not only provide residents with essential green space for physical and mental health but also create a natural habitat that significantly increases local biodiversity in what is currently a barren surface. Urban parks not only reduce air pollution and regulate temperatures during heat waves but also generate long-term economic value through higher property prices and improved public health that reduces pressure on healthcare systems. The shopping complex would create jobs in the short term, but the park would deliver lasting social and environmental benefits for generations."',tip:"Strong answers: (1) use 'not only... but also' correctly to link two distinct advantages, (2) engage seriously with the economic argument for the alternative, (3) make a persuasive case with real-world logic."},
-  {word:"unless / provided that / as long as",pos:"Conditional expression",subject:"Social studies",scenario:"Your school is considering allowing extended lunch breaks outside school grounds, but only under specific conditions related to behavior, grades, and parental consent.",prompt:"Write 2-3 sentences explaining under what conditions this policy should be permitted, using at least two of these expressions: unless, provided that, as long as. Show you understand their distinct meanings.",model:'"Students should be permitted to leave school grounds during lunch provided that they have maintained a satisfactory academic record and have written parental consent on file. The policy should apply to all qualifying students as long as they return before afternoon classes and behave responsibly in the surrounding community. However, the privilege should be immediately suspended unless students continue to meet all established requirements — it must be understood as conditional, not permanent."',tip:"Strong answers: (1) use each expression with its correct distinct meaning, (2) apply them to the specific school policy scenario, (3) show that privileges come with clear responsibilities."},
-  {word:"gradual / gradually",pos:"Adjective and Adverb",subject:"Science",scenario:"You are writing a persuasive essay about why climate change is so difficult for governments to respond to urgently, even though the scientific evidence is overwhelming.",prompt:'Write 2-3 sentences explaining the psychological and political difficulty of responding to gradual change. Use "gradual" or "gradually" naturally.',model:'"One fundamental reason climate change is politically difficult to address is that its effects are gradual — temperatures rise by fractions of a degree each year and ecosystems deteriorate gradually over decades rather than collapsing overnight. Human beings and political systems are wired to respond urgently to sudden crises, but consistently struggle to mobilize the same urgency against threats that unfold gradually and are easy to dismiss in any single year. This is why scientists emphasize cumulative data over long periods — the gradual change only becomes truly alarming when you see the full trajectory."',tip:"Strong answers: (1) use 'gradual/gradually' in context of slow change over time, (2) connect it to the psychological or political challenge specifically, (3) go beyond description to genuine analytical insight."},
-  {word:"wish + past perfect",pos:"Conditional expression",subject:"Daily life",scenario:"You are in your most important exam week. Looking back honestly, you realize you spent too much time on social media and socializing instead of studying consistently.",prompt:'Write 2-3 sentences expressing genuine, specific regret using "wish + past perfect" correctly. Be honest and specific — not generic.',model:'"I genuinely wish I had spent even thirty minutes each evening reviewing my notes instead of spending hours scrolling through social media — a habit that consumed far more time than I ever consciously realized. I also wish I had attended the extra study sessions the teacher offered in October, because the topics covered then are exactly the ones I am struggling with most right now. Most of all, I wish I had taken the first month of the term more seriously, because those early habits were incredibly difficult to change once they were established."',tip:"Strong answers: (1) use 'wish + had + past participle' correctly, (2) be specific — mention real choices, real consequences, real time periods, (3) show genuine reflection, not just formulaic sentences."},
-  {word:"overwhelmed / anxious / stubborn",pos:"Adjective",subject:"School",scenario:"A classmate tells you: 'I know I should ask the teacher for help because I don't understand this topic, but I feel too embarrassed. I keep telling myself I can figure it out alone.'",prompt:"Write 2-3 sentences using at least two of these adjectives — overwhelmed, anxious, stubborn — to analyze your classmate's situation. Go beyond just describing the feelings.",model:'"Your classmate is clearly feeling overwhelmed by material she does not understand, but her reluctance to ask for help is making the situation significantly worse. She is also being stubborn in a counterproductive way — her determination to figure it out alone would be admirable if she were making progress, but it is becoming an obstacle that prevents her from getting the support she actually needs. The anxiety about being judged is understandable, but asking for help is a sign of self-awareness and intellectual honesty, not weakness."',tip:"Strong answers: (1) use at least two adjectives correctly in genuine sentences, (2) do not just label the emotions — explain WHY they are present and what they are causing, (3) offer a perspective that goes beyond the obvious."}
-]
+const LEVELS = {
+  beginner:     { name:'Beginner',     color:'#0f9e72', bg:'#e0f5ee', dark:'#085041', fill:'#0f9e72', desc:'Read a real situation. Choose what the word means.' },
+  elementary:   { name:'Elementary',   color:'#1a6fc4', bg:'#e8f2fb', dark:'#0c447c', fill:'#1a6fc4', desc:'Which sentence uses the word correctly?' },
+  intermediate: { name:'Intermediate', color:'#c47a10', bg:'#fdf0d8', dark:'#633806', fill:'#c47a10', desc:'Fill the blank in a real-life context.' },
+  expert:       { name:'Expert',       color:'#c44a28', bg:'#fdeee9', dark:'#712b13', fill:'#c44a28', desc:'Write your own sentences and responses.' }
 };
+const NEXT = { beginner:'elementary', elementary:'intermediate', intermediate:'expert', expert:null };
+const LV_COLORS = { beginner:'#0f9e72', elementary:'#1a6fc4', intermediate:'#c47a10', expert:'#c44a28' };
+const LV_NAMES  = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', expert:'Expert' };
 
-let studentName="";
-let state={screen:"name",level:null,questions:[],qIndex:0,score:0,answered:false,missed:[],written:"",t0:0};
+let studentName = '';
+let dashTimer = null;
+let state = {};
 
-document.addEventListener("DOMContentLoaded",()=>{
-  const i=$("name-input");if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter")startWithName();});
-  const t=$("teacher-pass");if(t)t.addEventListener("keydown",e=>{if(e.key==="Enter")checkPass();});
-});
+function gid(id) { return document.getElementById(id); }
 
-async function startWithName(){
-  const val=$("name-input").value.trim();
-  if(!val){toast("Please write your full name first.");return;}
-  const wrap=$("name-card-wrap");
-  wrap.innerHTML="<div style='text-align:center;padding:16px;font-size:13px;color:var(--text2)'>Checking...</div>";
-  const played=await checkPlayedToday(val);
-  if(played){
-    wrap.innerHTML=`<div class="blocked-card"><div class="blocked-title">Already played today</div><div class="blocked-sub">A session for <strong>${val}</strong> was already submitted today.<br><br>Each student can play once per day. Come back tomorrow for a new session, or ask your teacher if this is an error.</div></div>`;
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  gid(id).classList.add('active');
+}
+
+function shuffle(arr) {
+  return arr.slice().sort(function() { return Math.random() - 0.5; });
+}
+
+function shuffleOpts(opts, correct) {
+  var arr = opts.map(function(t, i) { return { t: t, ok: i === correct }; });
+  var sh = shuffle(arr);
+  return { opts: sh.map(function(o) { return o.t; }), correct: sh.findIndex(function(o) { return o.ok; }) };
+}
+
+function showToast(msg, d) {
+  d = d || 2600;
+  var t = gid('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, d);
+}
+
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+
+async function checkPlayed(name) {
+  try {
+    var today = todayStr();
+    var result = await db.from('scores').select('id').ilike('student', name.trim()).gte('created_at', today + 'T00:00:00.000Z').limit(1);
+    return result.data && result.data.length > 0;
+  } catch(e) { return false; }
+}
+
+async function saveScore(student, level, score) {
+  try { await db.from('scores').insert({ student: student.trim(), level: level, score: score }); }
+  catch(e) { console.error('Save error:', e); }
+}
+
+// ── NAME SCREEN ──
+function initNameScreen() {
+  gid('start-btn').addEventListener('click', handleStart);
+  gid('name-inp').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleStart(); });
+  gid('teacher-link').addEventListener('click', function() { showScreen('s-tlogin'); setTimeout(function() { gid('t-pass').focus(); }, 80); });
+}
+
+async function handleStart() {
+  var val = gid('name-inp').value.trim();
+  if (!val) { showToast('Please write your full name first.'); return; }
+  gid('name-area').innerHTML = '<div style="text-align:center;padding:16px;font-size:13px;color:#6b6a60">Checking...</div>';
+  var played = await checkPlayed(val);
+  if (played) {
+    gid('name-area').innerHTML = '<div class="blocked"><div class="blocked-h">Already played today</div><div class="blocked-p">A session for <strong>' + val + '</strong> was already submitted today. Each student can play once per day. Come back tomorrow or ask your teacher if this is an error.</div></div>';
     return;
   }
-  studentName=val;
-  const initials=val.split(" ").map(w=>w[0]||"").join("").toUpperCase().slice(0,2)||"??";
-  const pals=[["#0f9e72","#e0f5ee"],["#1a6fc4","#e8f2fb"],["#5b45c8","#eeecfd"],["#c47a10","#fdf0d8"]];
-  const [bg,ring]=pals[Math.floor(Math.random()*pals.length)];
-  const ava=$("home-ava");ava.textContent=initials;ava.style.background=bg;
-  $("ava-ring").style.background=ring;$("ava-ring").style.padding="3px";
-  $("home-uname").textContent=val.split(" ")[0];
-  buildHome();show("s-home");
+  studentName = val;
+  var initials = val.split(' ').map(function(w) { return w[0] || ''; }).join('').toUpperCase().slice(0, 2) || '??';
+  var pals = [['#0f9e72','#e0f5ee'],['#1a6fc4','#e8f2fb'],['#5b45c8','#eeecfd'],['#c47a10','#fdf0d8']];
+  var pal = pals[Math.floor(Math.random() * pals.length)];
+  var ava = gid('ava');
+  ava.textContent = initials;
+  ava.style.background = pal[0];
+  gid('ava-wrap').style.background = pal[1];
+  gid('ava-wrap').style.padding = '3px';
+  gid('home-n').textContent = val.split(' ')[0];
+  buildHome();
+  showScreen('s-home');
 }
-function goHome(){show("s-home");}
-function buildHome(){
-  const lkBg={beginner:"#e0f5ee",elementary:"#e8f2fb",intermediate:"#fdf0d8",expert:"#fdeee9"};
-  $("level-grid").innerHTML=Object.entries(LEVELS).map(([k,v])=>`<button class="lv-card" onclick="startLevel('${k}')"><div class="lv-stripe" style="background:${v.fill}"></div><div class="lv-name" style="color:${v.color}">${v.name}</div><div class="lv-hint">${v.desc}</div><div class="lv-qs" style="background:${lkBg[k]};color:${v.dark}">${QUESTIONS[k].length} questions in bank</div><div class="lv-bg-shape" style="background:${v.fill}"></div></button>`).join("");
-}
-function startLevel(lv){
-  const qs=shuffle(QUESTIONS[lv]).slice(0,5).map(q=>{if(q.options){const{opts,correct}=shuffleOpts(q.options,q.correct);return{...q,options:opts,correct};}return q;});
-  state={screen:"game",level:lv,questions:qs,qIndex:0,score:0,answered:false,missed:[],written:"",t0:Date.now()};
-  show("s-game");renderQ();
-}
-function renderQ(){
-  const lv=LEVELS[state.level];const q=state.questions[state.qIndex];const isWrite=!q.options;
-  const prog=Math.round((state.qIndex/5)*100);
-  $("g-pill").textContent=lv.name;$("g-pill").style.cssText=`background:${lv.bg};color:${lv.dark}`;
-  $("g-prog").style.cssText=`width:${prog}%;background:${lv.fill}`;
-  $("g-frac").textContent=`Question ${state.qIndex+1} of 5`;
-  $("g-pts-lbl").textContent=`Score: ${state.score}`;
-  $("g-score").textContent=state.score;
-  const KEYS=["A","B","C","D"];
-  const ansHtml=isWrite
-    ?`<textarea class="write-area" id="wa" placeholder="Write your response here...">${state.written}</textarea><div class="write-footer"><span class="char-count" id="cc">0 characters</span><button class="submit-btn" onclick="submitWrite()">Submit answer</button></div>`
-    :`<div class="opts">${q.options.map((o,i)=>`<button class="opt" id="opt${i}" onclick="pick(${i})"><span class="opt-key">${KEYS[i]}</span><span class="opt-text">${o}</span></button>`).join("")}</div>`;
-  let fbHtml="";
-  if(state.answered){
-    const ok=isWrite||state.lastOk;
-    fbHtml=`<div class="fb-box ${ok?"ok":"bad"}"><div class="fb-head"><span class="fb-badge">${isWrite?"MODEL ANSWER":ok?"CORRECT":"INCORRECT"}</span><span class="fb-title">${isWrite?"Compare your response:":ok?"Well done!":"Here is the explanation:"}</span></div><div>${isWrite?`<em style="line-height:1.7;display:block">${q.model}</em>`:q.why}</div>${isWrite&&q.tip?`<div class="fb-extra"><div class="fb-extra-label">What makes a strong answer</div>${q.tip}</div>`:""}${!isWrite&&q.extra?`<div class="fb-extra"><div class="fb-extra-label">Also in real life</div>${q.extra}</div>`:""}</div>`;
-  }
-  $("g-body").innerHTML=`<div class="q-card"><div class="q-meta"><span class="tag tag-s">${q.subject}</span><span class="tag tag-t">${q.pos}</span></div><div class="word-banner" style="background:${LEVELS[state.level].bg}"><div class="word-main" style="color:${LEVELS[state.level].dark}">${q.word}</div><div class="word-pos">${q.pos}</div></div><div class="scene-label">Situation <div class="scene-line"></div></div><div class="scene-box">${q.scenario}</div><div class="q-prompt">${q.prompt}</div>${ansHtml}${fbHtml}</div>${state.answered?`<button class="next-btn" onclick="nextQ()">${state.qIndex<4?"Next question":"See my results"} &rarr;</button>`:""}`;
-  if(isWrite&&!state.answered){const wa=$("wa"),cc=$("cc");if(wa)wa.addEventListener("input",e=>{state.written=e.target.value;if(cc)cc.textContent=e.target.value.length+" characters";});}
-  if(state.answered&&!isWrite){q.options.forEach((_,i)=>{const b=$("opt"+i);if(!b)return;b.disabled=true;if(i===q.correct)b.classList.add("correct");else if(i===state.lastPick)b.classList.add("wrong");});}
-}
-function pick(i){if(state.answered)return;const q=state.questions[state.qIndex];state.answered=true;state.lastOk=(i===q.correct);state.lastPick=i;if(state.lastOk){state.score+=20;toast("Correct! +20 points",1600);}else{state.missed.push(q);toast("Not quite — read the explanation.",2200);}renderQ();}
-function submitWrite(){const v=$("wa")?$("wa").value:state.written;if(!v.trim()){toast("Please write something first.");return;}if(v.trim().length<30){toast("Write at least 2 full sentences.");return;}state.written=v;state.answered=true;state.score+=20;renderQ();}
-function nextQ(){state.qIndex++;state.answered=false;state.written="";if(state.qIndex>=5){showResults();return;}renderQ();}
 
-async function showResults(){
-  const lv=LEVELS[state.level];const pct=state.score;
-  const stars=pct>=80?3:pct>=60?2:pct>=40?1:0;
-  const secs=Math.round((Date.now()-state.t0)/1000);
-  const msgs={3:"Outstanding performance. You truly own these words.",2:"Great work — you are very close to mastering this level.",1:"Good effort. A bit more practice and you will get there.",0:"These words need more practice. Try again — you can do it."};
-  const cc=pct>=60?lv.color:"#c44a28";const nextLv=NEXT[state.level];
-  $("r-body").innerHTML=`<div class="accent-bar"></div><div class="res-top"><div class="res-circle" style="border-color:${cc}"><div class="res-num" style="color:${cc}">${pct}</div><div class="res-label" style="color:${cc}">out of 100</div></div><div class="res-stars" style="color:var(--amber-mid)">${"★".repeat(stars)+"☆".repeat(3-stars)}</div><div class="res-msg">${msgs[stars]}</div><div class="res-sub">${lv.name} level &middot; ${state.questions.length-state.missed.length} correct out of 5</div><div class="res-bar-wrap"><div class="res-bar-fill" style="width:${pct}%;background:${cc}"></div></div></div><div class="save-status" id="save-st"><div class="save-dot"></div>Saving your score...</div><div class="stats-grid"><div class="stat-card"><div class="stat-val" style="color:${cc}">${pct}</div><div class="stat-lbl">Score</div></div><div class="stat-card"><div class="stat-val">${secs}s</div><div class="stat-lbl">Time</div></div><div class="stat-card"><div class="stat-val">${state.questions.length-state.missed.length}/5</div><div class="stat-lbl">Correct</div></div></div>${pct>=60&&nextLv?`<div class="unlock-banner">You unlocked ${LEVELS[nextLv].name} level!</div>`:""}${state.missed.length?`<div class="review-section"><div class="review-header"><div class="review-dot"></div>Words to review</div>${state.missed.map(m=>`<div class="review-item"><div class="review-word">${m.word}</div><div class="review-meta">${m.subject} &middot; ${m.pos}</div><div class="review-why">${(m.why||m.tip||"").split(".")[0]}.</div></div>`).join("")}</div>`:`<div style="background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:14px;padding:15px 18px;text-align:center;font-size:14px;font-weight:700;color:var(--ok-text);margin-bottom:22px">Perfect score — every question correct!</div>`}<div class="action-row"><button class="act-btn" onclick="startLevel('${state.level}')">Try again</button>${nextLv?`<button class="act-btn primary" onclick="startLevel('${nextLv}')">Try ${LEVELS[nextLv].name}</button>`:""}<button class="act-btn" onclick="goHome()">All levels</button></div>`;
-  show("s-results");
-  await saveScore(studentName,state.level,pct);
-  const chip=$("save-st");if(chip){chip.className="save-status saved";chip.innerHTML="<div class='save-dot'></div>Score saved!";}
+// ── TEACHER ──
+function initTeacherScreen() {
+  gid('t-login-btn').addEventListener('click', handleTeacherLogin);
+  gid('t-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleTeacherLogin(); });
+  gid('t-back').addEventListener('click', function() { showScreen('s-name'); });
+  gid('dash-exit-btn').addEventListener('click', function() { if (dashTimer) { clearInterval(dashTimer); dashTimer = null; } showScreen('s-name'); });
+  gid('ref-btn').addEventListener('click', loadDash);
 }
+
+function handleTeacherLogin() {
+  if (gid('t-pass').value === TEACHER_PASS) {
+    gid('pass-err').style.display = 'none';
+    showScreen('s-dash');
+    loadDash();
+    if (dashTimer) clearInterval(dashTimer);
+    dashTimer = setInterval(loadDash, 30000);
+  } else {
+    gid('pass-err').style.display = 'block';
+  }
+}
+
+async function loadDash() {
+  try {
+    var today = todayStr();
+    var result = await db.from('scores').select('*').gte('created_at', today + 'T00:00:00.000Z').order('created_at', { ascending: false });
+    if (result.error || !result.data) { gid('d-tbl').innerHTML = '<div class="empty-d">Could not load data. Check your connection.</div>'; return; }
+    renderDash(result.data);
+  } catch(e) { gid('d-tbl').innerHTML = '<div class="empty-d">Connection error. Please refresh.</div>'; }
+}
+
+function renderDash(rows) {
+  var total = rows.length;
+  var avg = total ? Math.round(rows.reduce(function(a, r) { return a + r.score; }, 0) / total) : 0;
+  var pass = rows.filter(function(r) { return r.score >= 60; }).length;
+  var passRate = total ? Math.round(pass / total * 100) : 0;
+  var lvC = {};
+  rows.forEach(function(r) { lvC[r.level] = (lvC[r.level] || 0) + 1; });
+  var topLv = Object.entries(lvC).sort(function(a,b) { return b[1]-a[1]; })[0];
+  gid('m-tot').textContent = total;
+  gid('m-avg').textContent = avg;
+  gid('m-pass').textContent = total ? passRate + '%' : '--';
+  gid('m-top').textContent = topLv ? (LV_NAMES[topLv[0]] || topLv[0]) : '--';
+  var lvOrd = ['beginner','elementary','intermediate','expert'];
+  var byLv = '';
+  lvOrd.forEach(function(lv) {
+    var r = rows.filter(function(x) { return x.level === lv; });
+    if (!r.length) return;
+    var a = Math.round(r.reduce(function(s, x) { return s + x.score; }, 0) / r.length);
+    byLv += '<div class="bar-row"><span class="bar-l">' + LV_NAMES[lv] + '</span><div class="bar-t"><div class="bar-f" style="width:' + a + '%;background:' + LV_COLORS[lv] + '"></div></div><span class="bar-v">' + a + '</span></div>';
+  });
+  gid('d-bylv').innerHTML = byLv || '<div class="empty-d">No data yet</div>';
+  var bkts = [{l:'90-100',mn:90,mx:100,c:'#0f9e72'},{l:'70-89',mn:70,mx:89,c:'#3daa6f'},{l:'50-69',mn:50,mx:69,c:'#c47a10'},{l:'0-49',mn:0,mx:49,c:'#c44a28'}];
+  var dist = '';
+  bkts.forEach(function(b) {
+    var cnt = rows.filter(function(r) { return r.score >= b.mn && r.score <= b.mx; }).length;
+    var pct = total ? Math.round(cnt / total * 100) : 0;
+    dist += '<div class="bar-row"><span class="bar-l">' + b.l + '</span><div class="bar-t"><div class="bar-f" style="width:' + pct + '%;background:' + b.c + '"></div></div><span class="bar-v">' + cnt + '</span></div>';
+  });
+  gid('d-dist').innerHTML = dist;
+  if (!rows.length) { gid('d-tbl').innerHTML = '<div class="empty-d">No students have played today yet.</div>'; return; }
+  function starsFor(s) { return s >= 80 ? '&#9733;&#9733;&#9733;' : s >= 60 ? '&#9733;&#9733;&#9734;' : s >= 40 ? '&#9733;&#9734;&#9734;' : '&#9734;&#9734;&#9734;'; }
+  function perfFor(s) { return s >= 80 ? ['Excellent','#0f9e72','#e0f5ee'] : s >= 60 ? ['Good','#c47a10','#fdf0d8'] : ['Needs work','#c44a28','#fdeee9']; }
+  var trs = rows.map(function(r) {
+    var tm = new Date(r.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    var pf = perfFor(r.score);
+    return '<tr><td style="font-weight:700">' + r.student + '</td><td><span class="lvdot" style="background:' + (LV_COLORS[r.level]||'#888') + '"></span>' + (LV_NAMES[r.level]||r.level) + '</td><td><strong>' + r.score + '</strong>/100<div class="sctrack"><div class="scfill" style="width:' + r.score + '%;background:' + (r.score>=60?'#0f9e72':'#c44a28') + '"></div></div></td><td style="color:#f0b840;font-size:12px">' + starsFor(r.score) + '</td><td><span class="perf-b" style="background:' + pf[2] + ';color:' + pf[1] + '">' + pf[0] + '</span></td><td style="color:#b0aea4;font-size:12px">' + tm + '</td></tr>';
+  }).join('');
+  gid('d-tbl').innerHTML = '<table class="stbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>' + trs + '</tbody></table>';
+}
+
+// ── HOME ──
+function buildHome() {
+  var lkBg = { beginner:'#e0f5ee', elementary:'#e8f2fb', intermediate:'#fdf0d8', expert:'#fdeee9' };
+  var html = '';
+  Object.entries(LEVELS).forEach(function(entry) {
+    var k = entry[0], v = entry[1];
+    html += '<button class="lv-card" data-level="' + k + '"><div class="lv-stripe" style="background:' + v.fill + '"></div><div class="lv-name" style="color:' + v.color + '">' + v.name + '</div><div class="lv-hint">' + v.desc + '</div><div class="lv-badge" style="background:' + lkBg[k] + ';color:' + v.dark + '">' + QUESTIONS[k].length + ' questions</div><div class="lv-shape" style="background:' + v.fill + '"></div></button>';
+  });
+  gid('lv-grid').innerHTML = html;
+  gid('lv-grid').querySelectorAll('.lv-card').forEach(function(btn) {
+    btn.addEventListener('click', function() { startLevel(this.getAttribute('data-level')); });
+  });
+  gid('g-back-btn').addEventListener('click', function() { showScreen('s-home'); });
+}
+
+// ── GAME ──
+function startLevel(lv) {
+  var raw = QUESTIONS[lv];
+  var qs = shuffle(raw).slice(0, 5).map(function(q) {
+    if (q.options) {
+      var res = shuffleOpts(q.options, q.correct);
+      return Object.assign({}, q, { options: res.opts, correct: res.correct });
+    }
+    return Object.assign({}, q);
+  });
+  state = { level: lv, questions: qs, qIndex: 0, score: 0, answered: false, missed: [], written: '', t0: Date.now() };
+  showScreen('s-game');
+  renderQ();
+}
+
+function renderQ() {
+  var lv = LEVELS[state.level];
+  var q = state.questions[state.qIndex];
+  var isWrite = !q.options;
+  var prog = Math.round((state.qIndex / 5) * 100);
+  var pill = gid('g-pill');
+  pill.textContent = lv.name;
+  pill.style.background = lv.bg;
+  pill.style.color = lv.dark;
+  gid('g-fill').style.width = prog + '%';
+  gid('g-fill').style.background = lv.fill;
+  gid('g-frac').textContent = 'Question ' + (state.qIndex + 1) + ' of 5';
+  gid('g-pts').textContent = 'Score: ' + state.score;
+  gid('g-score').textContent = state.score;
+  var KEYS = ['A','B','C','D'];
+  var ansHtml = '';
+  if (isWrite) {
+    ansHtml = '<div class="write-box"><textarea id="wa" placeholder="Write your response here...">' + (state.written || '') + '</textarea><div class="write-ft"><span class="cc" id="cc">0 characters</span><button class="sub-btn" id="sub-btn">Submit answer</button></div></div>';
+  } else {
+    ansHtml = '<div class="opts">' + q.options.map(function(o, i) {
+      return '<button class="opt" data-idx="' + i + '"><span class="opt-k">' + KEYS[i] + '</span><span class="opt-t">' + o + '</span></button>';
+    }).join('') + '</div>';
+  }
+  var fbHtml = '';
+  if (state.answered) {
+    var isOk = isWrite || state.lastOk;
+    fbHtml = '<div class="fb ' + (isOk ? 'ok' : 'bad') + '"><div class="fb-hd"><span class="fb-badge">' + (isWrite ? 'MODEL ANSWER' : (isOk ? 'CORRECT' : 'INCORRECT')) + '</span><span class="fb-title">' + (isWrite ? 'Compare your response:' : (isOk ? 'Well done!' : 'Here is the explanation:')) + '</span></div><div>' + (isWrite ? '<em style="line-height:1.7;display:block">' + q.model + '</em>' : q.why) + '</div>' + (isWrite && q.tip ? '<div class="fb-extra"><div class="fb-el">What makes a strong answer</div>' + q.tip + '</div>' : '') + (!isWrite && q.extra ? '<div class="fb-extra"><div class="fb-el">Also in real life</div>' + q.extra + '</div>' : '') + '</div>';
+  }
+  gid('g-body').innerHTML = '<div class="q-card"><div class="q-tags"><span class="tag tag-s">' + q.subject + '</span><span class="tag tag-t">' + q.pos + '</span></div><div class="word-box" style="background:' + LEVELS[state.level].bg + '"><div class="word-h" style="color:' + LEVELS[state.level].dark + '">' + q.word + '</div><div class="word-p">' + q.pos + '</div></div><div class="scene-hd">Situation <div class="scene-line"></div></div><div class="scene">' + q.scenario + '</div><div class="q-prompt">' + q.prompt + '</div>' + ansHtml + fbHtml + '</div>' + (state.answered ? '<button class="next-btn" id="next-btn">' + (state.qIndex < 4 ? 'Next question' : 'See my results') + ' &rarr;</button>' : '');
+  
+  if (isWrite && !state.answered) {
+    var wa = gid('wa'), cc = gid('cc');
+    if (wa) wa.addEventListener('input', function(e) { state.written = e.target.value; if (cc) cc.textContent = e.target.value.length + ' characters'; });
+    var sb = gid('sub-btn');
+    if (sb) sb.addEventListener('click', handleSubmitWrite);
+  }
+  if (!isWrite) {
+    gid('g-body').querySelectorAll('.opt').forEach(function(btn) {
+      if (!state.answered) {
+        btn.addEventListener('click', function() { handlePick(parseInt(this.getAttribute('data-idx'))); });
+      } else {
+        btn.disabled = true;
+        var idx = parseInt(btn.getAttribute('data-idx'));
+        if (idx === q.correct) btn.classList.add('ok');
+        else if (idx === state.lastPick) btn.classList.add('bad');
+      }
+    });
+  }
+  var nb = gid('next-btn');
+  if (nb) nb.addEventListener('click', handleNext);
+}
+
+function handlePick(i) {
+  if (state.answered) return;
+  var q = state.questions[state.qIndex];
+  state.answered = true;
+  state.lastOk = (i === q.correct);
+  state.lastPick = i;
+  if (state.lastOk) { state.score += 20; showToast('Correct! +20 points', 1600); }
+  else { state.missed.push(q); showToast('Not quite — read the explanation.', 2200); }
+  renderQ();
+}
+
+function handleSubmitWrite() {
+  var wa = gid('wa');
+  var v = wa ? wa.value : state.written;
+  if (!v || !v.trim()) { showToast('Please write something first.'); return; }
+  if (v.trim().length < 30) { showToast('Write at least 2 full sentences.'); return; }
+  state.written = v;
+  state.answered = true;
+  state.score += 20;
+  renderQ();
+}
+
+function handleNext() {
+  state.qIndex++;
+  state.answered = false;
+  state.written = '';
+  if (state.qIndex >= 5) { showResults(); return; }
+  renderQ();
+}
+
+async function showResults() {
+  var lv = LEVELS[state.level];
+  var pct = state.score;
+  var stars = pct >= 80 ? 3 : pct >= 60 ? 2 : pct >= 40 ? 1 : 0;
+  var secs = Math.round((Date.now() - state.t0) / 1000);
+  var msgs = { 3:'Outstanding performance. You truly own these words.', 2:'Great work — very close to mastering this level.', 1:'Good effort. A bit more practice and you will get there.', 0:'These words need more practice. Try again!' };
+  var cc = pct >= 60 ? lv.color : '#c44a28';
+  var nextLv = NEXT[state.level];
+  var revHtml = '';
+  if (state.missed.length) {
+    revHtml = '<div class="rev-sec"><div class="rev-hd"><div class="rev-dot"></div>Words to review</div>' + state.missed.map(function(m) { return '<div class="rev-item"><div class="rev-w">' + m.word + '</div><div class="rev-m">' + m.subject + ' &middot; ' + m.pos + '</div><div class="rev-why">' + (m.why || m.tip || '').split('.')[0] + '.</div></div>'; }).join('') + '</div>';
+  } else {
+    revHtml = '<div style="background:#e8f7ef;border:1.5px solid #3daa6f;border-radius:13px;padding:14px 16px;text-align:center;font-size:14px;font-weight:700;color:#145c35;margin-bottom:20px">Perfect score — every question correct!</div>';
+  }
+  gid('r-body').innerHTML = '<div class="rainbow"></div><div class="res-top"><div class="res-circle" style="border-color:' + cc + '"><div class="res-num" style="color:' + cc + '">' + pct + '</div><div class="res-lbl" style="color:' + cc + '">out of 100</div></div><div class="res-stars" style="color:#f0b840">&#9733;&#9733;&#9733;'.slice(0, stars * 9 + (3 - stars) * 10 - (3 - stars)) + ('&#9734;&#9734;&#9734;'.slice(0, (3 - stars) * 10)) + '</div><div class="res-msg">' + msgs[stars] + '</div><div class="res-sub">' + lv.name + ' level &middot; ' + (state.questions.length - state.missed.length) + ' correct of 5</div><div class="res-bar-w"><div class="res-bar-f" style="width:' + pct + '%;background:' + cc + '"></div></div></div><div class="save-row" id="save-row"><div class="sdot"></div>Saving your score...</div><div class="stats-g"><div class="stat-c"><div class="stat-v" style="color:' + cc + '">' + pct + '</div><div class="stat-l">Score</div></div><div class="stat-c"><div class="stat-v">' + secs + 's</div><div class="stat-l">Time</div></div><div class="stat-c"><div class="stat-v">' + (state.questions.length - state.missed.length) + '/5</div><div class="stat-l">Correct</div></div></div>' + (pct >= 60 && nextLv ? '<div class="unlock-b">You unlocked ' + LEVELS[nextLv].name + ' level!</div>' : '') + revHtml + '<div class="act-row"><button class="act-btn" id="retry-btn">Try again</button>' + (nextLv ? '<button class="act-btn pri" id="next-lv-btn">Try ' + LEVELS[nextLv].name + '</button>' : '') + '<button class="act-btn" id="home-btn2">All levels</button></div>';
+  showScreen('s-results');
+  var rb = gid('retry-btn');
+  if (rb) rb.addEventListener('click', function() { startLevel(state.level); });
+  var nlb = gid('next-lv-btn');
+  if (nlb) nlb.addEventListener('click', function() { startLevel(nextLv); });
+  var hb = gid('home-btn2');
+  if (hb) hb.addEventListener('click', function() { showScreen('s-home'); });
+  await saveScore(studentName, state.level, pct);
+  var sr = gid('save-row');
+  if (sr) { sr.className = 'save-row saved'; sr.innerHTML = '<div class="sdot"></div>Score saved!'; }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initNameScreen();
+  initTeacherScreen();
+});
 </script>
 </body>
 </html>
