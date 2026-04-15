@@ -353,9 +353,9 @@ async function loadDash(){
   try{
     const today=todayISO();
     const{data,error}=await db.from("scores").select("*").gte("created_at",today+"T00:00:00.000Z").order("created_at",{ascending:false});
-    if(error||!data){$("dash-table").innerHTML="<div class=\"empty-dash\">Could not load data. Check your connection.</div>";return;}
+    if(error||!data){$("dash-table").innerHTML="<div class='empty-dash'>Could not load data. Check your connection.</div>";return;}
     renderDash(data);
-  }catch(e){$("dash-table").innerHTML="<div class=\"empty-dash\">Connection error.</div>";}
+  }catch(e){$("dash-table").innerHTML="<div class='empty-dash'>Connection error.</div>";}
 }
 
 function renderDash(rows){
@@ -376,7 +376,7 @@ function renderDash(rows){
     const a=Math.round(r.reduce((s,x)=>s+x.score,0)/r.length);
     byLv+=`<div class="bar-row"><span class="bar-lbl">${LVN[lv]}</span><div class="bar-track"><div class="bar-fill" style="width:${a}%;background:${LVC[lv]}"></div></div><span class="bar-val">${a}</span></div>`;
   });
-  $("dash-bylevel").innerHTML=byLv||"<div class=\"empty-dash\">No data yet</div>";
+  $("dash-bylevel").innerHTML=byLv||"<div class='empty-dash'>No data yet</div>";
   const bkts=[{l:"90-100",mn:90,mx:100,c:"#0f9e72"},{l:"70-89",mn:70,mx:89,c:"#3daa6f"},{l:"50-69",mn:50,mx:69,c:"#c47a10"},{l:"0-49",mn:0,mx:49,c:"#c44a28"}];
   let dist="";
   bkts.forEach(b=>{
@@ -385,7 +385,7 @@ function renderDash(rows){
     dist+=`<div class="bar-row"><span class="bar-lbl">${b.l}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${b.c}"></div></div><span class="bar-val">${cnt}</span></div>`;
   });
   $("dash-dist").innerHTML=dist;
-  if(!rows.length){$("dash-table").innerHTML="<div class=\"empty-dash\">No students have played today yet.</div>";return;}
+  if(!rows.length){$("dash-table").innerHTML="<div class='empty-dash'>No students have played today yet.</div>";return;}
   const sf=s=>s>=80?"★★★":s>=60?"★★☆":s>=40?"★☆☆":"☆☆☆";
   const pf=s=>s>=80?["Excellent","#0f9e72","#e0f5ee"]:s>=60?["Good","#c47a10","#fdf0d8"]:["Needs work","#c44a28","#fdeee9"];
   const tr=rows.map(r=>{
@@ -482,7 +482,7 @@ async function startWithName(){
   const val=$("name-input").value.trim();
   if(!val){toast("Please write your full name first.");return;}
   const wrap=$("name-card-wrap");
-  wrap.innerHTML="<div style=\"text-align:center;padding:16px;font-size:13px;color:var(--text2)\">Checking...</div>";
+  wrap.innerHTML="<div style='text-align:center;padding:16px;font-size:13px;color:var(--text2)'>Checking...</div>";
   const played=await checkPlayedToday(val);
   if(played){
     wrap.innerHTML=`<div class="blocked-card"><div class="blocked-title">Already played today</div><div class="blocked-sub">A session for <strong>${val}</strong> was already submitted today.<br><br>Each student can play once per day. Come back tomorrow for a new session, or ask your teacher if this is an error.</div></div>`;
@@ -541,7 +541,7 @@ async function showResults(){
   $("r-body").innerHTML=`<div class="accent-bar"></div><div class="res-top"><div class="res-circle" style="border-color:${cc}"><div class="res-num" style="color:${cc}">${pct}</div><div class="res-label" style="color:${cc}">out of 100</div></div><div class="res-stars" style="color:var(--amber-mid)">${"★".repeat(stars)+"☆".repeat(3-stars)}</div><div class="res-msg">${msgs[stars]}</div><div class="res-sub">${lv.name} level &middot; ${state.questions.length-state.missed.length} correct out of 5</div><div class="res-bar-wrap"><div class="res-bar-fill" style="width:${pct}%;background:${cc}"></div></div></div><div class="save-status" id="save-st"><div class="save-dot"></div>Saving your score...</div><div class="stats-grid"><div class="stat-card"><div class="stat-val" style="color:${cc}">${pct}</div><div class="stat-lbl">Score</div></div><div class="stat-card"><div class="stat-val">${secs}s</div><div class="stat-lbl">Time</div></div><div class="stat-card"><div class="stat-val">${state.questions.length-state.missed.length}/5</div><div class="stat-lbl">Correct</div></div></div>${pct>=60&&nextLv?`<div class="unlock-banner">You unlocked ${LEVELS[nextLv].name} level!</div>`:""}${state.missed.length?`<div class="review-section"><div class="review-header"><div class="review-dot"></div>Words to review</div>${state.missed.map(m=>`<div class="review-item"><div class="review-word">${m.word}</div><div class="review-meta">${m.subject} &middot; ${m.pos}</div><div class="review-why">${(m.why||m.tip||"").split(".")[0]}.</div></div>`).join("")}</div>`:`<div style="background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:14px;padding:15px 18px;text-align:center;font-size:14px;font-weight:700;color:var(--ok-text);margin-bottom:22px">Perfect score — every question correct!</div>`}<div class="action-row"><button class="act-btn" onclick="startLevel('${state.level}')">Try again</button>${nextLv?`<button class="act-btn primary" onclick="startLevel('${nextLv}')">Try ${LEVELS[nextLv].name}</button>`:""}<button class="act-btn" onclick="goHome()">All levels</button></div>`;
   show("s-results");
   await saveScore(studentName,state.level,pct);
-  const chip=$("save-st");if(chip){chip.className="save-status saved";chip.innerHTML="<div class=\"save-dot\"></div>Score saved!";}
+  const chip=$("save-st");if(chip){chip.className="save-status saved";chip.innerHTML="<div class='save-dot'></div>Score saved!";}
 }
 </script>
 </body>
