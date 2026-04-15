@@ -429,7 +429,7 @@ function startLevel(lv){
     if(q.options){var r=shufOpts(q.options,q.correct);return Object.assign({},q,{options:r.opts,correct:r.cor});}
     return Object.assign({},q);
   });
-  st={level:lv,questions:qs,qi:0,score:0,answered:false,missed:[],written:'',t0:Date.now()};
+  st={level:lv,questions:qs,qi:0,score:0,correct:0,answered:false,missed:[],written:'',t0:Date.now()};
   showScr('s-game');renderQ();
 }
 function goHome(){showScr('s-home');}
@@ -478,7 +478,7 @@ function doPick(i){
   if(st.answered)return;
   var q=st.questions[st.qi];
   st.answered=true;st.lastok=(i===q.correct);st.lastpick=i;
-  if(st.lastok){st.score+=PTS_PER_Q;toast('Correct! +'+PTS_PER_Q+' points',1600);}
+  if(st.lastok){st.score+=PTS_PER_Q;st.correct++;toast('Correct! +'+PTS_PER_Q+' points',1600);}
   else{st.missed.push(q);toast('Not quite — read the explanation.',2200);}
   renderQ();
 }
