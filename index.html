@@ -188,7 +188,83 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .scf{height:100%;border-radius:2px}
 .perfb{font-size:10px;font-weight:700;padding:2px 7px;border-radius:7px;display:inline-block}
 .emptyd{text-align:center;padding:28px;color:var(--tx3);font-size:14px}
+/* WRITING SECTION */
+.wsec-hd{display:flex;align-items:center;gap:10px;margin:8px 0 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+.wsec-line{flex:1;height:1px;background:var(--bd)}
+.lvc .lvgr{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+/* WRITING SCREEN */
+.wtop{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.wpill{font-size:11px;font-weight:800;padding:5px 13px;border-radius:20px;letter-spacing:.03em;white-space:nowrap}
+.wback{margin-left:auto;background:none;border:1.5px solid var(--bd2);border-radius:9px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;color:var(--tx2);font-family:inherit;transition:all .14s}
+.wback:hover{background:var(--c2);color:var(--tx)}
+.wprompt-card{background:var(--card);border:1.5px solid var(--bd);border-radius:18px;padding:22px 20px;margin-bottom:14px}
+.wtopic{display:inline-block;font-size:10px;font-weight:800;padding:3px 10px;border-radius:8px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px}
+.wtitle{font-size:22px;font-weight:900;letter-spacing:-.5px;line-height:1.15;margin-bottom:10px}
+.wtask{font-size:14px;line-height:1.65;color:var(--tx);margin-bottom:14px}
+.wmeta-row{display:flex;gap:8px;flex-wrap:wrap}
+.wmeta-chip{font-size:11px;font-weight:700;padding:5px 11px;border-radius:9px;background:var(--c2);color:var(--tx2);display:flex;align-items:center;gap:5px}
+.wshuffle{background:none;border:none;color:var(--pu);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px;margin-bottom:14px}
+.wshuffle:hover{opacity:.7}
+.wwrite-card{background:var(--card);border:1.5px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:14px}
+.wwrite-lbl{font-size:11px;font-weight:800;color:var(--tx2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px}
+.wta{width:100%;padding:14px 15px;border:1.5px solid var(--bd2);border-radius:12px;font-size:14px;min-height:240px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;line-height:1.7;transition:border-color .2s}
+.wta:focus{outline:none;border-color:var(--pu)}
+.wwc-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:8px}
+.wwc{font-size:12px;color:var(--tx3);font-weight:600}
+.wwc b{color:var(--tx2)}
+.wwc.ok b{color:#0f9e72}
+.wsubmit{padding:12px 26px;border-radius:11px;border:none;background:var(--pu);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .12s}
+.wsubmit:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
+.wsubmit:disabled{opacity:.5;cursor:not-allowed}
+/* AI GRADING + FEEDBACK */
+.wgrading{text-align:center;padding:40px 20px}
+.wspin{width:38px;height:38px;border:3.5px solid var(--c3);border-top-color:var(--pu);border-radius:50%;margin:0 auto 16px;animation:wsp .8s linear infinite}
+@keyframes wsp{to{transform:rotate(360deg)}}
+.wgrading-t{font-size:15px;font-weight:800;margin-bottom:5px}
+.wgrading-s{font-size:13px;color:var(--tx2)}
+.wfb-top{text-align:center;margin-bottom:20px}
+.wfb-circ{width:108px;height:108px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid}
+.wfb-num{font-size:34px;font-weight:900;letter-spacing:-2px;line-height:1}
+.wfb-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:2px;opacity:.7}
+.wfb-msg{font-size:15px;font-weight:700;margin-bottom:5px}
+.wfb-sub{font-size:13px;color:var(--tx2)}
+.wband{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.wbandc{background:var(--card);border:1.5px solid var(--bd);border-radius:13px;padding:13px 14px}
+.wbandc .bn{font-size:11px;font-weight:800;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+.wbandc .bn .bsc{font-size:13px;font-weight:900}
+.wbar{height:6px;background:var(--c2);border-radius:3px;overflow:hidden;border:1px solid var(--bd)}
+.wbar div{height:100%;border-radius:3px;transition:width .9s ease}
+.wfb-block{background:var(--card);border:1.5px solid var(--bd);border-radius:14px;padding:16px 17px;margin-bottom:12px}
+.wfb-h{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.wfb-h .dot{width:7px;height:7px;border-radius:50%}
+.wfb-li{font-size:13px;line-height:1.6;color:var(--tx);padding:7px 0 7px 22px;position:relative;border-bottom:1px solid var(--bd)}
+.wfb-li:last-child{border-bottom:none}
+.wfb-li:before{content:"";position:absolute;left:4px;top:13px;width:7px;height:7px;border-radius:50%}
+.wfb-li.good:before{background:#3daa6f}
+.wfb-li.work:before{background:#c47a10}
+.wfb-summary{background:var(--pu-l);border:1.5px solid var(--pu);border-radius:14px;padding:15px 17px;margin-bottom:16px;font-size:13px;line-height:1.65;color:#3b2a9c}
+.wfb-summary b{font-weight:800}
+.wsaverow{font-size:12px;color:var(--tx3);text-align:center;margin:4px 0 16px;display:flex;align-items:center;justify-content:center;gap:5px}
+.wsaverow.saved{color:#5b45c8;font-weight:700}
+.werr{background:var(--er-bg);border:1.5px solid var(--er-b);border-radius:13px;padding:15px 17px;font-size:13px;line-height:1.6;color:var(--er-t);margin-bottom:14px}
 #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--tx);color:#fff;font-size:13px;font-weight:700;padding:11px 22px;border-radius:24px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.readbtn{margin-left:6px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:7px;border:1px solid var(--pu);background:var(--pu-l);color:var(--pu);cursor:pointer;font-family:inherit;transition:all .14s}
+.readbtn:hover{background:var(--pu);color:#fff}
+#emodal{position:fixed;inset:0;background:rgba(20,20,15,.55);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;z-index:1000;overflow-y:auto}
+#emodal.show{display:flex}
+.emodal-card{background:var(--card);border-radius:18px;padding:22px;max-width:620px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.emodal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.emodal-name{font-size:18px;font-weight:900;letter-spacing:-.3px}
+.emodal-meta{font-size:12px;color:var(--tx2);margin-top:3px}
+.emodal-x{background:var(--c2);border:none;width:32px;height:32px;border-radius:9px;font-size:15px;cursor:pointer;color:var(--tx2);flex-shrink:0;transition:all .14s}
+.emodal-x:hover{background:var(--c3);color:var(--tx)}
+.emb-bands{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.emb-b{background:var(--bg);border:1.5px solid var(--bd);border-radius:10px;padding:9px 6px;text-align:center}
+.emb-b span{display:block;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+.emb-b b{font-size:18px;font-weight:900}
+.emb-sum{background:var(--pu-l);border:1.5px solid var(--pu);border-radius:11px;padding:11px 13px;font-size:12px;line-height:1.55;color:#3b2a9c;margin-bottom:14px}
+.emodal-lbl{font-size:11px;font-weight:800;color:var(--tx2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.emodal-text{background:var(--bg);border:1.5px solid var(--bd);border-radius:12px;padding:16px;font-size:14px;line-height:1.75;color:var(--tx);white-space:pre-wrap;max-height:340px;overflow-y:auto}
 #toast.show{opacity:1}
 @media(max-width:460px){
   .lvgrid,.opts,.dashg,.metg{grid-template-columns:1fr}
@@ -266,6 +342,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <p class="hdesc">Choose your level. 5 questions drawn randomly from 20 — different order for every student.</p>
   <div class="lvgrid" id="lvgrid"></div>
+  <div class="wsec-hd"><div class="wsec-line"></div><span>Writing Challenges</span><div class="wsec-line"></div></div>
+  <p class="hdesc" style="margin-top:-4px">Write a real article or essay on a random topic. Get an instant score and feedback on your structure, vocabulary and writing. Your teacher can read everything you write.</p>
+  <div class="lvgrid" id="wsgrid"></div>
   <button class="hmenu-btn" id="mainmenubtn">&#10005; Exit game</button>
   <p class="hft">No download required &middot; Works on any device &middot; Free</p>
 </div>
@@ -284,8 +363,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="screen" id="s-results">
   <div class="reswrap" id="rbody"></div>
 </div>
+<div class="screen" id="s-write">
+  <div class="rainbow"></div>
+  <div class="wtop">
+    <span class="wpill" id="wpill"></span>
+    <button class="wback" id="wbackbtn">&#8592; Menu</button>
+  </div>
+  <div id="wbody"></div>
+</div>
 </div>
 <div id="toast"></div>
+<div id="emodal"></div>
 <script>
 
 const SU='https://zdrxqsezxeusxffafsut.supabase.co';
@@ -301,9 +389,59 @@ const LEVELS={
   expert:{name:'Expert',color:'#c44a28',bg:'#fdeee9',dark:'#712b13',fill:'#c44a28',desc:'Write your own sentences and responses.'}
 };
 const NEXT={beginner:'elementary',elementary:'intermediate',intermediate:'expert',expert:null};
-const LVC={beginner:'#0f9e72',elementary:'#1a6fc4',intermediate:'#c47a10',expert:'#c44a28'};
-const LVN={beginner:'Beginner',elementary:'Elementary',intermediate:'Intermediate',expert:'Expert'};
+const LVC={beginner:'#0f9e72',elementary:'#1a6fc4',intermediate:'#c47a10',expert:'#c44a28',stage8:'#5b45c8',stage9:'#0d8a8a'};
+const LVN={beginner:'Beginner',elementary:'Elementary',intermediate:'Intermediate',expert:'Expert',stage8:'Stage 8 — Article',stage9:'Stage 9 — Essay'};
 const PTS_PER_Q=5;
+
+// ===================== WRITING STAGES (8 & 9) =====================
+const STAGE8_PROMPTS=[
+ {topic:"Technology",title:"Phones in the Classroom",prompt:"Write a short article for your school magazine about whether students should be allowed to use mobile phones during class. Give your opinion and support it with at least two reasons.",audience:"School magazine readers",minWords:120},
+ {topic:"Environment",title:"Saving Our Planet",prompt:"Write an article explaining three simple things students can do every day to help protect the environment. Use clear examples.",audience:"Younger students at your school",minWords:120},
+ {topic:"School life",title:"The Perfect School Day",prompt:"Write an article describing what your perfect school day would look like. Include the subjects, breaks, and activities you would choose and explain why.",audience:"Your classmates",minWords:120},
+ {topic:"Health",title:"Why Breakfast Matters",prompt:"Write an article for the school newsletter explaining why eating a good breakfast is important for students. Give reasons and examples.",audience:"Students and parents",minWords:120},
+ {topic:"Sports",title:"My Favourite Sport",prompt:"Write an article about your favourite sport. Explain the rules briefly and describe why other students should try it.",audience:"Students who do not play sports",minWords:120},
+ {topic:"Social media",title:"Growing Up Online",prompt:"Write an article about the good and bad sides of social media for young people. Give at least one advantage and one disadvantage.",audience:"Teenagers your age",minWords:130},
+ {topic:"Animals",title:"Should Schools Have Pets?",prompt:"Write an article arguing for or against having a class pet at school. Support your opinion with clear reasons.",audience:"Teachers and students",minWords:120},
+ {topic:"Travel",title:"A Place Everyone Should Visit",prompt:"Write a travel article about a place you love or would love to visit. Describe it so well that readers want to go there too.",audience:"Magazine readers",minWords:130},
+ {topic:"Food",title:"Healthy School Lunches",prompt:"Write an article about what a healthy and tasty school lunch should include, and why healthy eating helps students learn better.",audience:"The school cafeteria team",minWords:120},
+ {topic:"Friendship",title:"What Makes a Good Friend",prompt:"Write an article describing the qualities of a good friend. Use examples from real life to explain your ideas.",audience:"Students your age",minWords:120},
+ {topic:"Hobbies",title:"A Hobby Worth Trying",prompt:"Write an article recommending a hobby to your readers. Explain what it is, why you enjoy it, and how others can start.",audience:"Bored students looking for something new",minWords:120},
+ {topic:"Environment",title:"Too Much Plastic",prompt:"Write an article about the problem of plastic waste and suggest two ways your school could use less plastic.",audience:"The whole school community",minWords:130},
+ {topic:"Technology",title:"Video Games: Good or Bad?",prompt:"Write an article discussing whether video games are good or bad for young people. Give reasons on at least one side.",audience:"Parents and students",minWords:130},
+ {topic:"School life",title:"The Best Way to Study",prompt:"Write an article giving advice to other students about how to study well for exams. Include at least three useful tips.",audience:"Students preparing for exams",minWords:120},
+ {topic:"Community",title:"Helping Others",prompt:"Write an article about why helping people in your community is important. Describe one way students could help.",audience:"Your local community",minWords:120},
+ {topic:"Nature",title:"My Favourite Season",prompt:"Write an article describing your favourite season of the year. Explain what you like about it and what you can do during it.",audience:"Magazine readers",minWords:120},
+ {topic:"Future",title:"My Dream Job",prompt:"Write an article about the job you would like to have in the future. Explain what it is and why it interests you.",audience:"Students thinking about their future",minWords:120},
+ {topic:"Reading",title:"Why Reading is Fun",prompt:"Write an article persuading other students that reading books can be fun and useful. Recommend one book you enjoyed.",audience:"Students who do not like reading",minWords:120},
+ {topic:"Music",title:"The Power of Music",prompt:"Write an article about how music affects our feelings and daily life. Use examples to support your ideas.",audience:"Music lovers and the curious",minWords:120},
+ {topic:"School life",title:"A Change I Would Make",prompt:"Write an article about one thing you would change at your school to make it better, and explain how the change would help students.",audience:"The school principal and students",minWords:130}
+];
+const STAGE9_PROMPTS=[
+ {topic:"Technology",title:"Technology and Human Connection",prompt:"Write an argumentative essay discussing whether technology brings people closer together or pushes them apart. Take a clear position, support it with reasons and examples, and acknowledge the opposing view.",audience:"Academic essay",minWords:200},
+ {topic:"Environment",title:"Whose Responsibility?",prompt:"Write an essay arguing who should be most responsible for protecting the environment: individuals, companies, or governments. Defend your position with evidence and address counterarguments.",audience:"Academic essay",minWords:200},
+ {topic:"Education",title:"Should Exams Be Abolished?",prompt:"Write an essay arguing for or against abolishing traditional exams in schools. Present your reasoning clearly and consider the other point of view.",audience:"Academic essay",minWords:200},
+ {topic:"Social media",title:"Social Media and Young Minds",prompt:"Write an essay analysing the effects of social media on the mental health of teenagers. Argue whether the overall impact is positive or negative, using examples.",audience:"Academic essay",minWords:210},
+ {topic:"Society",title:"Does Money Buy Happiness?",prompt:"Write an essay exploring whether money can truly make people happy. Develop a clear argument supported by reasons and real-life examples.",audience:"Academic essay",minWords:200},
+ {topic:"Ethics",title:"The Importance of Honesty",prompt:"Write an essay arguing whether it is ever acceptable to tell a lie. Take a position and support it with logical reasoning and examples.",audience:"Academic essay",minWords:200},
+ {topic:"Education",title:"Learning Beyond the Classroom",prompt:"Write an essay arguing whether the most important learning happens inside or outside the classroom. Support your view with examples.",audience:"Academic essay",minWords:200},
+ {topic:"Environment",title:"The Future of Our Cities",prompt:"Write an essay describing how cities should change in the next twenty years to become more sustainable, and argue why these changes matter.",audience:"Academic essay",minWords:210},
+ {topic:"Technology",title:"Artificial Intelligence in Our Lives",prompt:"Write an essay discussing whether artificial intelligence will improve or harm human life in the future. Defend your position and consider both sides.",audience:"Academic essay",minWords:210},
+ {topic:"Society",title:"Heroes of Today",prompt:"Write an essay arguing who the real heroes of modern society are. Define what makes someone a hero and support your view with examples.",audience:"Academic essay",minWords:200},
+ {topic:"Culture",title:"The Value of Reading",prompt:"Write an essay arguing whether reading books is still important in a world full of videos and short content. Support your argument with reasons.",audience:"Academic essay",minWords:200},
+ {topic:"Health",title:"A Healthy Society",prompt:"Write an essay analysing what governments and schools should do to help young people live healthier lives. Argue which actions matter most.",audience:"Academic essay",minWords:200},
+ {topic:"Ethics",title:"Animals and Their Rights",prompt:"Write an essay arguing whether humans have a duty to protect animals and their habitats. Support your position with clear reasoning.",audience:"Academic essay",minWords:200},
+ {topic:"Society",title:"The Pressure to Succeed",prompt:"Write an essay exploring the pressure young people feel to be successful. Argue whether this pressure is helpful or harmful, with examples.",audience:"Academic essay",minWords:210},
+ {topic:"Education",title:"Should Students Choose Their Subjects?",prompt:"Write an essay arguing whether students should be free to choose all their school subjects. Defend your position and consider the consequences.",audience:"Academic essay",minWords:200},
+ {topic:"Environment",title:"Can One Person Make a Difference?",prompt:"Write an essay arguing whether the actions of a single person can really make a difference to a global problem like climate change. Use examples.",audience:"Academic essay",minWords:200},
+ {topic:"Technology",title:"A World Without the Internet",prompt:"Write an essay imagining how life would be different without the internet, and argue whether society has become too dependent on it.",audience:"Academic essay",minWords:210},
+ {topic:"Society",title:"The Meaning of Success",prompt:"Write an essay arguing what true success means. Challenge the common idea that success equals money or fame, and defend your own definition.",audience:"Academic essay",minWords:200},
+ {topic:"Culture",title:"Preserving Our Traditions",prompt:"Write an essay arguing whether it is important to preserve old traditions in a fast-changing modern world. Support your view with examples.",audience:"Academic essay",minWords:200},
+ {topic:"Ethics",title:"With Great Power",prompt:"Write an essay arguing whether people with power and influence have a greater responsibility to help others. Defend your position clearly.",audience:"Academic essay",minWords:200}
+];
+const WSTAGES={
+  stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. Instant feedback.',kind:'article',prompts:STAGE8_PROMPTS},
+  stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an essay on a random topic. Instant feedback.',kind:'essay',prompts:STAGE9_PROMPTS}
+};
 let sName='',dTimer=null,st={};
 function g(id){return document.getElementById(id);}
 function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});g(id).classList.add('active');}
@@ -318,11 +456,21 @@ async function checkPlayed(name){
     return r.data&&r.data.length>0;
   }catch(e){console.error('checkPlayed error:',e);return false;}
 }
-async function doSave(student,level,score){
+async function doSave(student,level,score,essayText,essayTitle,feedback){
   try{
-    var r=await db.from('scores').insert({student:student.trim(),level:level,score:score});
-    if(r.error)console.error('Save error:',r.error);
-    else console.log('Saved ok');
+    var row={student:student.trim(),level:level,score:score};
+    if(essayText){row.essay_text=essayText;}
+    if(essayTitle){row.essay_title=essayTitle;}
+    if(feedback){try{row.feedback=JSON.stringify(feedback);}catch(_){}}
+    var r=await db.from('scores').insert(row);
+    if(r.error){
+      console.error('Save error:',r.error);
+      // Si falla por columnas inexistentes, reintenta guardando solo lo básico
+      if(essayText){
+        var r2=await db.from('scores').insert({student:student.trim(),level:level,score:score});
+        if(r2.error)console.error('Fallback save error:',r2.error);
+      }
+    }else console.log('Saved ok');
   }catch(e){console.error('Save exception:',e);}
 }
 
@@ -383,7 +531,7 @@ function renderDash(rows){
   g('mtot').textContent=total;g('mavg').textContent=avg;
   g('mpass').textContent=total?pr+'%':'--';
   g('mtop').textContent=tlv?(LVN[tlv[0]]||tlv[0]):'--';
-  var lo=['beginner','elementary','intermediate','expert'];
+  var lo=['beginner','elementary','intermediate','expert','stage8','stage9'];
   var bl='';
   lo.forEach(function(lv){
     var rv=rows.filter(function(x){return x.level===lv;});if(!rv.length)return;
@@ -402,12 +550,33 @@ function renderDash(rows){
   if(!rows.length){g('dtbl').innerHTML='<div class="emptyd">No students have played today yet.</div>';return;}
   function sf(s){return s>=80?'&#9733;&#9733;&#9733;':s>=60?'&#9733;&#9733;&#9734;':s>=40?'&#9733;&#9734;&#9734;':'&#9734;&#9734;&#9734;';}
   function pf(s){return s>=80?['Excellent','#0f9e72','#e0f5ee']:s>=60?['Good','#c47a10','#fdf0d8']:['Needs work','#c44a28','#fdeee9'];}
-  var trs=rows.map(function(r){
+  var trs=rows.map(function(r,idx){
     var tm=new Date(r.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     var pff=pf(r.score);
-    return '<tr><td style="font-weight:700">'+r.student+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span></td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
+    var readBtn=r.essay_text?' <button class="readbtn" data-row="'+idx+'">&#128196; Read</button>':'';
+    return '<tr><td style="font-weight:700">'+r.student+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span>'+readBtn+'</td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
   }).join('');
   g('dtbl').innerHTML='<table class="stbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>'+trs+'</tbody></table>';
+  g('dtbl').querySelectorAll('.readbtn').forEach(function(b){
+    b.addEventListener('click',function(){openEssay(rows[parseInt(this.getAttribute('data-row'))]);});
+  });
+}
+function openEssay(r){
+  var fb=null;try{fb=r.feedback?JSON.parse(r.feedback):null;}catch(_){}
+  var fbh='';
+  if(fb&&fb.bands){
+    fbh='<div class="emb-bands">'+
+      ['content','organisation','language','accuracy'].map(function(k){
+        var v=fb.bands[k]||0;var c=v>=80?'#0f9e72':v>=60?'#c47a10':'#c44a28';
+        return '<div class="emb-b"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><b style="color:'+c+'">'+v+'</b></div>';
+      }).join('')+'</div>';
+    if(fb.summary)fbh+='<div class="emb-sum">'+fb.summary+'</div>';
+  }
+  var esc=(r.essay_text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  g('emodal').innerHTML='<div class="emodal-card"><div class="emodal-top"><div><div class="emodal-name">'+r.student+'</div><div class="emodal-meta">'+(LVN[r.level]||r.level)+(r.essay_title?' &middot; '+r.essay_title:'')+' &middot; Score: <b>'+r.score+'</b>/100</div></div><button class="emodal-x" id="emx">&#10005;</button></div>'+fbh+'<div class="emodal-lbl">Student\'s writing</div><div class="emodal-text">'+esc+'</div></div>';
+  g('emodal').classList.add('show');
+  g('emx').addEventListener('click',function(){g('emodal').classList.remove('show');});
+  g('emodal').addEventListener('click',function(e){if(e.target===g('emodal'))g('emodal').classList.remove('show');});
 }
 
 function buildHome(){
@@ -421,6 +590,258 @@ function buildHome(){
   g('lvgrid').querySelectorAll('.lvc').forEach(function(btn){
     btn.addEventListener('click',function(){startLevel(this.getAttribute('data-lv'));});
   });
+  // Writing stages
+  var wh='';
+  Object.entries(WSTAGES).forEach(function(e){
+    var k=e[0],v=e[1];
+    wh+='<button class="lvc" data-ws="'+k+'"><div class="lvst" style="background:'+v.fill+'"></div><div class="lvgr">'+v.grade+'</div><div class="lvn" style="color:'+v.color+'">'+v.name+'</div><div class="lvd">'+v.desc+'</div><div class="lvb" style="background:'+v.bg+';color:'+v.dark+'">'+v.prompts.length+' topics &middot; instant feedback</div><div class="lvshape" style="background:'+v.fill+'"></div></button>';
+  });
+  g('wsgrid').innerHTML=wh;
+  g('wsgrid').querySelectorAll('.lvc').forEach(function(btn){
+    btn.addEventListener('click',function(){startWriting(this.getAttribute('data-ws'));});
+  });
+}
+
+// ===================== WRITING FLOW =====================
+let wst={};
+function countWords(s){var t=(s||'').trim();return t?t.split(/\s+/).length:0;}
+
+function startWriting(stage){
+  var cfg=WSTAGES[stage];
+  var p=cfg.prompts[Math.floor(Math.random()*cfg.prompts.length)];
+  wst={stage:stage,cfg:cfg,prompt:p,text:'',t0:Date.now(),graded:false};
+  var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
+  showScr('s-write');
+  renderWritePrompt();
+}
+function renderWritePrompt(){
+  var p=wst.prompt,cfg=wst.cfg;
+  var h=''+
+    '<div class="wprompt-card">'+
+      '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">'+p.topic+'</span>'+
+      '<div class="wtitle">'+p.title+'</div>'+
+      '<div class="wtask">'+p.prompt+'</div>'+
+      '<div class="wmeta-row">'+
+        '<span class="wmeta-chip">&#9999;&#65039; '+(cfg.kind==='essay'?'Essay':'Article')+'</span>'+
+        '<span class="wmeta-chip">&#128101; '+p.audience+'</span>'+
+        '<span class="wmeta-chip">&#128221; Aim for '+p.minWords+'+ words</span>'+
+      '</div>'+
+    '</div>'+
+    '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
+    '<div class="wwrite-card">'+
+      '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div>'+
+      '<textarea class="wta" id="wta" placeholder="Start writing here. Take your time, plan your ideas, and write in full paragraphs...">'+(wst.text||'')+'</textarea>'+
+      '<div class="wwc-row">'+
+        '<span class="wwc" id="wwc">0 words</span>'+
+        '<button class="wsubmit" id="wsubbtn" disabled>Submit for feedback</button>'+
+      '</div>'+
+    '</div>';
+  g('wbody').innerHTML=h;
+  var ta=g('wta'),wc=g('wwc'),sb=g('wsubbtn');
+  function upd(){
+    var n=countWords(ta.value);wst.text=ta.value;
+    wc.innerHTML=n+' word'+(n===1?'':'s')+(n>=p.minWords?' &middot; <b>nice length!</b>':'');
+    wc.className='wwc'+(n>=p.minWords?' ok':'');
+    sb.disabled=n<20;
+  }
+  ta.addEventListener('input',upd);upd();
+  g('wshufbtn').addEventListener('click',function(){
+    var arr=cfg.prompts.filter(function(x){return x.title!==wst.prompt.title;});
+    wst.prompt=arr[Math.floor(Math.random()*arr.length)];wst.text='';renderWritePrompt();
+  });
+  sb.addEventListener('click',gradeWriting);
+}
+
+function renderGrading(){
+  g('wbody').innerHTML='<div class="wgrading"><div class="wspin"></div><div class="wgrading-t">Your '+(wst.cfg.kind==='essay'?'essay':'article')+' is being marked</div><div class="wgrading-s">Checking your structure, vocabulary and language...</div></div>';
+}
+
+// ===== LOCAL RULES-BASED EVALUATOR (Cambridge Checkpoint-aligned, age-flexible) =====
+var CONNECTORS=['because','however','therefore','although','furthermore','moreover','for example','for instance','in addition','in conclusion','firstly','secondly','finally','on the other hand','as a result','in my opinion','also','besides','despite','in spite of','whereas','while','since','so that','such as','to sum up','overall','first of all','to conclude','nevertheless','consequently','meanwhile','in contrast','what is more'];
+var ACADEMIC=['important','believe','opinion','argue','reason','evidence','example','suggest','consider','benefit','disadvantage','advantage','society','community','responsibility','experience','develop','improve','solution','problem','effect','impact','future','should','could','would','many people','some people'];
+
+function analyzeWriting(text,cfg){
+  var raw=text.trim();
+  var words=raw.split(/\s+/).filter(Boolean);
+  var nWords=words.length;
+  // Oraciones: separadas por . ! ? (al menos una letra antes)
+  var sentences=raw.split(/[.!?]+/).map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+  var nSent=sentences.length;
+  // Párrafos: bloques separados por línea en blanco o salto de línea
+  var paras=raw.split(/\n\s*\n|\n/).map(function(p){return p.trim();}).filter(function(p){return p.split(/\s+/).length>=12;});
+  var nPara=paras.length||1;
+  var lower=' '+raw.toLowerCase()+' ';
+  // Conectores y vocabulario
+  var connFound=CONNECTORS.filter(function(c){return lower.indexOf(' '+c+' ')>-1||lower.indexOf(' '+c+',')>-1;});
+  var nConn=connFound.length;
+  var acadFound=ACADEMIC.filter(function(a){return lower.indexOf(a)>-1;});
+  var nAcad=acadFound.length;
+  // Variedad de inicios de oración
+  var starts=sentences.map(function(s){var w=s.trim().split(/\s+/)[0];return (w||'').toLowerCase();});
+  var uniqStarts=starts.filter(function(v,i,a){return a.indexOf(v)===i;}).length;
+  var startVariety=nSent>0?uniqStarts/nSent:0;
+  // Largo promedio de oración
+  var avgSentLen=nSent>0?nWords/nSent:nWords;
+  // Riqueza léxica (palabras únicas / total)
+  var lw=words.map(function(w){return w.toLowerCase().replace(/[^a-záéíóúñü]/g,'');}).filter(Boolean);
+  var uniqW=lw.filter(function(v,i,a){return a.indexOf(v)===i;}).length;
+  var lexDiv=lw.length>0?uniqW/lw.length:0;
+  // ---- Mecánica / Accuracy ----
+  // Mayúscula al inicio de oración
+  var capOk=0;
+  sentences.forEach(function(s){if(/^[A-ZÁÉÍÓÚÑ]/.test(s.trim()))capOk++;});
+  var capRatio=nSent>0?capOk/nSent:1;
+  // 'i' minúscula como pronombre
+  var lowerI=(raw.match(/\bi\b/g)||[]).length;
+  // Puntuación final
+  var endsPunct=/[.!?]\s*$/.test(raw);
+  // Espacios dobles
+  var dblSpace=(raw.match(/ {2,}/g)||[]).length;
+  // Repetición excesiva de una palabra de contenido
+  var freq={};lw.forEach(function(w){if(w.length>4)freq[w]=(freq[w]||0)+1;});
+  var maxRep=0,repWord='';Object.keys(freq).forEach(function(k){if(freq[k]>maxRep){maxRep=freq[k];repWord=k;}});
+  var overRep=maxRep>=Math.max(5,Math.round(nWords/25));
+
+  return {nWords:nWords,nSent:nSent,nPara:nPara,nConn:nConn,connFound:connFound,nAcad:nAcad,
+    startVariety:startVariety,avgSentLen:avgSentLen,lexDiv:lexDiv,capRatio:capRatio,
+    lowerI:lowerI,endsPunct:endsPunct,dblSpace:dblSpace,overRep:overRep,repWord:repWord,maxRep:maxRep};
+}
+
+function scoreWriting(a,cfg){
+  var minW=cfg.kind==='essay'?180:110; // metas un poco flexibles para la edad
+  var goodW=cfg.kind==='essay'?230:150;
+  // ---- CONTENT (¿escribió suficiente y desarrollado?) ----
+  var content=40;
+  if(a.nWords>=minW*0.6)content+=15;
+  if(a.nWords>=minW)content+=20;
+  if(a.nWords>=goodW)content+=10;
+  if(a.nAcad>=3)content+=8;
+  if(a.nAcad>=6)content+=7;
+  // ---- ORGANISATION (párrafos, conectores, estructura) ----
+  var org=38;
+  if(a.nPara>=2)org+=14;
+  if(a.nPara>=3)org+=13;
+  if(a.nConn>=2)org+=12;
+  if(a.nConn>=4)org+=13;
+  if(a.nConn>=6)org+=10;
+  // ---- LANGUAGE (variedad de vocabulario y oraciones) ----
+  var lang=42;
+  if(a.lexDiv>=0.45)lang+=14;
+  if(a.lexDiv>=0.55)lang+=10;
+  if(a.startVariety>=0.5)lang+=14;
+  if(a.avgSentLen>=8&&a.avgSentLen<=24)lang+=12;
+  else if(a.avgSentLen>24)lang+=4; // oraciones muy largas: penaliza un poco
+  if(a.nAcad>=4)lang+=8;
+  // ---- ACCURACY (mecánica: mayúsculas, puntuación, repetición) ----
+  var acc=50;
+  if(a.capRatio>=0.7)acc+=16;
+  if(a.capRatio>=0.9)acc+=10;
+  if(a.endsPunct)acc+=8;
+  if(a.lowerI===0)acc+=8;
+  else if(a.lowerI<=2)acc+=4;
+  if(a.dblSpace===0)acc+=4;
+  if(!a.overRep)acc+=4;
+  // límites
+  function cl(x){return Math.max(0,Math.min(100,Math.round(x)));}
+  content=cl(content);org=cl(org);lang=cl(lang);acc=cl(acc);
+  // Penalización fuerte si es demasiado corto (no se puede evaluar bien)
+  if(a.nWords<minW*0.5){content=cl(content*0.6);org=cl(org*0.7);}
+  // Ponderación estilo Checkpoint: contenido y organización pesan más
+  var score=Math.round(content*0.30+org*0.28+lang*0.24+acc*0.18);
+  return {score:score,bands:{content:content,organisation:org,language:lang,accuracy:acc}};
+}
+
+function buildFeedback(a,sc,cfg){
+  var minW=cfg.kind==='essay'?180:110;
+  var strengths=[],improve=[];
+  // Fortalezas
+  if(a.nWords>=minW)strengths.push('You wrote a full-length '+(cfg.kind==='essay'?'essay':'article')+' of '+a.nWords+' words — great effort.');
+  if(a.nPara>=3)strengths.push('Good structure: your writing is organised into '+a.nPara+' clear paragraphs.');
+  else if(a.nPara>=2)strengths.push('You used more than one paragraph to organise your ideas.');
+  if(a.nConn>=4)strengths.push('Strong use of linking words ('+a.connFound.slice(0,3).join(', ')+'...) to connect your ideas.');
+  else if(a.nConn>=2)strengths.push('You used some linking words such as "'+a.connFound[0]+'".');
+  if(a.startVariety>=0.55)strengths.push('You vary how your sentences begin, which keeps the writing interesting.');
+  if(a.lexDiv>=0.5)strengths.push('You use a good range of different words rather than repeating the same ones.');
+  if(a.capRatio>=0.9&&a.endsPunct&&a.lowerI===0)strengths.push('Clean punctuation: capital letters and full stops are well controlled.');
+  // Mejoras
+  if(a.nWords<minW)improve.push('Try to write more — aim for at least '+minW+' words to fully develop your ideas.');
+  if(a.nPara<2)improve.push('Break your writing into paragraphs: one idea per paragraph makes it clearer.');
+  else if(a.nPara<3&&cfg.kind==='essay')improve.push('An essay works best with an introduction, body paragraphs and a conclusion — aim for 3+ paragraphs.');
+  if(a.nConn<3)improve.push('Add more linking words like "because", "however", "for example" to connect your ideas.');
+  if(a.startVariety<0.45)improve.push('Many of your sentences start the same way — try beginning some differently.');
+  if(a.lowerI>0)improve.push('Remember the pronoun "I" is always a capital letter ('+a.lowerI+' to fix).');
+  if(a.capRatio<0.8)improve.push('Start every sentence with a capital letter and end it with a full stop.');
+  if(a.overRep)improve.push('You repeat the word "'+a.repWord+'" quite often — try some synonyms.');
+  if(a.avgSentLen>26)improve.push('Some sentences are very long — break them up so each idea is clear.');
+  if(a.nAcad<3)improve.push('Use more topic vocabulary to develop your argument (reasons, examples, opinions).');
+  // garantizar mínimos
+  if(!strengths.length)strengths.push('You completed the writing task — well done for trying.');
+  if(!improve.length)improve.push('Keep practising to make your writing even longer and richer.');
+  // Comentario general
+  var sName2=(typeof sName!=='undefined'&&sName)?sName.split(' ')[0]:'there';
+  var summary;
+  if(sc.score>=80)summary='Excellent work, '+sName2+'! Your writing is well organised, the right length, and uses good language. Keep it up.';
+  else if(sc.score>=60)summary='Good effort, '+sName2+'. You have the main ingredients here — focus on the tips below and your next piece will be even stronger.';
+  else if(sc.score>=40)summary='A fair attempt, '+sName2+'. Look carefully at the tips below, especially length and structure, and try the task again.';
+  else summary='Keep going, '+sName2+'. Writing improves with practice — use the tips below to build a longer, clearer piece next time.';
+  return {score:sc.score,bands:sc.bands,strengths:strengths.slice(0,4),improve:improve.slice(0,4),summary:summary};
+}
+
+async function gradeWriting(){
+  var p=wst.prompt,cfg=wst.cfg;
+  if(countWords(wst.text)<20){toast('Please write a bit more first.');return;}
+  renderGrading();
+  // Pequeño retardo para que se vea el "marking" (mejor UX), todo local
+  setTimeout(async function(){
+    try{
+      var a=analyzeWriting(wst.text,cfg);
+      var sc=scoreWriting(a,cfg);
+      var fb=buildFeedback(a,sc,cfg);
+      wst.fb=fb;wst.graded=true;
+      renderFeedback(fb);
+      await doSave(sName,wst.stage,fb.score,wst.text,p.title,fb);
+      var sr=g('wsaverow');if(sr){sr.className='wsaverow saved';sr.innerHTML='<div class="sdot"></div>Saved — your teacher can see your writing and score.';}
+    }catch(e){
+      console.error('Grading error:',e);
+      g('wbody').innerHTML='<div class="werr"><strong>Something went wrong.</strong><br>Your writing is still here below — please try submitting again.</div>'+
+        '<div class="wwrite-card"><div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div><textarea class="wta" id="wta2">'+wst.text+'</textarea><div class="wwc-row"><span class="wwc"></span><button class="wsubmit" id="wretry">Try again</button></div></div>';
+      var ta2=g('wta2');if(ta2)ta2.addEventListener('input',function(){wst.text=ta2.value;});
+      var rb=g('wretry');if(rb)rb.addEventListener('click',gradeWriting);
+    }
+  },700);
+}
+
+function renderFeedback(fb){
+  var cfg=wst.cfg;
+  var sc=Math.max(0,Math.min(100,Math.round(fb.score)));
+  var cc=sc>=80?'#0f9e72':sc>=60?'#c47a10':'#c44a28';
+  var msg=sc>=80?'Excellent writing!':sc>=60?'Good work — solid effort.':sc>=40?'A fair attempt. Keep practising!':'Keep going — every draft makes you better.';
+  var secs=Math.round((Date.now()-wst.t0)/1000);
+  var bands=fb.bands||{};
+  var bandDefs=[['content','Content & Ideas'],['organisation','Organisation'],['language','Language'],['accuracy','Accuracy']];
+  var bh='';
+  bandDefs.forEach(function(b){
+    var v=Math.max(0,Math.min(100,Math.round(bands[b[0]]||0)));
+    var bc=v>=80?'#0f9e72':v>=60?'#c47a10':'#c44a28';
+    bh+='<div class="wbandc"><div class="bn">'+b[1]+'<span class="bsc" style="color:'+bc+'">'+v+'</span></div><div class="wbar"><div style="width:'+v+'%;background:'+bc+'"></div></div></div>';
+  });
+  var strengths=(fb.strengths||[]).map(function(s){return '<div class="wfb-li good">'+s+'</div>';}).join('')||'<div class="wfb-li good">You completed the task — well done.</div>';
+  var improve=(fb.improve||[]).map(function(s){return '<div class="wfb-li work">'+s+'</div>';}).join('')||'<div class="wfb-li work">Keep practising to build longer, clearer paragraphs.</div>';
+  var h=''+
+    '<div class="wfb-top">'+
+      '<div class="wfb-circ" style="border-color:'+cc+'"><div class="wfb-num" style="color:'+cc+'">'+sc+'</div><div class="wfb-lbl" style="color:'+cc+'">out of 100</div></div>'+
+      '<div class="wfb-msg">'+msg+'</div>'+
+      '<div class="wfb-sub">'+cfg.name+' &middot; '+countWords(wst.text)+' words &middot; '+secs+'s</div>'+
+    '</div>'+
+    '<div class="wsaverow" id="wsaverow"><div class="sdot"></div>Saving your score...</div>'+
+    '<div class="wband">'+bh+'</div>'+
+    (fb.summary?'<div class="wfb-summary"><b>Examiner\'s comment:</b> '+fb.summary+'</div>':'')+
+    '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#3daa6f"></span>What you did well</div>'+strengths+'</div>'+
+    '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#c47a10"></span>How to improve</div>'+improve+'</div>'+
+    '<div class="actrow"><button class="actbtn" id="wagain">Try another topic</button><button class="actbtn pri" id="whome">Main menu</button></div>';
+  g('wbody').innerHTML=h;
+  g('wagain').addEventListener('click',function(){startWriting(wst.stage);});
+  g('whome').addEventListener('click',function(){showScr('s-home');});
 }
 
 function startLevel(lv){
@@ -528,6 +949,7 @@ document.addEventListener('DOMContentLoaded',function(){
   initName();
   initTeacher();
   g('mainmenubtn').addEventListener('click',function(){showScr('s-name');});
+  g('wbackbtn').addEventListener('click',function(){showScr('s-home');});
   // back button disabled during game
 });
 </script>
