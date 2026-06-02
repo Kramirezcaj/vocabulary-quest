@@ -343,7 +343,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <p class="hdesc">Choose your level. 5 questions drawn randomly from 20 — different order for every student.</p>
   <div class="lvgrid" id="lvgrid"></div>
   <div class="wsec-hd"><div class="wsec-line"></div><span>Writing Challenges</span><div class="wsec-line"></div></div>
-  <p class="hdesc" style="margin-top:-4px">Write a real article or essay on a random topic. Get an instant score and feedback on your structure, vocabulary and writing. Your teacher can read everything you write.</p>
+  <p class="hdesc" style="margin-top:-4px">Write a real article or essay on a random topic. It is marked against the Cambridge writing rubric — you must write it yourself: the page locks while you write, pasting is disabled, and leaving the page is reported to your teacher.</p>
   <div class="lvgrid" id="wsgrid"></div>
   <button class="hmenu-btn" id="mainmenubtn">&#10005; Exit game</button>
   <p class="hft">No download required &middot; Works on any device &middot; Free</p>
@@ -554,7 +554,8 @@ function renderDash(rows){
     var tm=new Date(r.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     var pff=pf(r.score);
     var readBtn=r.essay_text?' <button class="readbtn" data-row="'+idx+'">&#128196; Read</button>':'';
-    return '<tr><td style="font-weight:700">'+r.student+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span>'+readBtn+'</td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
+    var flag='';try{var fbp=r.feedback?JSON.parse(r.feedback):null;if(fbp&&fbp.integrity){var ts=fbp.integrity.tabSwitches||0,pb=fbp.integrity.pasteBlocked||0;if(ts>0||pb>0)flag=' <span title="Left the page '+ts+' time(s); paste blocked '+pb+' time(s)" style="color:#c44a28;font-weight:900;cursor:help">&#9888;</span>';}}catch(_){}
+    return '<tr><td style="font-weight:700">'+r.student+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span>'+flag+readBtn+'</td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
   }).join('');
   g('dtbl').innerHTML='<table class="stbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>'+trs+'</tbody></table>';
   g('dtbl').querySelectorAll('.readbtn').forEach(function(b){
@@ -565,12 +566,25 @@ function openEssay(r){
   var fb=null;try{fb=r.feedback?JSON.parse(r.feedback):null;}catch(_){}
   var fbh='';
   if(fb&&fb.bands){
-    fbh='<div class="emb-bands">'+
+    if(fb.rubricMark!=null){
+      var bc=fb.band==='Exceeding'||fb.band==='Excelling'||fb.band==='Meeting'?'#0f9e72':fb.band==='Developing'?'#c47a10':'#c44a28';
+      fbh+='<div style="font-size:14px;font-weight:800;margin:4px 0 10px;color:'+bc+'">Cambridge rubric: '+fb.rubricMark+'/'+fb.rubricMax+' &middot; '+fb.band+'</div>';
+    }
+    fbh+='<div class="emb-bands">'+
       ['content','organisation','language','accuracy'].map(function(k){
         var v=fb.bands[k]||0;var c=v>=80?'#0f9e72':v>=60?'#c47a10':'#c44a28';
         return '<div class="emb-b"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><b style="color:'+c+'">'+v+'</b></div>';
       }).join('')+'</div>';
+    if(fb.crit){
+      fbh+='<div style="margin:10px 0;border:1px solid var(--bd);border-radius:10px;overflow:hidden">'+Object.keys(fb.crit).map(function(k){
+        var v=fb.crit[k];var c=v>=4?'#0f9e72':v>=3?'#c47a10':'#c44a28';
+        return '<div style="display:flex;justify-content:space-between;padding:6px 11px;font-size:12px;border-bottom:1px solid var(--bd)"><span>'+k+'</span><b style="color:'+c+'">'+v+'/5</b></div>';
+      }).join('')+'</div>';
+    }
     if(fb.summary)fbh+='<div class="emb-sum">'+fb.summary+'</div>';
+  }
+  if(fb&&fb.integrity&&((fb.integrity.tabSwitches||0)>0||(fb.integrity.pasteBlocked||0)>0)){
+    fbh+='<div style="margin:8px 0;padding:10px 12px;border-radius:10px;background:var(--er-bg);border:1.5px solid var(--er-b);color:var(--er-t);font-size:12.5px;font-weight:700">&#9888; Integrity alert: left the page <b>'+(fb.integrity.tabSwitches||0)+'</b> time(s), paste blocked <b>'+(fb.integrity.pasteBlocked||0)+'</b> time(s) while writing.</div>';
   }
   var esc=(r.essay_text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   g('emodal').innerHTML='<div class="emodal-card"><div class="emodal-top"><div><div class="emodal-name">'+r.student+'</div><div class="emodal-meta">'+(LVN[r.level]||r.level)+(r.essay_title?' &middot; '+r.essay_title:'')+' &middot; Score: <b>'+r.score+'</b>/100</div></div><button class="emodal-x" id="emx">&#10005;</button></div>'+fbh+'<div class="emodal-lbl">Student\'s writing</div><div class="emodal-text">'+esc+'</div></div>';
@@ -606,12 +620,46 @@ function buildHome(){
 let wst={};
 function countWords(s){var t=(s||'').trim();return t?t.split(/\s+/).length:0;}
 
+// ===================== ANTI-TRAMPA (lockdown durante la escritura) =====================
+var wLock=false, wLockInit=false, lastLeave=0;
+function noteLeave(reason){
+  if(!wLock||!wst.integrity)return;
+  var now=Date.now();
+  if(now-lastLeave<800)return;            // evita contar doble (blur + visibilitychange)
+  lastLeave=now;
+  wst.integrity.tabSwitches++;
+  wst.integrity.events.push({t:Math.round((now-wst.t0)/1000),type:reason});
+  toast('\u26A0 You left the page. This is recorded for your teacher.',2800);
+}
+function blockClip(e){
+  if(!wLock)return;
+  e.preventDefault();
+  if(e.type==='paste'){ if(wst.integrity)wst.integrity.pasteBlocked++; toast('\u26A0 Pasting is disabled — you must write it yourself.',2400); }
+  else toast('\u26A0 Copying is disabled during writing.',2000);
+}
+function initWriteLock(){
+  if(wLockInit)return; wLockInit=true;
+  document.addEventListener('visibilitychange',function(){ if(document.hidden)noteLeave('tab-hidden'); });
+  window.addEventListener('blur',function(){ noteLeave('window-blur'); });
+  ['paste','copy','cut'].forEach(function(ev){ document.addEventListener(ev,blockClip,true); });
+  document.addEventListener('contextmenu',function(e){ if(wLock)e.preventDefault(); });
+  document.addEventListener('drop',function(e){ if(wLock)e.preventDefault(); },true);
+  window.addEventListener('beforeunload',function(e){ if(wLock){ e.preventDefault(); e.returnValue=''; return ''; } });
+  window.addEventListener('popstate',function(){ if(wLock){ try{history.pushState({w:1},'');}catch(_){} toast('\u26A0 You cannot go back until you submit.',2600); } });
+}
+function setWriteLock(on){
+  wLock=on;
+  var bk=g('wbackbtn'); if(bk)bk.style.display=on?'none':'';
+  if(on){ try{history.pushState({w:1},'');}catch(_){} }
+}
+
 function startWriting(stage){
   var cfg=WSTAGES[stage];
   var p=cfg.prompts[Math.floor(Math.random()*cfg.prompts.length)];
-  wst={stage:stage,cfg:cfg,prompt:p,text:'',t0:Date.now(),graded:false};
+  wst={stage:stage,cfg:cfg,prompt:p,text:'',t0:Date.now(),graded:false,integrity:{tabSwitches:0,pasteBlocked:0,events:[]}};
   var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
   showScr('s-write');
+  setWriteLock(true);
   renderWritePrompt();
 }
 function renderWritePrompt(){
@@ -628,6 +676,7 @@ function renderWritePrompt(){
       '</div>'+
     '</div>'+
     '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
+    '<div style="display:flex;align-items:center;gap:8px;background:var(--am-l);border:1.5px solid var(--am);color:var(--am-d);border-radius:12px;padding:9px 13px;margin-bottom:12px;font-size:12.5px;font-weight:700">&#128274; Exam mode: don\'t leave this page or switch tabs. Pasting is off and your writing must be your own.</div>'+
     '<div class="wwrite-card">'+
       '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div>'+
       '<textarea class="wta" id="wta" placeholder="Start writing here. Take your time, plan your ideas, and write in full paragraphs...">'+(wst.text||'')+'</textarea>'+
@@ -715,109 +764,211 @@ function analyzeWriting(text,cfg,prompt){
   var endsPunct=/[.!?]\s*$/.test(raw);
   var dblSpace=(raw.match(/ {2,}/g)||[]).length;
 
+  // ---- PUNTUACIÓN DE NIVEL ALTO (rúbrica crit. 8 / 10) ----
+  var commaCount=(raw.match(/,/g)||[]).length;
+  var apostrophe=(raw.match(/['']/g)||[]).length;
+  var semicolon=(raw.match(/;/g)||[]).length;
+  var colon=(raw.match(/:/g)||[]).length;
+  var dash=(raw.match(/ [-–—] |[-–—]{2,}/g)||[]).length;
+  var qMarks=(raw.match(/\?/g)||[]).length;          // posible pregunta retórica
+  var highPunct=semicolon+colon+dash;
+
+  // ---- REGISTRO / FORMALIDAD (crit. 1) : contracciones = informal ----
+  var contractions=(lower.match(/\b(can't|won't|don't|doesn't|didn't|isn't|aren't|wasn't|weren't|i'm|you're|we're|they're|it's|that's|i've|we've|gonna|wanna|kinda|lol|stuff|things|a lot of)\b/g)||[]).length;
+
+  // ---- ARGUMENTO / CONTRAARGUMENTO (crit. 2 / 8) ----
+  var ARG=['however','on the other hand','some argue','some people argue','others believe','others think','critics','opponents','despite this','despite','although','even though','while some','it could be argued','some may say','admittedly','nevertheless','in contrast','whereas','on the contrary','that said','one could argue'];
+  var argFound=ARG.filter(function(c){return lower.indexOf(' '+c+' ')>-1||lower.indexOf(' '+c+',')>-1;});
+  var nArg=argFound.length;
+  var positionWords=(lower.match(/\b(i believe|in my opinion|i think|i would argue|i am convinced|it is clear that|clearly|undoubtedly|i strongly|my view|i feel that)\b/g)||[]).length;
+
+  // ---- EVIDENCIA / DESARROLLO (crit. 3) ----
+  var EV=['for example','for instance','such as','according to','research shows','studies show','study','statistics','evidence','data','recent','in fact','to illustrate','this shows','this proves','for this reason','because of this'];
+  var evFound=EV.filter(function(c){return lower.indexOf(c)>-1;});
+  var nEv=evFound.length;
+  var hasNumbers=/\b\d{1,3}( ?%| percent| per cent|,\d{3}|\d)?\b/.test(raw);
+
+  // ---- ORACIÓN COMPLEJA (crit. 6) ----
+  var SUB=['because','although','though','while','whereas','since','unless','until','whenever','wherever','if ','even if','as long as','provided that','so that','in order to','despite','rather than'];
+  var subFound=SUB.filter(function(c){return lower.indexOf(' '+c)>-1;});
+  var relPron=(lower.match(/\b(which|who|whom|whose|that)\b/g)||[]).length;
+  var complexScore=subFound.length+Math.min(relPron,4);
+
+  // ---- CONCLUSIÓN (crit. 4) ----
+  var CONC=['in conclusion','to conclude','to sum up','in summary','overall','to summarise','to summarize','all in all','in short','ultimately'];
+  var hasConclusion=CONC.some(function(c){return lower.indexOf(c)>-1;});
+
+  // ---- VOCABULARIO AMBICIOSO (crit. 6 / 7) ----
+  var ambitious=lw.filter(function(w){return w.length>=8;}).length;
+  var ambitiousRatio=lw.length>0?ambitious/lw.length:0;
+
+  // ---- POSIBLES SIGNOS DE INCORRECCIÓN (crit. grammar) ----
+  var runOns=sentences.filter(function(s){return s.split(/\s+/).length>40;}).length;
+  var commaSplices=(raw.match(/,\s*(i|we|he|she|they|it|you)\s/gi)||[]).length;
+
   return {nWords:nWords,nSent:nSent,nPara:nPara,nConn:nConn,connFound:connFound,nAcad:nAcad,
     topicRatio:topicRatio,topicHits:topicHits,topicMatched:topicMatched,topicDensity:topicDensity,
     startVariety:startVariety,avgSentLen:avgSentLen,lexDiv:lexDiv,fillerRatio:fillerRatio,
     capRatio:capRatio,lowerI:lowerI,endsPunct:endsPunct,dblSpace:dblSpace,
-    overRep:overRep,repWord:repWord,maxRep:maxRep,maxBi:maxBi};
+    overRep:overRep,repWord:repWord,maxRep:maxRep,maxBi:maxBi,
+    commaCount:commaCount,apostrophe:apostrophe,semicolon:semicolon,colon:colon,dash:dash,qMarks:qMarks,highPunct:highPunct,
+    contractions:contractions,nArg:nArg,argFound:argFound,positionWords:positionWords,
+    nEv:nEv,evFound:evFound,hasNumbers:hasNumbers,subFound:subFound,relPron:relPron,complexScore:complexScore,
+    hasConclusion:hasConclusion,ambitious:ambitious,ambitiousRatio:ambitiousRatio,runOns:runOns,commaSplices:commaSplices};
 }
 
+// Cada criterio se puntúa 0–5 EXACTAMENTE como la rúbrica Cambridge (5=Exceeding,4=Meeting,2-3=Developing,0-1=Emerging)
 function scoreWriting(a,cfg){
-  var minW=cfg.kind==='essay'?180:110;
-  var goodW=cfg.kind==='essay'?240:150;
-  var offTopic=a.topicRatio<0.18; // menos del 18% de las palabras clave del tema
-  // ---- CONTENT (tema + desarrollo) ----
-  var content=18;
-  if(a.nWords>=minW*0.6)content+=10;
-  if(a.nWords>=minW)content+=14;
-  if(a.nWords>=goodW)content+=6;
-  // El tema es decisivo para Content
-  content+=Math.round(a.topicRatio*34); // hasta +34 si toca bien el tema
-  if(a.nAcad>=4)content+=6;
-  if(a.nAcad>=7)content+=4;
-  if(a.fillerRatio>0.42)content-=14; // mucho relleno
-  if(a.maxBi>=4)content-=8; // frases repetidas
-  // ---- ORGANISATION ----
-  var org=24;
-  if(a.nPara>=2)org+=12;
-  if(a.nPara>=3)org+=14;
-  if(a.nConn>=2)org+=10;
-  if(a.nConn>=4)org+=14;
-  if(a.nConn>=6)org+=8;
-  if(a.nSent>=5)org+=8;
-  if(a.fillerRatio>0.42)org-=8;
-  // ---- LANGUAGE ----
-  var lang=28;
-  if(a.lexDiv>=0.45)lang+=14;
-  if(a.lexDiv>=0.55)lang+=12;
-  if(a.lexDiv<0.35)lang-=10; // vocabulario muy pobre
-  if(a.startVariety>=0.5)lang+=14;
-  if(a.startVariety<0.35)lang-=6;
-  if(a.avgSentLen>=8&&a.avgSentLen<=24)lang+=12;
-  else if(a.avgSentLen>26)lang+=2;
-  if(a.nAcad>=4)lang+=8;
-  if(a.fillerRatio>0.42)lang-=10;
-  // ---- ACCURACY ----
-  var acc=40;
-  if(a.capRatio>=0.7)acc+=16;
-  if(a.capRatio>=0.9)acc+=8;
-  if(a.endsPunct)acc+=8;
-  if(a.lowerI===0)acc+=10;
-  else if(a.lowerI<=2)acc+=4;
-  else acc-=4;
-  if(a.dblSpace===0)acc+=4;
-  if(!a.overRep)acc+=6;
-  else acc-=6;
-  function cl(x){return Math.max(0,Math.min(100,Math.round(x)));}
-  content=cl(content);org=cl(org);lang=cl(lang);acc=cl(acc);
-  // Penalizaciones globales fuertes
-  if(a.nWords<minW*0.5){content=cl(content*0.55);org=cl(org*0.65);}
-  if(offTopic){content=cl(content*0.35);org=cl(org*0.7);lang=cl(lang*0.8);}
-  // Ponderación Checkpoint: contenido y organización mandan
-  var score=Math.round(content*0.34+org*0.27+lang*0.22+acc*0.17);
-  // Fuera de tema: ya penalizado fuerte en las bandas (Content/Org/Lang), el resto sigue contando
-  return {score:cl(score),bands:{content:content,organisation:org,language:lang,accuracy:acc},offTopic:offTopic};
+  function c5(x){return Math.max(0,Math.min(5,Math.round(x)));}
+  var essay=cfg.kind==='essay';
+  var minW=essay?180:110, goodW=essay?240:150;
+  var offTopic=a.topicRatio<0.18;
+  var ADV=['however','furthermore','therefore','moreover','consequently','nevertheless','on the other hand','as a result','in contrast','whereas','despite','nonetheless','what is more'];
+  var advConn=a.connFound.filter(function(c){return ADV.indexOf(c)>-1;}).length;
+  var parallel=(' '+a.connFound.join(' ')+' ').indexOf('not only')>-1 || a.nArg>=2;
+  var crit={};
+
+  if(!essay){
+    // ===== STAGE 8 — ARTICLE (8 criterios /40) =====
+    // 1. Audience & Purpose
+    var t1=a.topicRatio>=0.5?3:a.topicRatio>=0.3?2:a.topicRatio>=0.18?1:0;
+    if(a.nWords>=minW)t1+=1; if(a.nWords>=goodW)t1+=1; if(a.contractions>4)t1-=1;
+    // 2. Content & Ideas
+    var t2=a.topicRatio>=0.5?2:a.topicRatio>=0.3?1:0;
+    if(a.topicDensity>=0.05)t2+=1; if(a.nWords>=minW)t2+=1; if(a.nWords>=goodW)t2+=1; if(a.nAcad>=5)t2+=1;
+    if(a.fillerRatio>0.42)t2-=2; if(a.maxBi>=4)t2-=1;
+    // 3. Structure & Paragraphing
+    var t3=a.nPara>=4?4:a.nPara>=3?3:a.nPara>=2?2:0; if(a.nSent>=6&&a.nPara>=2)t3+=1;
+    // 4. Cohesion & Linking
+    var t4=a.nConn>=6?4:a.nConn>=4?3:a.nConn>=2?2:a.nConn>=1?1:0; if(advConn>=2)t4+=1;
+    // 5. Sentence Variety
+    var t5=0; if(a.startVariety>=0.6)t5+=2;else if(a.startVariety>=0.45)t5+=1;
+    if(a.complexScore>=4)t5+=2;else if(a.complexScore>=2)t5+=1;
+    if(a.avgSentLen>=9&&a.avgSentLen<=24)t5+=1; if(a.runOns>0)t5-=1;
+    // 6. Vocabulary
+    var t6=0; if(a.lexDiv>=0.55)t6+=2;else if(a.lexDiv>=0.45)t6+=1;else if(a.lexDiv<0.35)t6-=1;
+    if(a.ambitiousRatio>=0.12)t6+=2;else if(a.ambitiousRatio>=0.07)t6+=1; if(a.nAcad>=5)t6+=1;
+    // 7. Grammar Accuracy
+    var t7=5; if(a.lowerI>0)t7-=1; if(a.lowerI>3)t7-=1; if(a.runOns>=1)t7-=1; if(a.runOns>=3)t7-=1; if(a.commaSplices>=3)t7-=1; if(a.overRep)t7-=1;
+    // 8. Spelling & Punctuation
+    var t8=2; if(a.capRatio>=0.9)t8+=2;else if(a.capRatio>=0.7)t8+=1;else t8-=1;
+    if(a.endsPunct)t8+=1; if(a.commaCount>=Math.max(2,a.nSent*0.5))t8+=1; if(a.dblSpace>2)t8-=1;
+    crit={'1. Audience & Purpose':c5(t1),'2. Content & Ideas':c5(t2),'3. Structure & Paragraphing':c5(t3),'4. Cohesion & Linking':c5(t4),'5. Sentence Variety':c5(t5),'6. Vocabulary':c5(t6),'7. Grammar Accuracy':c5(t7),'8. Spelling & Punctuation':c5(t8)};
+  } else {
+    // ===== STAGE 9 — ESSAY (10 criterios /50) =====
+    // 1. Audience, Purpose & Register
+    var s1=a.topicRatio>=0.5?2:a.topicRatio>=0.3?1:0; if(a.nWords>=minW)s1+=1;
+    if(a.contractions===0)s1+=2;else if(a.contractions<=2)s1+=1;else s1-=1;
+    // 2. Argument & Position
+    var s2=0; if(a.positionWords>=1)s2+=1; if(a.nArg>=2)s2+=2;else if(a.nArg>=1)s2+=1; if(a.nAcad>=6)s2+=1; if(a.nWords>=goodW)s2+=1;
+    // 3. Evidence & Development
+    var s3=0; if(a.nEv>=3)s3+=2;else if(a.nEv>=1)s3+=1; if(a.hasNumbers)s3+=1; if(a.nWords>=goodW)s3+=1; if(a.topicDensity>=0.05)s3+=1; if(a.fillerRatio>0.42)s3-=2;
+    // 4. Structure & Paragraphing
+    var s4=a.nPara>=4?3:a.nPara>=3?2:a.nPara>=2?1:0; if(a.hasConclusion)s4+=1; if(a.nPara>=4&&a.hasConclusion)s4+=1;
+    // 5. Cohesion & Linking
+    var s5=a.nConn>=8?4:a.nConn>=6?3:a.nConn>=4?2:a.nConn>=2?1:0; if(advConn>=3)s5+=1;
+    // 6. Sentence Control & Variety
+    var s6=0; if(a.startVariety>=0.6)s6+=2;else if(a.startVariety>=0.45)s6+=1;
+    if(a.complexScore>=5)s6+=2;else if(a.complexScore>=3)s6+=1; if(a.avgSentLen>=10&&a.avgSentLen<=26)s6+=1; if(a.runOns>=2)s6-=1;
+    // 7. Vocabulary & Language Choices
+    var s7=0; if(a.lexDiv>=0.6)s7+=2;else if(a.lexDiv>=0.48)s7+=1;else if(a.lexDiv<0.38)s7-=1;
+    if(a.ambitiousRatio>=0.14)s7+=2;else if(a.ambitiousRatio>=0.09)s7+=1; if(a.nAcad>=6)s7+=1;
+    // 8. Rhetorical & Stylistic Devices
+    var s8=0; if(a.qMarks>=1)s8+=1; if(a.nArg>=1)s8+=1; if(parallel)s8+=1; if(a.highPunct>=1)s8+=1; if(a.qMarks>=2||(a.qMarks>=1&&parallel))s8+=1;
+    // 9. Grammar Accuracy
+    var s9=5; if(a.lowerI>0)s9-=1; if(a.lowerI>3)s9-=1; if(a.runOns>=1)s9-=1; if(a.runOns>=3)s9-=1; if(a.commaSplices>=3)s9-=1; if(a.overRep)s9-=1;
+    // 10. Spelling, Punctuation & Presentation
+    var s10=1; if(a.capRatio>=0.9)s10+=2;else if(a.capRatio>=0.75)s10+=1;else s10-=1;
+    if(a.endsPunct)s10+=1; if(a.highPunct>=2)s10+=2;else if(a.highPunct>=1)s10+=1; if(a.dblSpace>2)s10-=1;
+    crit={'1. Audience, Purpose & Register':c5(s1),'2. Argument & Position':c5(s2),'3. Evidence & Development':c5(s3),'4. Structure & Paragraphing':c5(s4),'5. Cohesion & Linking':c5(s5),'6. Sentence Control & Variety':c5(s6),'7. Vocabulary & Language':c5(s7),'8. Rhetorical & Stylistic Devices':c5(s8),'9. Grammar Accuracy':c5(s9),'10. Spelling, Punctuation & Presentation':c5(s10)};
+  }
+
+  var vals=Object.keys(crit).map(function(k){return crit[k];});
+  // Fuera de tema: tope duro en relevancia/contenido (rúbrica Emerging)
+  if(offTopic){
+    var keys=Object.keys(crit), hard=essay?3:2;
+    for(var i=0;i<hard;i++)crit[keys[i]]=Math.min(crit[keys[i]],1);
+    vals=keys.map(function(k){return crit[k];});
+  }
+  var rubricMark=vals.reduce(function(s,x){return s+x;},0);
+  var rubricMax=essay?50:40;
+  if(offTopic)rubricMark=Math.round(rubricMark*0.6);
+  var score=Math.round(rubricMark/rubricMax*100);
+
+  // Banda Cambridge según la nota de la rúbrica
+  var band;
+  if(essay)band=rubricMark>=45?'Excelling':rubricMark>=40?'Meeting':rubricMark>=30?'Developing':rubricMark>=20?'Emerging':'Below standard';
+  else band=rubricMark>=36?'Exceeding':rubricMark>=32?'Meeting':rubricMark>=24?'Developing':rubricMark>=16?'Emerging':'Below standard';
+
+  // Agrupación en 4 bandas (0–100) para la UI
+  var v=crit; function avg(arr){return Math.round(arr.reduce(function(s,x){return s+x;},0)/arr.length*20);}
+  var bands;
+  if(!essay){
+    bands={content:avg([v['1. Audience & Purpose'],v['2. Content & Ideas']]),
+      organisation:avg([v['3. Structure & Paragraphing'],v['4. Cohesion & Linking']]),
+      language:avg([v['5. Sentence Variety'],v['6. Vocabulary']]),
+      accuracy:avg([v['7. Grammar Accuracy'],v['8. Spelling & Punctuation']])};
+  }else{
+    bands={content:avg([v['1. Audience, Purpose & Register'],v['2. Argument & Position'],v['3. Evidence & Development']]),
+      organisation:avg([v['4. Structure & Paragraphing'],v['5. Cohesion & Linking']]),
+      language:avg([v['6. Sentence Control & Variety'],v['7. Vocabulary & Language'],v['8. Rhetorical & Stylistic Devices']]),
+      accuracy:avg([v['9. Grammar Accuracy'],v['10. Spelling, Punctuation & Presentation']])};
+  }
+  return {score:Math.max(0,Math.min(100,score)),rubricMark:rubricMark,rubricMax:rubricMax,band:band,bands:bands,crit:crit,offTopic:offTopic};
 }
 
 function buildFeedback(a,sc,cfg){
-  var minW=cfg.kind==='essay'?180:110;
-  var strengths=[],improve=[];
-  // Aviso de fuera de tema primero
-  if(sc.offTopic){
-    improve.push('Your writing does not seem to be about the topic — read the task again and write about it.');
-  }
-  // Fortalezas
-  if(!sc.offTopic&&a.topicRatio>=0.4)strengths.push('You stayed on topic and used relevant ideas about the subject.');
-  if(a.nWords>=minW)strengths.push('You wrote a full-length '+(cfg.kind==='essay'?'essay':'article')+' of '+a.nWords+' words.');
-  if(a.nPara>=3)strengths.push('Good structure: organised into '+a.nPara+' clear paragraphs.');
-  else if(a.nPara>=2)strengths.push('You used more than one paragraph to organise your ideas.');
-  if(a.nConn>=4)strengths.push('Strong use of linking words ('+a.connFound.slice(0,3).join(', ')+'...).');
-  else if(a.nConn>=2)strengths.push('You used some linking words such as "'+a.connFound[0]+'".');
-  if(a.startVariety>=0.55&&a.fillerRatio<0.4)strengths.push('You vary how your sentences begin, which keeps it interesting.');
-  if(a.lexDiv>=0.5)strengths.push('You use a good range of different words.');
-  if(a.capRatio>=0.9&&a.endsPunct&&a.lowerI===0)strengths.push('Clean punctuation and capital letters.');
-  // Mejoras
-  if(!sc.offTopic&&a.topicRatio<0.4)improve.push('Use more words and ideas directly about the topic to stay focused.');
-  if(a.nWords<minW)improve.push('Write more — aim for at least '+minW+' words to develop your ideas fully.');
-  if(a.fillerRatio>0.42||a.maxBi>=4)improve.push('Avoid repeating the same words and phrases to fill space — add new ideas instead.');
-  if(a.nPara<2)improve.push('Break your writing into paragraphs: one idea per paragraph.');
-  else if(a.nPara<3&&cfg.kind==='essay')improve.push('An essay needs an introduction, body paragraphs and a conclusion (3+ paragraphs).');
-  if(a.nConn<3)improve.push('Add linking words like "because", "however", "for example" to connect ideas.');
-  if(a.startVariety<0.45)improve.push('Many sentences start the same way — begin some differently.');
-  if(a.lowerI>0)improve.push('The pronoun "I" is always a capital letter ('+a.lowerI+' to fix).');
-  if(a.capRatio<0.8)improve.push('Start every sentence with a capital and end with a full stop.');
-  if(a.lexDiv<0.35)improve.push('Try to use more varied vocabulary instead of repeating simple words.');
-  // mínimos
-  if(!strengths.length)strengths.push('You completed the task — keep practising to improve.');
-  if(!improve.length)improve.push('Keep practising to make your writing even richer.');
+  var essay=cfg.kind==='essay';
+  var minW=essay?180:110;
   var sName2=(typeof sName!=='undefined'&&sName)?sName.split(' ')[0]:'there';
+  var crit=sc.crit||{};
+  var keys=Object.keys(crit);
+  // Criterios fuertes (4-5) y débiles (<=2), citando el número como pide la rúbrica
+  var strong=keys.filter(function(k){return crit[k]>=4;});
+  var weak=keys.filter(function(k){return crit[k]<=2;}).sort(function(x,y){return crit[x]-crit[y];});
+  var strengths=[],improve=[];
+
+  if(sc.offTopic){
+    improve.push('Your writing is off-topic. Re-read the task and write specifically about it — this caps your whole mark until fixed.');
+  }
+  // Fortalezas reales
+  strong.slice(0,3).forEach(function(k){strengths.push('Strong on '+k.replace(/^\d+\.\s*/,'')+' ('+crit[k]+'/5).');});
+  if(!sc.offTopic&&a.nWords>=minW&&strengths.length<3)strengths.push('Full-length piece: '+a.nWords+' words.');
+
+  // Mejoras: cita el criterio débil + acción concreta
+  var tips={
+    'Audience':'Keep the tone right for the reader from the first line and match the genre.',
+    'Content':'Develop each idea with a specific example instead of general statements.',
+    'Argument':'Take a clear position AND answer the opposing view ("Some argue... however...").',
+    'Evidence':'Back up points with concrete evidence — examples, facts or "for instance...".',
+    'Structure':essay?'An essay needs intro + body paragraphs + a clear conclusion (4+ paragraphs).':'Use a clear opening, middle and ending, one idea per paragraph (3+ paragraphs).',
+    'Cohesion':'Use a wider range of linkers: however, furthermore, as a result, on the other hand.',
+    'Sentence':'Vary sentence openings and use complex sentences (because, although, which...).',
+    'Vocabulary':'Reach for more precise, ambitious vocabulary instead of repeating safe words.',
+    'Rhetorical':'Add a rhetorical question, a contrast or "not only... but also..." for effect.',
+    'Grammar':'Re-read for tense, agreement and run-on sentences before submitting.',
+    'Spelling':essay?'Use higher-level punctuation accurately: semicolons, colons or dashes.':'Capital letters, full stops and commas in every sentence; capital "I" always.'
+  };
+  weak.slice(0,3).forEach(function(k){
+    var label=k.replace(/^\d+\.\s*/,'');var key=Object.keys(tips).find(function(t){return label.indexOf(t)>-1;});
+    improve.push('Criterion '+k.split('.')[0]+' ('+label+', '+crit[k]+'/5): '+(tips[key]||'review this criterion.'));
+  });
+  if(a.lowerI>0)improve.push('The pronoun "I" is always a capital letter ('+a.lowerI+' to fix).');
+
+  if(!strengths.length)strengths.push('You completed the task — now push the weak criteria up.');
+  if(!improve.length)improve.push('Solid across the board — aim for the band above next time.');
+
+  var band=sc.band, mark=sc.rubricMark, max=sc.rubricMax;
   var summary;
-  if(sc.offTopic)summary='Hi '+sName2+' — this writing does not seem to match the topic. Please read the task carefully and write about it, then submit again.';
-  else if(sc.score>=80)summary='Excellent work, '+sName2+'! Well organised, on topic, the right length, and good language.';
-  else if(sc.score>=65)summary='Good effort, '+sName2+'. You have the main ingredients — focus on the tips below to push it higher.';
-  else if(sc.score>=45)summary='A fair attempt, '+sName2+'. Look carefully at the tips below, especially staying on topic, length and structure.';
-  else summary='Keep going, '+sName2+'. Use the tips below to write a longer, clearer piece that stays on the topic.';
-  return {score:sc.score,bands:sc.bands,strengths:strengths.slice(0,4),improve:improve.slice(0,4),summary:summary,offTopic:sc.offTopic};
+  if(sc.offTopic)summary='Hi '+sName2+' — this does not match the topic, so the mark is capped. Read the task carefully and write about it, then submit again.';
+  else summary='Marked against the Cambridge Stage '+(essay?'9':'8')+' writing rubric: '+mark+'/'+max+' — '+band+'. '+
+    (band==='Exceeding'||band==='Excelling'||band==='Meeting'?'Strong work, '+sName2+'. ':'')+
+    (band==='Developing'?'You are developing, '+sName2+' — the criteria below are what stand between you and "Meeting". ':'')+
+    ((band==='Emerging'||band==='Below standard')?'Several key criteria need work, '+sName2+'. Focus on the points below. ':'')+
+    'Your teacher reads the full piece and can adjust this mark.';
+
+  return {score:sc.score,bands:sc.bands,crit:sc.crit,band:band,rubricMark:mark,rubricMax:max,
+    strengths:strengths.slice(0,4),improve:improve.slice(0,4),summary:summary,offTopic:sc.offTopic};
 }
 
 async function gradeWriting(){
@@ -830,7 +981,9 @@ async function gradeWriting(){
       var a=analyzeWriting(wst.text,cfg,p);
       var sc=scoreWriting(a,cfg);
       var fb=buildFeedback(a,sc,cfg);
+      fb.integrity=wst.integrity;
       wst.fb=fb;wst.graded=true;
+      setWriteLock(false);
       renderFeedback(fb);
       await doSave(sName,wst.stage,fb.score,wst.text,p.title,fb);
       var sr=g('wsaverow');if(sr){sr.className='wsaverow saved';sr.innerHTML='<div class="sdot"></div>Saved — your teacher can see your writing and score.';}
@@ -848,9 +1001,12 @@ function renderFeedback(fb){
   var cfg=wst.cfg;
   var sc=Math.max(0,Math.min(100,Math.round(fb.score)));
   var cc=sc>=80?'#0f9e72':sc>=60?'#c47a10':'#c44a28';
-  var msg=sc>=80?'Excellent writing!':sc>=60?'Good work — solid effort.':sc>=40?'A fair attempt. Keep practising!':'Keep going — every draft makes you better.';
+  var band=fb.band||'';
+  var topBand=(band==='Exceeding'||band==='Excelling'||band==='Meeting');
+  var msg=fb.offTopic?'Off-topic — please rewrite.':topBand?'Strong work!':band==='Developing'?'Developing — keep pushing.':'Several criteria need work.';
   var secs=Math.round((Date.now()-wst.t0)/1000);
   var bands=fb.bands||{};
+  var rubricLine=(fb.rubricMark!=null)?'<div class="wfb-rubric" style="margin-top:6px;font-size:13px;font-weight:800;color:'+cc+'">Cambridge rubric: '+fb.rubricMark+'/'+fb.rubricMax+' &middot; '+band+'</div>':'';
   var bandDefs=[['content','Content & Ideas'],['organisation','Organisation'],['language','Language'],['accuracy','Accuracy']];
   var bh='';
   bandDefs.forEach(function(b){
@@ -864,6 +1020,7 @@ function renderFeedback(fb){
     '<div class="wfb-top">'+
       '<div class="wfb-circ" style="border-color:'+cc+'"><div class="wfb-num" style="color:'+cc+'">'+sc+'</div><div class="wfb-lbl" style="color:'+cc+'">out of 100</div></div>'+
       '<div class="wfb-msg">'+msg+'</div>'+
+      rubricLine+
       '<div class="wfb-sub">'+cfg.name+' &middot; '+countWords(wst.text)+' words &middot; '+secs+'s</div>'+
     '</div>'+
     '<div class="wsaverow" id="wsaverow"><div class="sdot"></div>Saving your score...</div>'+
@@ -981,8 +1138,9 @@ async function doResults(){
 document.addEventListener('DOMContentLoaded',function(){
   initName();
   initTeacher();
+  initWriteLock();
   g('mainmenubtn').addEventListener('click',function(){showScr('s-name');});
-  g('wbackbtn').addEventListener('click',function(){showScr('s-home');});
+  g('wbackbtn').addEventListener('click',function(){if(wLock){toast('\u26A0 Submit your writing first.');return;}showScr('s-home');});
   // back button disabled during game
 });
 </script>
