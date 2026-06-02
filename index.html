@@ -283,8 +283,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="ncard">
         <div class="flbl">Your full name</div>
         <input class="finp" id="ninp" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name">
-        <button class="bigbtn g" id="sbtn">Start playing</button>
-        <p class="nhint">Your name and score are saved automatically for your teacher.</p>
+        <div class="flbl" style="margin-top:14px">Your course</div>
+        <select class="finp" id="cinp" style="appearance:auto">
+          <option value="">Select your course…</option>
+          <option value="6D">6D</option>
+          <option value="6E">6E</option>
+          <option value="6F">6F</option>
+          <option value="7C">7C</option>
+          <option value="7D">7D</option>
+        </select>
+        <button class="bigbtn g" id="sbtn" style="margin-top:14px">Start playing</button>
+        <p class="nhint">Your name, course and score are saved automatically for your teacher.</p>
       </div>
     </div>
     <button class="tlink" id="tlink">Teacher access</button>
@@ -442,7 +451,7 @@ const WSTAGES={
   stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. Instant feedback.',kind:'article',prompts:STAGE8_PROMPTS},
   stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an essay on a random topic. Instant feedback.',kind:'essay',prompts:STAGE9_PROMPTS}
 };
-let sName='',dTimer=null,st={};
+let sName='',sCourse='',dTimer=null,st={};
 function g(id){return document.getElementById(id);}
 function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});g(id).classList.add('active');}
 function shuf(a){return a.slice().sort(function(){return Math.random()-.5;});}
@@ -459,6 +468,7 @@ async function checkPlayed(name){
 async function doSave(student,level,score,essayText,essayTitle,feedback){
   try{
     var row={student:student.trim(),level:level,score:score};
+    if(sCourse){row.course=sCourse;}
     if(essayText){row.essay_text=essayText;}
     if(essayTitle){row.essay_title=essayTitle;}
     if(feedback){try{row.feedback=JSON.stringify(feedback);}catch(_){}}
@@ -466,9 +476,14 @@ async function doSave(student,level,score,essayText,essayTitle,feedback){
     if(r.error){
       console.error('Save error:',r.error);
       // Si falla por columnas inexistentes, reintenta guardando solo lo básico
-      if(essayText){
-        var r2=await db.from('scores').insert({student:student.trim(),level:level,score:score});
-        if(r2.error)console.error('Fallback save error:',r2.error);
+      var basic={student:student.trim(),level:level,score:score};
+      if(sCourse){basic.course=sCourse;}
+      var r2=await db.from('scores').insert(basic);
+      if(r2.error){
+        console.error('Fallback save error:',r2.error);
+        // Último intento sin course (por si esa columna aún no existe)
+        var r3=await db.from('scores').insert({student:student.trim(),level:level,score:score});
+        if(r3.error)console.error('Minimal save error:',r3.error);
       }
     }else console.log('Saved ok');
   }catch(e){console.error('Save exception:',e);}
@@ -481,7 +496,10 @@ function initName(){
 }
 async function doStart(){
   var v=g('ninp').value.trim();
+  var c=g('cinp').value;
   if(!v){toast('Please write your full name first.');return;}
+  if(!c){toast('Please select your course.');return;}
+  sCourse=c;
   g('narea').innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:#6b6a60">Checking...</div>';
   var played=await checkPlayed(v);
   if(played){
@@ -555,7 +573,7 @@ function renderDash(rows){
     var pff=pf(r.score);
     var readBtn=r.essay_text?' <button class="readbtn" data-row="'+idx+'">&#128196; Read</button>':'';
     var flag='';try{var fbp=r.feedback?JSON.parse(r.feedback):null;if(fbp&&fbp.integrity){var ts=fbp.integrity.tabSwitches||0,pb=fbp.integrity.pasteBlocked||0;if(ts>0||pb>0)flag=' <span title="Left the page '+ts+' time(s); paste blocked '+pb+' time(s)" style="color:#c44a28;font-weight:900;cursor:help">&#9888;</span>';}}catch(_){}
-    return '<tr><td style="font-weight:700">'+r.student+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span>'+flag+readBtn+'</td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
+    return '<tr><td style="font-weight:700">'+r.student+(r.course?'<div style="font-size:11px;font-weight:600;color:var(--tx2)">'+r.course+'</div>':'')+'</td><td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td><td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td><td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td><td><span class="perfb" style="background:'+pff[2]+';color:'+pff[1]+'">'+pff[0]+'</span>'+flag+readBtn+'</td><td style="color:#b0aea4;font-size:12px">'+tm+'</td></tr>';
   }).join('');
   g('dtbl').innerHTML='<table class="stbl"><thead><tr><th>Student</th><th>Level</th><th>Score</th><th>Stars</th><th>Performance</th><th>Time</th></tr></thead><tbody>'+trs+'</tbody></table>';
   g('dtbl').querySelectorAll('.readbtn').forEach(function(b){
@@ -587,7 +605,7 @@ function openEssay(r){
     fbh+='<div style="margin:8px 0;padding:10px 12px;border-radius:10px;background:var(--er-bg);border:1.5px solid var(--er-b);color:var(--er-t);font-size:12.5px;font-weight:700">&#9888; Integrity alert: left the page <b>'+(fb.integrity.tabSwitches||0)+'</b> time(s), paste blocked <b>'+(fb.integrity.pasteBlocked||0)+'</b> time(s) while writing.</div>';
   }
   var esc=(r.essay_text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  g('emodal').innerHTML='<div class="emodal-card"><div class="emodal-top"><div><div class="emodal-name">'+r.student+'</div><div class="emodal-meta">'+(LVN[r.level]||r.level)+(r.essay_title?' &middot; '+r.essay_title:'')+' &middot; Score: <b>'+r.score+'</b>/100</div></div><button class="emodal-x" id="emx">&#10005;</button></div>'+fbh+'<div class="emodal-lbl">Student\'s writing</div><div class="emodal-text">'+esc+'</div></div>';
+  g('emodal').innerHTML='<div class="emodal-card"><div class="emodal-top"><div><div class="emodal-name">'+r.student+'</div><div class="emodal-meta">'+(r.course?r.course+' &middot; ':'')+(LVN[r.level]||r.level)+(r.essay_title?' &middot; '+r.essay_title:'')+' &middot; Score: <b>'+r.score+'</b>/100</div></div><button class="emodal-x" id="emx">&#10005;</button></div>'+fbh+'<div class="emodal-lbl">Student\'s writing</div><div class="emodal-text">'+esc+'</div></div>';
   g('emodal').classList.add('show');
   g('emx').addEventListener('click',function(){g('emodal').classList.remove('show');});
   g('emodal').addEventListener('click',function(e){if(e.target===g('emodal'))g('emodal').classList.remove('show');});
