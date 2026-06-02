@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vocabulary Quest</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
   --tl:#0f9e72;--tl-l:#e0f5ee;--tl-m:#5dcaa5;--tl-d:#085041;
@@ -328,8 +329,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <button class="dashex" id="dex">Exit</button>
   </div>
+  <div class="dashfilters" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:16px">
+    <div><div class="flbl">Date</div><input class="finp" id="fdate" type="date" style="width:auto"></div>
+    <div><div class="flbl">Course</div><select class="finp" id="fcourse" style="width:auto;appearance:auto"><option value="">All courses</option><option value="6D">6D</option><option value="6E">6E</option><option value="6F">6F</option><option value="7C">7C</option><option value="7D">7D</option></select></div>
+    <div><div class="flbl">Activity</div><select class="finp" id="factiv" style="width:auto;appearance:auto"><option value="">All activities</option><option value="beginner">Beginner</option><option value="elementary">Elementary</option><option value="intermediate">Intermediate</option><option value="expert">Expert</option><option value="stage8">Stage 8 — Article (6°)</option><option value="stage9">Stage 9 — Essay (7°)</option></select></div>
+    <button class="refbtn" id="dlbtn" style="background:#0f9e72;color:#fff;border:none">&#11015; Download backup (Excel)</button>
+  </div>
   <div class="metg">
-    <div class="metc"><div class="mets" style="background:#0f9e72"></div><div class="metv" id="mtot">--</div><div class="metl">Students today</div></div>
+    <div class="metc"><div class="mets" style="background:#0f9e72"></div><div class="metv" id="mtot">--</div><div class="metl">Students</div></div>
     <div class="metc"><div class="mets" style="background:#1a6fc4"></div><div class="metv" id="mavg">--</div><div class="metl">Average score</div><div class="metsub">out of 100</div></div>
     <div class="metc"><div class="mets" style="background:#c47a10"></div><div class="metv" id="mpass">--</div><div class="metl">Pass rate</div><div class="metsub">scored 60+</div></div>
     <div class="metc"><div class="mets" style="background:#c44a28"></div><div class="metv" id="mtop">--</div><div class="metl">Top level</div></div>
@@ -338,7 +345,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="dc"><div class="dch">Score by level</div><div id="dbylv"></div></div>
     <div class="dc"><div class="dch">Score distribution</div><div id="ddist"></div></div>
     <div class="dc full">
-      <div class="dctop"><div class="dch" style="margin:0">All results today</div><button class="refbtn" id="rfbtn">Refresh</button></div>
+      <div class="dctop"><div class="dch" id="dhd" style="margin:0">All results today</div><button class="refbtn" id="rfbtn">Refresh</button></div>
       <div id="dtbl"></div>
     </div>
   </div>
@@ -448,10 +455,10 @@ const STAGE9_PROMPTS=[
  {topic:"Ethics",title:"With Great Power",prompt:"Write an essay arguing whether people with power and influence have a greater responsibility to help others. Defend your position clearly.",audience:"Academic essay",minWords:200,keywords:["power","powerful","influence","responsibility","responsible","help","others","people","leader","leaders","rich","wealthy","famous","society","duty","moral","good","change","impact","position","greater","give"]}
 ];
 const WSTAGES={
-  stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. Instant feedback.',kind:'article',prompts:STAGE8_PROMPTS},
-  stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an essay on a random topic. Instant feedback.',kind:'essay',prompts:STAGE9_PROMPTS}
+  stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. Instant feedback.',kind:'article',reqWords:250,prompts:STAGE8_PROMPTS},
+  stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an essay on a random topic. Instant feedback.',kind:'essay',reqWords:400,prompts:STAGE9_PROMPTS}
 };
-let sName='',sCourse='',dTimer=null,st={};
+let sName='',sCourse='',dTimer=null,st={},dashRows=[];
 function g(id){return document.getElementById(id);}
 function showScr(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});g(id).classList.add('active');}
 function shuf(a){return a.slice().sort(function(){return Math.random()-.5;});}
@@ -522,10 +529,15 @@ function initTeacher(){
   g('tbk').addEventListener('click',function(){showScr('s-name');});
   g('dex').addEventListener('click',function(){if(dTimer){clearInterval(dTimer);dTimer=null;}showScr('s-name');});
   g('rfbtn').addEventListener('click',loadDash);
+  g('fdate').addEventListener('change',loadDash);
+  g('fcourse').addEventListener('change',loadDash);
+  g('factiv').addEventListener('change',loadDash);
+  g('dlbtn').addEventListener('click',exportBackup);
 }
 function doTeacherLogin(){
   if(g('tpass').value===TP){
     g('perr').style.display='none';
+    if(!g('fdate').value)g('fdate').value=today();
     showScr('s-dash');loadDash();
     if(dTimer)clearInterval(dTimer);
     dTimer=setInterval(loadDash,30000);
@@ -533,11 +545,58 @@ function doTeacherLogin(){
 }
 async function loadDash(){
   g('dtbl').innerHTML='<div class="emptyd">Loading...</div>';
+  var dateStr=(g('fdate')&&g('fdate').value)||today();
+  var courseF=g('fcourse')?g('fcourse').value:'';
+  var activF=g('factiv')?g('factiv').value:'';
+  var start=dateStr+'T00:00:00.000Z';
+  var end=new Date(new Date(start).getTime()+86400000).toISOString();
   try{
-    var r=await db.from('scores').select('*').gte('created_at',today()+'T00:00:00.000Z').order('created_at',{ascending:false});
+    var r=await db.from('scores').select('*').gte('created_at',start).lt('created_at',end).order('created_at',{ascending:false});
     if(r.error||!r.data){g('dtbl').innerHTML='<div class="emptyd">Could not load data. Check your internet connection.</div>';return;}
-    renderDash(r.data);
+    var rows=r.data;
+    if(courseF)rows=rows.filter(function(x){return (x.course||'')===courseF;});
+    if(activF)rows=rows.filter(function(x){return x.level===activF;});
+    dashRows=rows;
+    var hd=g('dhd');
+    if(hd)hd.textContent='Results '+(dateStr===today()?'today':dateStr)+(courseF?' · '+courseF:'')+(activF?' · '+(LVN[activF]||activF):'')+' ('+rows.length+')';
+    renderDash(rows);
   }catch(e){g('dtbl').innerHTML='<div class="emptyd">Connection error: '+e.message+'</div>';}
+}
+function csvCell(v){v=(v==null?'':String(v));if(/[",\n\r]/.test(v))v='"'+v.replace(/"/g,'""')+'"';return v;}
+function exportBackup(){
+  var rows=dashRows||[];
+  if(!rows.length){toast('No results to export for these filters.');return;}
+  var dateStr=(g('fdate')&&g('fdate').value)||today();
+  var courseF=g('fcourse')?g('fcourse').value:'';
+  var activF=g('factiv')?g('factiv').value:'';
+  var head=['Date','Time','Course','Student','Activity','Score/100','Rubric','Band','Left page','Paste blocked','Title','Text'];
+  var aoa=[head];
+  rows.forEach(function(r){
+    var d=new Date(r.created_at);
+    var fb=null;try{fb=r.feedback?JSON.parse(r.feedback):null;}catch(_){}
+    var rubric=(fb&&fb.rubricMark!=null)?(fb.rubricMark+'/'+fb.rubricMax):'';
+    var band=(fb&&fb.band)?fb.band:'';
+    var ts=(fb&&fb.integrity)?(fb.integrity.tabSwitches||0):'';
+    var pb=(fb&&fb.integrity)?(fb.integrity.pasteBlocked||0):'';
+    aoa.push([d.toLocaleDateString(),d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),r.course||'',r.student||'',LVN[r.level]||r.level||'',r.score,rubric,band,ts,pb,r.essay_title||'',r.essay_text||'']);
+  });
+  var base='vocabquest_'+dateStr+(courseF?'_'+courseF:'')+(activF?'_'+activF:'');
+  if(typeof XLSX!=='undefined'){
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=[{wch:11},{wch:7},{wch:7},{wch:24},{wch:22},{wch:9},{wch:8},{wch:15},{wch:9},{wch:13},{wch:20},{wch:70}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Results');
+    XLSX.writeFile(wb,base+'.xlsx');
+    toast('Excel downloaded ('+rows.length+' rows).',2600);
+  }else{
+    var csv='\ufeff'+aoa.map(function(row){return row.map(csvCell).join(',');}).join('\r\n');
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');a.href=url;a.download=base+'.csv';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},120);
+    toast('Excel library not loaded — downloaded CSV instead.',3400);
+  }
 }
 function renderDash(rows){
   var total=rows.length;
@@ -596,7 +655,8 @@ function openEssay(r){
     if(fb.crit){
       fbh+='<div style="margin:10px 0;border:1px solid var(--bd);border-radius:10px;overflow:hidden">'+Object.keys(fb.crit).map(function(k){
         var v=fb.crit[k];var c=v>=4?'#0f9e72':v>=3?'#c47a10':'#c44a28';
-        return '<div style="display:flex;justify-content:space-between;padding:6px 11px;font-size:12px;border-bottom:1px solid var(--bd)"><span>'+k+'</span><b style="color:'+c+'">'+v+'/5</b></div>';
+        var ex=(fb.examples&&fb.examples[k])?'<div style="font-style:italic;color:var(--tx2);font-size:11px;margin-top:3px;line-height:1.45">'+fb.examples[k]+'</div>':'';
+        return '<div style="padding:7px 11px;font-size:12px;border-bottom:1px solid var(--bd)"><div style="display:flex;justify-content:space-between"><span>'+k+'</span><b style="color:'+c+'">'+v+'/5</b></div>'+ex+'</div>';
       }).join('')+'</div>';
     }
     if(fb.summary)fbh+='<div class="emb-sum">'+fb.summary+'</div>';
@@ -682,6 +742,7 @@ function startWriting(stage){
 }
 function renderWritePrompt(){
   var p=wst.prompt,cfg=wst.cfg;
+  var req=cfg.reqWords||p.minWords;
   var h=''+
     '<div class="wprompt-card">'+
       '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">'+p.topic+'</span>'+
@@ -690,10 +751,11 @@ function renderWritePrompt(){
       '<div class="wmeta-row">'+
         '<span class="wmeta-chip">&#9999;&#65039; '+(cfg.kind==='essay'?'Essay':'Article')+'</span>'+
         '<span class="wmeta-chip">&#128101; '+p.audience+'</span>'+
-        '<span class="wmeta-chip">&#128221; Aim for '+p.minWords+'+ words</span>'+
+        '<span class="wmeta-chip">&#128221; '+req+'+ words required</span>'+
       '</div>'+
     '</div>'+
     '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
+    '<div style="display:flex;align-items:center;gap:8px;background:var(--bl-l);border:1.5px solid var(--bl);color:var(--bl-d);border-radius:12px;padding:9px 13px;margin-bottom:10px;font-size:12.5px;font-weight:700">&#128204; Remember to use your term ring while writing.</div>'+
     '<div style="display:flex;align-items:center;gap:8px;background:var(--am-l);border:1.5px solid var(--am);color:var(--am-d);border-radius:12px;padding:9px 13px;margin-bottom:12px;font-size:12.5px;font-weight:700">&#128274; Exam mode: don\'t leave this page or switch tabs. Pasting is off and your writing must be your own.</div>'+
     '<div class="wwrite-card">'+
       '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div>'+
@@ -707,9 +769,9 @@ function renderWritePrompt(){
   var ta=g('wta'),wc=g('wwc'),sb=g('wsubbtn');
   function upd(){
     var n=countWords(ta.value);wst.text=ta.value;
-    wc.innerHTML=n+' word'+(n===1?'':'s')+(n>=p.minWords?' &middot; <b>nice length!</b>':'');
-    wc.className='wwc'+(n>=p.minWords?' ok':'');
-    sb.disabled=n<20;
+    if(n>=req){wc.innerHTML=n+' words &middot; <b>minimum reached &#10003;</b>';wc.className='wwc ok';}
+    else{wc.innerHTML=n+' / '+req+' words &middot; '+(req-n)+' more needed to submit';wc.className='wwc';}
+    sb.disabled=n<req;
   }
   ta.addEventListener('input',upd);upd();
   g('wshufbtn').addEventListener('click',function(){
@@ -839,7 +901,7 @@ function analyzeWriting(text,cfg,prompt){
 function scoreWriting(a,cfg){
   function c5(x){return Math.max(0,Math.min(5,Math.round(x)));}
   var essay=cfg.kind==='essay';
-  var minW=essay?180:110, goodW=essay?240:150;
+  var minW=cfg.reqWords||(essay?180:110), goodW=minW+(essay?100:70);
   var offTopic=a.topicRatio<0.18;
   var ADV=['however','furthermore','therefore','moreover','consequently','nevertheless','on the other hand','as a result','in contrast','whereas','despite','nonetheless','what is more'];
   var advConn=a.connFound.filter(function(c){return ADV.indexOf(c)>-1;}).length;
@@ -937,7 +999,7 @@ function scoreWriting(a,cfg){
 
 function buildFeedback(a,sc,cfg){
   var essay=cfg.kind==='essay';
-  var minW=essay?180:110;
+  var minW=cfg.reqWords||(essay?180:110);
   var sName2=(typeof sName!=='undefined'&&sName)?sName.split(' ')[0]:'there';
   var crit=sc.crit||{};
   var keys=Object.keys(crit);
@@ -973,6 +1035,23 @@ function buildFeedback(a,sc,cfg){
   });
   if(a.lowerI>0)improve.push('The pronoun "I" is always a capital letter ('+a.lowerI+' to fix).');
 
+  // EJEMPLO de cómo aplicar cada criterio (se muestra para cada criterio tras la corrección)
+  var egs={
+    'Audience':essay?'e.g. open formally for the reader: "Few questions divide opinion as sharply as this one."':'e.g. speak straight to the reader: "Fellow students, have you ever lost a whole lesson to one buzz?"',
+    'Content':'e.g. swap a general claim for a specific one: change "phones are bad" to "one notification can cost ten minutes of focus."',
+    'Argument':'e.g. "Some argue phones aid learning; however, the evidence shows they distract far more than they help."',
+    'Evidence':'e.g. "For instance, a class survey found that 7 out of 10 students check messages during lessons."',
+    'Structure':essay?'e.g. plan it as Intro (your view) → Reason 1 → Reason 2 → Counter-argument → Conclusion.':'e.g. plan it as Opening → 2–3 idea paragraphs (one idea each) → short ending.',
+    'Cohesion':'e.g. join ideas with linkers: "Furthermore,... As a result,... On the other hand,..."',
+    'Sentence':'e.g. mix lengths: "Phones distract. Although they can help us learn, their constant buzz pulls our attention away."',
+    'Vocabulary':'e.g. choose precise words: "bad" → "harmful", "good" → "beneficial", "a lot of" → "numerous".',
+    'Rhetorical':'e.g. add a rhetorical question — "Is this really progress?" — or "not only safer but also smarter."',
+    'Grammar':'e.g. check agreement and run-ons: write "Students are" (not "is"); split one long sentence into two.',
+    'Spelling':essay?'e.g. use a semicolon to link ideas: "Phones help us learn; they also distract us."':'e.g. punctuate fully: "It\'s Maria\'s book." — apostrophes for "it is" and possession; always a capital I.'
+  };
+  function exFor(k){var label=k.replace(/^\d+\.\s*/,'');var key=Object.keys(egs).find(function(t){return label.indexOf(t)>-1;});return egs[key]||'';}
+  var examples={};keys.forEach(function(k){examples[k]=exFor(k);});
+
   if(!strengths.length)strengths.push('You completed the task — now push the weak criteria up.');
   if(!improve.length)improve.push('Solid across the board — aim for the band above next time.');
 
@@ -985,13 +1064,14 @@ function buildFeedback(a,sc,cfg){
     ((band==='Emerging'||band==='Below standard')?'Several key criteria need work, '+sName2+'. Focus on the points below. ':'')+
     'Your teacher reads the full piece and can adjust this mark.';
 
-  return {score:sc.score,bands:sc.bands,crit:sc.crit,band:band,rubricMark:mark,rubricMax:max,
+  return {score:sc.score,bands:sc.bands,crit:sc.crit,examples:examples,band:band,rubricMark:mark,rubricMax:max,
     strengths:strengths.slice(0,4),improve:improve.slice(0,4),summary:summary,offTopic:sc.offTopic};
 }
 
 async function gradeWriting(){
   var p=wst.prompt,cfg=wst.cfg;
-  if(countWords(wst.text)<20){toast('Please write a bit more first.');return;}
+  var req=cfg.reqWords||p.minWords;
+  if(countWords(wst.text)<req){toast('You need at least '+req+' words for this task.');return;}
   renderGrading();
   // Pequeño retardo para que se vea el "marking" (mejor UX), todo local
   setTimeout(async function(){
@@ -1034,6 +1114,14 @@ function renderFeedback(fb){
   });
   var strengths=(fb.strengths||[]).map(function(s){return '<div class="wfb-li good">'+s+'</div>';}).join('')||'<div class="wfb-li good">You completed the task — well done.</div>';
   var improve=(fb.improve||[]).map(function(s){return '<div class="wfb-li work">'+s+'</div>';}).join('')||'<div class="wfb-li work">Keep practising to build longer, clearer paragraphs.</div>';
+  var critEx='';
+  if(fb.crit){
+    critEx=Object.keys(fb.crit).map(function(k){
+      var val=fb.crit[k];var c=val>=4?'#0f9e72':val>=3?'#c47a10':'#c44a28';
+      var ex=(fb.examples&&fb.examples[k])?'<div style="font-style:italic;color:var(--tx2);font-size:12px;margin-top:4px;line-height:1.5">'+fb.examples[k]+'</div>':'';
+      return '<div class="wfb-li" style="border-left:3px solid '+c+';padding-left:10px"><b>'+k+' — '+val+'/5</b>'+ex+'</div>';
+    }).join('');
+  }
   var h=''+
     '<div class="wfb-top">'+
       '<div class="wfb-circ" style="border-color:'+cc+'"><div class="wfb-num" style="color:'+cc+'">'+sc+'</div><div class="wfb-lbl" style="color:'+cc+'">out of 100</div></div>'+
@@ -1046,6 +1134,7 @@ function renderFeedback(fb){
     (fb.summary?'<div class="wfb-summary"><b>Examiner\'s comment:</b> '+fb.summary+'</div>':'')+
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#3daa6f"></span>What you did well</div>'+strengths+'</div>'+
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#c47a10"></span>How to improve</div>'+improve+'</div>'+
+    (critEx?'<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#1a6fc4"></span>How to apply each criterion (with examples)</div>'+critEx+'</div>':'')+
     '<div class="actrow"><button class="actbtn" id="wagain">Try another topic</button><button class="actbtn pri" id="whome">Main menu</button></div>';
   g('wbody').innerHTML=h;
   g('wagain').addEventListener('click',function(){startWriting(wst.stage);});
