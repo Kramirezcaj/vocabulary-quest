@@ -491,6 +491,9 @@ function lsOk(){try{var k='__vq_probe';localStorage.setItem(k,'1');localStorage.
 var LS=lsOk();
 function normName(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ');}
 function draftKey(name,stage){return DRAFT_NS+':'+normName(name)+':'+stage;}
+/* Id de la fila en Supabase: es la PRIMARY KEY, por eso el upsert no necesita
+   una restriccion unica compuesta (que no se puede crear desde el Table Editor). */
+function draftRowId(name,stage){return normName(name)+'::'+stage;}
 function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function fmtWhen(ts){
   if(!ts)return 'earlier';
@@ -545,7 +548,9 @@ function draftSaveNow(){
   if(!wst||!wst.stage||wst.graded)return;
   var txt=wst.text||'';
   if(!txt.trim()){draftClear(sName,wst.stage);return;}   // sin texto no hay nada que ofrecer
+  var prev=null;try{prev=JSON.parse(localStorage.getItem(draftKey(sName,wst.stage))||'null');}catch(_){}
   var ok=draftWrite(sName,wst.stage,{
+    everSynced:!!(prev&&prev.everSynced),
     stage:wst.stage,
     promptTitle:wst.prompt?wst.prompt.title:'',
     text:txt,
@@ -554,13 +559,14 @@ function draftSaveNow(){
     savedAt:Date.now()
   });
   draftFlag(ok?'Draft saved':'Draft not saved',!ok);
+  draftPushSoon();
 }
 function draftSaveSoon(){
   if(!LS)return;
   if(draftTimer)clearTimeout(draftTimer);
   draftTimer=setTimeout(draftSaveNow,800);
 }
-function draftCancelPending(){if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}}
+function draftCancelPending(){if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}if(typeof pushTimer!=='undefined'&&pushTimer){clearTimeout(pushTimer);pushTimer=null;}}
 function draftFlag(msg,warn){
   var el=g('wdstat');if(!el)return;
   el.textContent=msg;el.className='wdstat on'+(warn?' warn':'');
@@ -597,6 +603,133 @@ async function doSave(student,level,score,essayText,essayTitle,feedback){
   }catch(e){console.error('Save exception:',e);}
 }
 
+/* ===================== BORRADOR EN SUPABASE (seguir en otro equipo) =====================
+   localStorage sigue siendo la red de seguridad inmediata (instantanea, funciona sin
+   red). Encima de eso sincronizamos con la tabla `drafts` para que el borrador siga al
+   alumno a cualquier computador. Si la tabla aun no existe, todo degrada a solo-local. */
+var DRAFT_TABLE='drafts';
+var remoteDown=false;   // se apaga sola si la tabla no existe: dejamos de insistir
+
+function remoteOff(e){
+  var msg=((e&&(e.message||e.details||e.hint))||'')+'';
+  var code=(e&&e.code)||'';
+  if(code==='42P01'||code==='PGRST205'||msg.indexOf('does not exist')>-1||msg.indexOf('Could not find the table')>-1){
+    remoteDown=true;
+    console.warn('Tabla "'+DRAFT_TABLE+'" no encontrada. Los borradores quedan solo en este equipo. Corre drafts.sql en Supabase.');
+  }else{
+    console.error('drafts:',e);
+  }
+}
+function rowToDraft(r){
+  if(!r)return null;
+  var d={stage:r.stage,promptTitle:r.prompt_title||'',text:r.text||'',elapsed:r.elapsed_ms||0,
+         integrity:r.integrity||{tabSwitches:0,pasteBlocked:0,events:[]},
+         savedAt:r.updated_at?Date.parse(r.updated_at):0,remote:true};
+  if(!d.text.trim())return null;
+  if(d.savedAt&&Date.now()-d.savedAt>DRAFT_TTL_DAYS*864e5)return null;
+  return d;
+}
+/* Devuelven {ok,draft}: hay que distinguir "el servidor dice que no hay borrador"
+   de "no pude preguntarle", porque de eso depende si borramos el local. */
+async function draftPull(name,stage){
+  if(remoteDown)return {ok:false,draft:null};
+  try{
+    var r=await db.from(DRAFT_TABLE).select('*').eq('id',draftRowId(name,stage)).limit(1);
+    if(r.error){remoteOff(r.error);return {ok:false,draft:null};}
+    return {ok:true,draft:rowToDraft(r.data&&r.data[0])};
+  }catch(e){console.error('draft pull:',e);return {ok:false,draft:null};}
+}
+async function draftPullAny(name){
+  if(remoteDown)return {ok:false,draft:null};
+  try{
+    var r=await db.from(DRAFT_TABLE).select('*').eq('student_key',normName(name)).order('updated_at',{ascending:false}).limit(1);
+    if(r.error){remoteOff(r.error);return {ok:false,draft:null};}
+    return {ok:true,draft:rowToDraft(r.data&&r.data[0])};
+  }catch(e){console.error('draft pullAny:',e);return {ok:false,draft:null};}
+}
+async function draftPush(){
+  if(remoteDown||!wst||!wst.stage||wst.graded)return false;
+  var txt=wst.text||'';
+  if(!txt.trim())return false;
+  try{
+    var r=await db.from(DRAFT_TABLE).upsert({
+      id:draftRowId(sName,wst.stage),
+      student_key:normName(sName),
+      student:String(sName||'').trim(),
+      course:sCourse||null,
+      stage:wst.stage,
+      prompt_title:wst.prompt?wst.prompt.title:'',
+      text:txt,
+      elapsed_ms:Date.now()-wst.t0,
+      integrity:wst.integrity,
+      updated_at:new Date().toISOString()
+    },{onConflict:'id'});
+    if(r.error){remoteOff(r.error);return false;}
+    draftMarkSynced(sName,wst.stage);
+    return true;
+  }catch(e){console.error('draft push:',e);return false;}
+}
+async function draftDeleteRemote(name,stage){
+  if(remoteDown)return;
+  try{
+    var r=await db.from(DRAFT_TABLE).delete().eq('id',draftRowId(name,stage));
+    if(r.error)remoteOff(r.error);
+  }catch(e){console.error('draft delete:',e);}
+}
+/* Deja marcado que este borrador llego a viajar al servidor. Sirve para detectar
+   que se entrego desde otro equipo y que la copia local ya sobra. */
+function draftMarkSynced(name,stage){
+  if(!LS)return;
+  try{
+    var k=draftKey(name,stage),raw=localStorage.getItem(k);
+    if(!raw)return;
+    var d=JSON.parse(raw);d.everSynced=true;
+    localStorage.setItem(k,JSON.stringify(d));
+  }catch(e){}
+}
+/* Gana el mas reciente entre el navegador y el servidor. */
+async function draftBest(name,stage){
+  var loc=draftLoad(name,stage);
+  var res=await draftPull(name,stage);
+  if(!res.ok)return loc;                       // sin servidor: seguimos con lo local
+  var rem=res.draft;
+  if(!rem){
+    /* El servidor no tiene nada. Si esta copia local ya se habia sincronizado,
+       es que lo entrego desde otro equipo: no se lo volvemos a ofrecer. */
+    if(loc&&loc.everSynced){draftClear(name,stage);return null;}
+    return loc;
+  }
+  if(!loc)return rem;
+  return (rem.savedAt||0)>(loc.savedAt||0)?rem:loc;
+}
+async function draftBestAny(name){
+  var loc=draftFind(name);
+  var res=await draftPullAny(name);
+  if(!res.ok)return loc;
+  var rem=res.draft;
+  if(!rem){
+    if(loc&&loc.everSynced){draftClear(name,loc.stage);return null;}
+    return loc;
+  }
+  if(!loc)return rem;
+  return (rem.savedAt||0)>(loc.savedAt||0)?rem:loc;
+}
+/* Empuje al servidor con rebote largo: una peticion por tecla seria absurdo.
+   Lo local ya cubre el susto inmediato; esto cubre el cambio de equipo. */
+var pushTimer=null;
+function draftPushSoon(){
+  if(remoteDown)return;
+  if(pushTimer)clearTimeout(pushTimer);
+  pushTimer=setTimeout(function(){
+    pushTimer=null;
+    draftPush().then(function(ok){if(ok)draftFlag('Saved to your account',false);});
+  },4000);
+}
+function draftPushFlush(){
+  if(pushTimer){clearTimeout(pushTimer);pushTimer=null;}
+  draftPush();   // sin await: se dispara al ocultar la pestana o al salir
+}
+
 function initName(){
   g('sbtn').addEventListener('click',doStart);
   g('ninp').addEventListener('keydown',function(e){if(e.key==='Enter')doStart();});
@@ -614,7 +747,7 @@ async function doStart(){
   if(played){
     /* Ya envio algo hoy. Si dejo un borrador a medias le ofrecemos cerrarlo: no es una
        sesion nueva, es terminar la que ya habia empezado. */
-    var pend=ALLOW_RESUME_AFTER_BLOCK?draftFind(v):null;
+    var pend=ALLOW_RESUME_AFTER_BLOCK?await draftBestAny(v):null;
     g('narea').innerHTML='<div class="blocked"><div class="bh">Already played today</div><div class="bp">A session for <strong>'+escHtml(v)+'</strong> was already submitted today. Each student can play once per day. Come back tomorrow or ask your teacher if this is an error.</div>'+
       (pend?'<button class="bigbtn b" id="bresume" style="margin-top:16px">Finish your unsent writing</button><div class="wdraft-note">You left '+countWords(pend.text)+' words unfinished '+fmtWhen(pend.savedAt)+'.</div>':'')+'</div>';
     if(pend){
@@ -833,12 +966,12 @@ function blockClip(e){
 }
 function initWriteLock(){
   if(wLockInit)return; wLockInit=true;
-  document.addEventListener('visibilitychange',function(){ if(document.hidden)noteLeave('tab-hidden'); });
+  document.addEventListener('visibilitychange',function(){ if(document.hidden){ noteLeave('tab-hidden'); if(wLock)draftPushFlush(); } });
   window.addEventListener('blur',function(){ noteLeave('window-blur'); });
   ['paste','copy','cut'].forEach(function(ev){ document.addEventListener(ev,blockClip,true); });
   document.addEventListener('contextmenu',function(e){ if(wLock)e.preventDefault(); });
   document.addEventListener('drop',function(e){ if(wLock)e.preventDefault(); },true);
-  window.addEventListener('beforeunload',function(e){ if(wLock){ e.preventDefault(); e.returnValue=''; return ''; } });
+  window.addEventListener('beforeunload',function(e){ if(wLock){ draftPushFlush(); e.preventDefault(); e.returnValue=''; return ''; } });
   window.addEventListener('popstate',function(){ if(wLock){ try{history.pushState({w:1},'');}catch(_){} toast('\u26A0 You cannot go back until you submit.',2600); } });
 }
 function setWriteLock(on){
@@ -847,9 +980,13 @@ function setWriteLock(on){
   if(on){ try{history.pushState({w:1},'');}catch(_){} }
 }
 
-function startWriting(stage){
-  /* Si hay borrador guardado de este alumno para esta etapa, primero le preguntamos. */
-  var d=draftLoad(sName,stage);
+async function startWriting(stage){
+  var cfg=WSTAGES[stage];
+  var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
+  showScr('s-write');
+  setWriteLock(false);   // aun no entra en modo examen: puede que solo pase de largo
+  g('wbody').innerHTML='<div class="wgrading"><div class="wspin"></div><div class="wgrading-t">Looking for a saved draft</div><div class="wgrading-s">Checking this computer and your account...</div></div>';
+  var d=await draftBest(sName,stage);
   if(d){renderResume(stage,d);return;}
   beginWriting(stage);
 }
@@ -890,6 +1027,7 @@ function renderResume(stage,d){
       '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">Unfinished draft</span>'+
       '<div class="wtitle">'+escHtml((p&&p.title)||d.promptTitle||'Your writing')+'</div>'+
       '<div class="wtask">You started this '+fmtWhen(d.savedAt)+' and wrote '+countWords(d.text)+' words. Carry on where you left off, or start again with a new topic.</div>'+
+      '<div class="wtask" style="margin-top:9px;font-size:12.5px;color:var(--tx3)">'+(d.remote?'&#9729;&#65039; Saved to your account &mdash; you can finish it on any computer.':'&#128187; Saved on this computer only.')+'</div>'+
     '</div>'+
     '<div class="wdraft-prev">'+escHtml(prev)+((d.text||'').length>320?'\u2026':'')+'</div>'+
     '<button class="bigbtn g" id="wresume">Continue my draft</button>'+
@@ -1245,7 +1383,8 @@ async function gradeWriting(){
       setWriteLock(false);
       renderFeedback(fb);
       await doSave(sName,wst.stage,fb.score,wst.text,p.title,fb);
-      draftClear(sName,wst.stage);   // ya quedo enviado: el borrador deja de existir
+      draftClear(sName,wst.stage);              // ya quedo enviado: el borrador deja de existir
+      await draftDeleteRemote(sName,wst.stage);  // ...tampoco en el servidor, ni en otros equipos
       var sr=g('wsaverow');if(sr){sr.className='wsaverow saved';sr.innerHTML='<div class="sdot"></div>Saved — your teacher can see your writing and score.';}
     }catch(e){
       console.error('Grading error:',e);
