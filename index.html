@@ -209,6 +209,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .wshuffle:hover{opacity:.7}
 .wwrite-card{background:var(--card);border:1.5px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:14px}
 .wwrite-lbl{font-size:11px;font-weight:800;color:var(--tx2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px}
+/* BORRADOR LOCAL */
+.wdstat{float:right;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:none;color:var(--tl);opacity:0;transition:opacity .3s}
+.wdstat.on{opacity:1}
+.wdstat.warn{color:var(--co)}
+.wdraft-prev{background:var(--c2);border:1.5px solid var(--bd);border-left:4px solid var(--tl-m);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.65;color:var(--tx2);white-space:pre-wrap;max-height:180px;overflow:hidden}
+.wdraft-note{font-size:11.5px;color:var(--tx3);text-align:center;margin-top:12px;line-height:1.55}
 .wta{width:100%;padding:14px 15px;border:1.5px solid var(--bd2);border-radius:12px;font-size:14px;min-height:240px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;line-height:1.7;transition:border-color .2s}
 .wta:focus{outline:none;border-color:var(--pu)}
 .wwc-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:8px}
@@ -467,6 +473,100 @@ function shufOpts(opts,cor){var a=opts.map(function(t,i){return{t:t,ok:i===cor};
 function toast(m,d){d=d||2600;var t=g('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},d);}
 function today(){return new Date().toISOString().slice(0,10);}
 
+/* ===================== BORRADOR LOCAL (guardar y continuar despues) =====================
+   Mientras el alumno escribe, el texto se guarda en localStorage con rebote. Asi puede
+   cerrar la pestana, recargar o quedarse sin bateria y retomar donde iba.
+   Ojo: es POR NAVEGADOR. El borrador NO viaja a otro equipo; para eso habria que
+   guardarlo en Supabase. La nota y el texto definitivo siguen yendo a 'scores' solo
+   al enviar: aqui no se persiste ninguna calificacion. */
+var DRAFT_NS='vq_draft_v1';
+var DRAFT_TTL_DAYS=7;            // los borradores mas viejos se descartan (equipos compartidos)
+/* Si el alumno ya envio algo hoy, checkPlayed() lo bloquea. Con esto en true se le deja
+   volver SOLO a terminar el borrador que dejo a medias, no a empezar una sesion nueva.
+   Ponlo en false para mantener el bloqueo estricto de una sesion por dia. */
+var ALLOW_RESUME_AFTER_BLOCK=true;
+var resumeOnly=false;            // entro solo a cerrar su borrador pendiente
+
+function lsOk(){try{var k='__vq_probe';localStorage.setItem(k,'1');localStorage.removeItem(k);return true;}catch(e){return false;}}
+var LS=lsOk();
+function normName(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ');}
+function draftKey(name,stage){return DRAFT_NS+':'+normName(name)+':'+stage;}
+function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtWhen(ts){
+  if(!ts)return 'earlier';
+  var d=new Date(ts),hm=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+  return d.toDateString()===new Date().toDateString()?('today at '+hm):(d.toDateString()+' at '+hm);
+}
+function draftWrite(name,stage,payload){
+  if(!LS)return false;
+  try{localStorage.setItem(draftKey(name,stage),JSON.stringify(payload));return true;}
+  catch(e){console.error('draft save error:',e);return false;}
+}
+function draftLoad(name,stage){
+  if(!LS)return null;
+  try{
+    var raw=localStorage.getItem(draftKey(name,stage));
+    if(!raw)return null;
+    var d=JSON.parse(raw);
+    if(!d||!d.text||!d.text.trim())return null;
+    if(d.savedAt&&Date.now()-d.savedAt>DRAFT_TTL_DAYS*864e5){draftClear(name,stage);return null;}
+    return d;
+  }catch(e){return null;}
+}
+function draftClear(name,stage){
+  if(!LS)return;
+  try{localStorage.removeItem(draftKey(name,stage));}catch(e){}
+}
+/* Borrador mas reciente del alumno en cualquier etapa (lo usa la pantalla de bloqueo). */
+function draftFind(name){
+  if(!LS)return null;
+  var best=null;
+  Object.keys(WSTAGES).forEach(function(s){
+    var d=draftLoad(name,s);
+    if(d&&(!best||(d.savedAt||0)>(best.savedAt||0)))best=d;
+  });
+  return best;
+}
+/* Los equipos del aula los comparten varios alumnos: limpiamos lo caducado al arrancar. */
+function draftPrune(){
+  if(!LS)return;
+  try{
+    Object.keys(localStorage).forEach(function(k){
+      if(k.indexOf(DRAFT_NS+':')!==0)return;
+      var d=null;try{d=JSON.parse(localStorage.getItem(k));}catch(_){}
+      if(!d||!d.savedAt||Date.now()-d.savedAt>DRAFT_TTL_DAYS*864e5)localStorage.removeItem(k);
+    });
+  }catch(e){}
+}
+/* Guardado con rebote: escribir en disco en cada tecla es innecesario. */
+var draftTimer=null;
+function draftSaveNow(){
+  draftTimer=null;
+  if(!wst||!wst.stage||wst.graded)return;
+  var txt=wst.text||'';
+  if(!txt.trim()){draftClear(sName,wst.stage);return;}   // sin texto no hay nada que ofrecer
+  var ok=draftWrite(sName,wst.stage,{
+    stage:wst.stage,
+    promptTitle:wst.prompt?wst.prompt.title:'',
+    text:txt,
+    elapsed:Date.now()-wst.t0,        // tiempo ya escrito; la pausa NO cuenta como tiempo
+    integrity:wst.integrity,
+    savedAt:Date.now()
+  });
+  draftFlag(ok?'Draft saved':'Draft not saved',!ok);
+}
+function draftSaveSoon(){
+  if(!LS)return;
+  if(draftTimer)clearTimeout(draftTimer);
+  draftTimer=setTimeout(draftSaveNow,800);
+}
+function draftCancelPending(){if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}}
+function draftFlag(msg,warn){
+  var el=g('wdstat');if(!el)return;
+  el.textContent=msg;el.className='wdstat on'+(warn?' warn':'');
+  if(!warn)setTimeout(function(){if(el.textContent===msg)el.className='wdstat';},1600);
+}
+
 async function checkPlayed(name){
   try{
     var r=await db.from('scores').select('id').ilike('student',name.trim()).gte('created_at',today()+'T00:00:00.000Z').limit(1);
@@ -508,12 +608,28 @@ async function doStart(){
   if(!v){toast('Please write your full name first.');return;}
   if(!c){toast('Please select your course.');return;}
   sCourse=c;
+  resumeOnly=false;
   g('narea').innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:#6b6a60">Checking...</div>';
   var played=await checkPlayed(v);
   if(played){
-    g('narea').innerHTML='<div class="blocked"><div class="bh">Already played today</div><div class="bp">A session for <strong>'+v+'</strong> was already submitted today. Each student can play once per day. Come back tomorrow or ask your teacher if this is an error.</div></div>';
+    /* Ya envio algo hoy. Si dejo un borrador a medias le ofrecemos cerrarlo: no es una
+       sesion nueva, es terminar la que ya habia empezado. */
+    var pend=ALLOW_RESUME_AFTER_BLOCK?draftFind(v):null;
+    g('narea').innerHTML='<div class="blocked"><div class="bh">Already played today</div><div class="bp">A session for <strong>'+escHtml(v)+'</strong> was already submitted today. Each student can play once per day. Come back tomorrow or ask your teacher if this is an error.</div>'+
+      (pend?'<button class="bigbtn b" id="bresume" style="margin-top:16px">Finish your unsent writing</button><div class="wdraft-note">You left '+countWords(pend.text)+' words unfinished '+fmtWhen(pend.savedAt)+'.</div>':'')+'</div>';
+    if(pend){
+      g('bresume').addEventListener('click',function(){
+        enterApp(v);
+        resumeOnly=true;      // solo puede cerrar ese borrador, no volver al menu de juego
+        resumeWriting(pend);
+      });
+    }
     return;
   }
+  enterApp(v);
+  buildHome();showScr('s-home');
+}
+function enterApp(v){
   sName=v;
   var ini=v.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2)||'??';
   var pals=[['#0f9e72','#e0f5ee'],['#1a6fc4','#e8f2fb'],['#5b45c8','#eeecfd'],['#c47a10','#fdf0d8']];
@@ -521,7 +637,6 @@ async function doStart(){
   g('av').textContent=ini;g('av').style.background=pal[0];
   g('awrap').style.background=pal[1];g('awrap').style.padding='3px';
   g('hn').textContent=v.split(' ')[0];
-  buildHome();showScr('s-home');
 }
 
 function initTeacher(){
@@ -733,13 +848,55 @@ function setWriteLock(on){
 }
 
 function startWriting(stage){
+  /* Si hay borrador guardado de este alumno para esta etapa, primero le preguntamos. */
+  var d=draftLoad(sName,stage);
+  if(d){renderResume(stage,d);return;}
+  beginWriting(stage);
+}
+function beginWriting(stage){
   var cfg=WSTAGES[stage];
   var p=cfg.prompts[Math.floor(Math.random()*cfg.prompts.length)];
+  draftClear(sName,stage);
   wst={stage:stage,cfg:cfg,prompt:p,text:'',t0:Date.now(),graded:false,integrity:{tabSwitches:0,pasteBlocked:0,events:[]}};
   var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
   showScr('s-write');
   setWriteLock(true);
   renderWritePrompt();
+}
+function resumeWriting(d){
+  var cfg=WSTAGES[d.stage];
+  if(!cfg){toast('That writing task is no longer available.');showScr('s-home');return;}
+  /* Se recupera el MISMO tema; si el enunciado ya no existe, cae al primero de la etapa. */
+  var p=cfg.prompts.filter(function(x){return x.title===d.promptTitle;})[0]||cfg.prompts[0];
+  /* t0 se recalcula restando lo ya escrito: el rato que estuvo fuera no cuenta como tiempo. */
+  wst={stage:d.stage,cfg:cfg,prompt:p,text:d.text||'',t0:Date.now()-(d.elapsed||0),graded:false,
+       integrity:d.integrity||{tabSwitches:0,pasteBlocked:0,events:[]}};
+  var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
+  showScr('s-write');
+  setWriteLock(true);
+  renderWritePrompt();
+  toast('\u2713 Draft restored \u2014 carry on where you left off.',3200);
+}
+/* Pantalla intermedia: aun NO esta en modo examen, todavia puede volver al menu. */
+function renderResume(stage,d){
+  var cfg=WSTAGES[stage];
+  var p=cfg.prompts.filter(function(x){return x.title===d.promptTitle;})[0];
+  var pill=g('wpill');pill.textContent=cfg.name;pill.style.background=cfg.bg;pill.style.color=cfg.dark;
+  showScr('s-write');
+  setWriteLock(false);
+  var prev=(d.text||'').slice(0,320);
+  g('wbody').innerHTML=''+
+    '<div class="wprompt-card">'+
+      '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">Unfinished draft</span>'+
+      '<div class="wtitle">'+escHtml((p&&p.title)||d.promptTitle||'Your writing')+'</div>'+
+      '<div class="wtask">You started this '+fmtWhen(d.savedAt)+' and wrote '+countWords(d.text)+' words. Carry on where you left off, or start again with a new topic.</div>'+
+    '</div>'+
+    '<div class="wdraft-prev">'+escHtml(prev)+((d.text||'').length>320?'\u2026':'')+'</div>'+
+    '<button class="bigbtn g" id="wresume">Continue my draft</button>'+
+    '<button class="bigbtn" id="wfresh" style="margin-top:10px;background:var(--c3);color:var(--tx)">Start again with a new topic</button>'+
+    '<div class="wdraft-note">Starting again deletes this draft for good.</div>';
+  g('wresume').addEventListener('click',function(){resumeWriting(d);});
+  g('wfresh').addEventListener('click',function(){draftClear(sName,stage);beginWriting(stage);});
 }
 function renderWritePrompt(){
   var p=wst.prompt,cfg=wst.cfg;
@@ -759,7 +916,7 @@ function renderWritePrompt(){
     '<div style="display:flex;align-items:center;gap:8px;background:var(--bl-l);border:1.5px solid var(--bl);color:var(--bl-d);border-radius:12px;padding:9px 13px;margin-bottom:10px;font-size:12.5px;font-weight:700">&#128204; Remember to use your term ring while writing.</div>'+
     '<div style="display:flex;align-items:center;gap:8px;background:var(--am-l);border:1.5px solid var(--am);color:var(--am-d);border-radius:12px;padding:9px 13px;margin-bottom:12px;font-size:12.5px;font-weight:700">&#128274; Exam mode: don\'t leave this page or switch tabs. Pasting is off and your writing must be your own.</div>'+
     '<div class="wwrite-card">'+
-      '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div>'+
+      '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'<span class="wdstat" id="wdstat"></span></div>'+
       '<textarea class="wta" id="wta" placeholder="Start writing here. Take your time, plan your ideas, and write in full paragraphs...">'+(wst.text||'')+'</textarea>'+
       '<div class="wwc-row">'+
         '<span class="wwc" id="wwc">0 words</span>'+
@@ -770,11 +927,13 @@ function renderWritePrompt(){
   var ta=g('wta'),wc=g('wwc'),sb=g('wsubbtn');
   function upd(){
     var n=countWords(ta.value);wst.text=ta.value;
+    draftSaveSoon();
     if(n>=req){wc.innerHTML=n+' words &middot; <b>minimum reached &#10003;</b>';wc.className='wwc ok';}
     else{wc.innerHTML=n+' / '+req+' words &middot; '+(req-n)+' more needed to submit';wc.className='wwc';}
     sb.disabled=n<req;
   }
   ta.addEventListener('input',upd);upd();
+  if(!LS)draftFlag('Draft saving unavailable',true);   // modo privado: sin red de seguridad
   g('wshufbtn').addEventListener('click',function(){
     var arr=cfg.prompts.filter(function(x){return x.title!==wst.prompt.title;});
     wst.prompt=arr[Math.floor(Math.random()*arr.length)];wst.text='';renderWritePrompt();
@@ -1073,6 +1232,7 @@ async function gradeWriting(){
   var p=wst.prompt,cfg=wst.cfg;
   var req=cfg.reqWords||p.minWords;
   if(countWords(wst.text)<req){toast('You need at least '+req+' words for this task.');return;}
+  draftCancelPending();   // que ningun guardado con rebote reviva el borrador tras enviarlo
   renderGrading();
   // Pequeño retardo para que se vea el "marking" (mejor UX), todo local
   setTimeout(async function(){
@@ -1085,12 +1245,13 @@ async function gradeWriting(){
       setWriteLock(false);
       renderFeedback(fb);
       await doSave(sName,wst.stage,fb.score,wst.text,p.title,fb);
+      draftClear(sName,wst.stage);   // ya quedo enviado: el borrador deja de existir
       var sr=g('wsaverow');if(sr){sr.className='wsaverow saved';sr.innerHTML='<div class="sdot"></div>Saved — your teacher can see your writing and score.';}
     }catch(e){
       console.error('Grading error:',e);
       g('wbody').innerHTML='<div class="werr"><strong>Something went wrong.</strong><br>Your writing is still here below — please try submitting again.</div>'+
         '<div class="wwrite-card"><div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'</div><textarea class="wta" id="wta2">'+wst.text+'</textarea><div class="wwc-row"><span class="wwc"></span><button class="wsubmit" id="wretry">Try again</button></div></div>';
-      var ta2=g('wta2');if(ta2)ta2.addEventListener('input',function(){wst.text=ta2.value;});
+      var ta2=g('wta2');if(ta2)ta2.addEventListener('input',function(){wst.text=ta2.value;draftSaveSoon();});
       var rb=g('wretry');if(rb)rb.addEventListener('click',gradeWriting);
     }
   },700);
@@ -1136,10 +1297,10 @@ function renderFeedback(fb){
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#3daa6f"></span>What you did well</div>'+strengths+'</div>'+
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#c47a10"></span>How to improve</div>'+improve+'</div>'+
     (critEx?'<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#1a6fc4"></span>How to apply each criterion (with examples)</div>'+critEx+'</div>':'')+
-    '<div class="actrow"><button class="actbtn" id="wagain">Try another topic</button><button class="actbtn pri" id="whome">Main menu</button></div>';
+    '<div class="actrow">'+(resumeOnly?'':'<button class="actbtn" id="wagain">Try another topic</button>')+'<button class="actbtn pri" id="whome">Main menu</button></div>';
   g('wbody').innerHTML=h;
-  g('wagain').addEventListener('click',function(){startWriting(wst.stage);});
-  g('whome').addEventListener('click',function(){showScr('s-home');});
+  var wag=g('wagain');if(wag)wag.addEventListener('click',function(){startWriting(wst.stage);});
+  g('whome').addEventListener('click',function(){showScr(resumeOnly?'s-name':'s-home');});
 }
 
 /* ===== ANTI-CHEAT DEL JUEGO (solo beginner y elementary) ===== */
@@ -1281,12 +1442,13 @@ async function doResults(){
 }
 
 document.addEventListener('DOMContentLoaded',function(){
+  draftPrune();
   initName();
   initTeacher();
   initWriteLock();
   initGameLock();
   g('mainmenubtn').addEventListener('click',function(){showScr('s-name');});
-  g('wbackbtn').addEventListener('click',function(){if(wLock){toast('\u26A0 Submit your writing first.');return;}showScr('s-home');});
+  g('wbackbtn').addEventListener('click',function(){if(wLock){toast('\u26A0 Submit your writing first.');return;}showScr(resumeOnly?'s-name':'s-home');});
   // back button disabled during game
 });
 </script>
