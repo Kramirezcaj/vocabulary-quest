@@ -128,7 +128,7 @@ body::before{
   min-height:100vh;position:relative;overflow:hidden;
   background:linear-gradient(150deg,#e9fbf4 0%,#eaf4ff 46%,#fdf2e6 100%);
   display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:54px;
-  align-items:center;padding:52px 58px 72px;
+  align-items:center;padding:52px clamp(58px,6vw,120px) 72px 58px;
 }
 .nblob{position:absolute;border-radius:50%;opacity:.5;filter:blur(2px);pointer-events:none}
 .nb1{width:300px;height:300px;background:#c8f2e4;top:-90px;right:22%}
@@ -199,57 +199,75 @@ body::before{
 .bh{font-size:15px;font-weight:800;color:var(--er-t);margin-bottom:7px}
 .bp{font-size:13px;color:var(--er-t);line-height:1.6;opacity:.88}
 
-/* ============================ LOGIN DEL PROFESOR ============================ */
-/* Mismo panel lateral que la entrada del alumno pero en azul: se distingue de un
-   vistazo que estas en el lado de la profesora. */
-#s-tl.active{position:fixed;inset:0;z-index:5;overflow-y:auto;background:var(--card);display:block}
-.tsplit{display:grid;grid-template-columns:47% 53%;min-height:100vh}
-.tleft{
-  position:relative;overflow:hidden;padding:56px 52px;display:flex;flex-direction:column;
-  justify-content:space-between;gap:34px;
-  background:linear-gradient(150deg,#0b3f74 0%,#12579c 44%,#1a6fc4 74%,#3f5fd0 130%);
+/* ============================ ACCESO DOCENTE ============================ */
+/* Mismo montaje que la portada del alumno: fondo a pantalla completa, contenido
+   a la izquierda y la tarjeta flotando a la derecha con los mismos margenes.
+   Aqui la ilustracion es el propio tablero: tarjetas, barras y una linea. */
+#s-tl.active{position:fixed;inset:0;z-index:5;overflow-y:auto;display:block}
+.tstage{
+  min-height:100vh;position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#eaf3fd 0%,#eef0fd 52%,#e9f8f3 100%);
+  display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:54px;
+  align-items:center;padding:52px clamp(58px,6vw,120px) 72px 58px;
 }
-.tshape{position:absolute;border-radius:50%;background:rgba(255,255,255,.09);animation:floatn 15s var(--e2) infinite alternate}
-.ts1{width:330px;height:330px;top:-120px;right:-110px}
-.ts2{width:210px;height:210px;bottom:-80px;left:-70px;background:rgba(255,255,255,.07);animation-delay:-5s}
-.ts3{width:110px;height:110px;top:46%;right:14%;background:rgba(255,255,255,.06);animation-delay:-9s}
-.tlin{position:relative;z-index:1}
-.tico{
-  width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);
-  border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;
-  margin:0 0 30px;animation:pop .6s var(--e) both;
+.tblob{position:absolute;border-radius:50%;opacity:.5;filter:blur(2px);pointer-events:none}
+.tb1{width:300px;height:300px;background:#cfe4fa;top:-90px;right:24%}
+.tb2{width:210px;height:210px;background:#dcd6fb;bottom:-60px;left:-50px}
+.tb3{width:230px;height:230px;background:#d7f2e8;top:40%;left:36%;opacity:.38}
+.tmain{position:relative;z-index:1;display:flex;flex-direction:column;gap:18px;min-width:0}
+.tlogo{
+  width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;background:#2f7fd6;box-shadow:0 4px 0 #175ba6;animation:pop .6s var(--e) both;
 }
-.tico svg{width:24px;height:24px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round}
+.tlogo svg{width:23px;height:23px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round}
 .tth{
-  font-size:clamp(32px,3.2vw,46px);font-weight:900;letter-spacing:-2px;line-height:1.05;
-  color:#fff;margin-bottom:16px;animation:fadeUp .55s var(--e) .06s both;
+  font-size:clamp(30px,3.2vw,42px);font-weight:900;letter-spacing:-1.8px;line-height:1.05;
+  color:#16202c;animation:fadeUp .55s var(--e) .06s both;
 }
-.tth span{color:#bfdcff}
-.ttp{font-size:15.5px;color:rgba(255,255,255,.9);line-height:1.7;max-width:420px;animation:fadeUp .55s var(--e) .12s both}
-.tbullets{margin-top:28px;display:grid;gap:12px;animation:fadeUp .55s var(--e) .18s both}
-.tbu{display:flex;gap:11px;align-items:center;color:#fff;font-size:14px;font-weight:600}
-.tbk{
-  width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;
-  align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
-}
+.tth span{color:#175ba6}
+.ttp{font-size:15px;color:#5a6a7a;line-height:1.65;max-width:420px;animation:fadeUp .55s var(--e) .12s both}
+.tart{position:relative;z-index:1;margin:2px 0;animation:fadeUp .6s var(--e) .18s both}
+.tart svg{width:100%;max-width:560px;height:auto;max-height:min(34vh,240px);display:block}
+/* las tarjetas flotan, las barras crecen desde abajo y la linea se dibuja */
+@keyframes tBob{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@keyframes tGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes tDraw{from{stroke-dashoffset:220}to{stroke-dashoffset:0}}
+.tfloat{animation:tBob 4s ease-in-out var(--d,0s) infinite alternate;transform-box:fill-box;transform-origin:center}
+.tbar{animation:tGrow .7s var(--e) var(--d,0s) both;transform-box:fill-box;transform-origin:bottom}
+.tline{stroke-dasharray:220;animation:tDraw 1.1s var(--e) .8s both}
+.tdot{opacity:0;animation:pop .45s var(--e) 1.7s both;transform-box:fill-box;transform-origin:center}
 .tstats{
-  position:relative;z-index:1;display:flex;gap:36px;flex-wrap:wrap;padding-top:24px;
-  border-top:1px solid rgba(255,255,255,.25);animation:fadeUp .55s var(--e) .24s both;
+  position:relative;z-index:1;display:flex;gap:34px;flex-wrap:wrap;padding-top:6px;
+  animation:fadeUp .55s var(--e) .24s both;
 }
-.tsv{font-size:26px;font-weight:900;color:#fff;letter-spacing:-1px}
-.tsl{font-size:11px;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
-.tright{background:var(--card);display:flex;align-items:center;justify-content:center;padding:56px 52px 72px;position:relative}
-.trin{width:100%;max-width:390px;animation:fadeUp .55s var(--e) .2s both}
-.trh{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:7px}
-.trs{font-size:14px;color:var(--tx2);margin-bottom:26px;line-height:1.6}
-.tright .finp{background:var(--bg)}
+.tsv{font-size:26px;font-weight:900;letter-spacing:-.9px;color:#16202c}
+.tsl{font-size:10.5px;font-weight:700;color:#5a6a7a;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+.tcardcol{position:relative;z-index:2;display:flex;justify-content:center;align-items:center}
+.tcard{
+  width:100%;max-width:400px;background:var(--card);border-radius:24px;padding:32px 30px;
+  box-shadow:0 2px 6px rgba(16,32,48,.06),0 24px 56px rgba(16,32,48,.18);
+  animation:fadeUp .55s var(--e) .2s both;
+}
+.tch{font-size:26px;font-weight:900;letter-spacing:-.9px;margin-bottom:6px;color:#16202c}
+.tcs{font-size:13.5px;color:#5a6a7a;margin-bottom:22px;line-height:1.6}
+.tcard .finp{background:#f6f9fd}
+/* Mismo boton con relieve que el de los alumnos, en azul. */
+.tgo{
+  width:100%;margin-top:14px;padding:15px;border-radius:14px;border:none;font-size:15px;font-weight:900;
+  cursor:pointer;font-family:inherit;color:#fff;background:#2f7fd6;
+  box-shadow:0 5px 0 #175ba6,0 10px 22px rgba(47,127,214,.3);
+  transition:transform .12s var(--e2),box-shadow .12s var(--e2);
+}
+.tgo:hover{transform:translateY(2px);box-shadow:0 3px 0 #175ba6,0 8px 18px rgba(47,127,214,.3);opacity:1;filter:none}
+.tgo:active{transform:translateY(5px);box-shadow:0 0 0 #175ba6,0 4px 10px rgba(47,127,214,.28)}
 .tfoot{text-align:center;margin-top:6px}
+.errmsg{font-size:12px;color:var(--er-t);margin-top:10px;display:none;font-weight:600;text-align:center;animation:shake .5s var(--e2)}
 .train{
-  position:absolute;left:52px;right:52px;bottom:28px;height:4px;border-radius:99px;
-  background:linear-gradient(90deg,#1a6fc4,#5b45c8,#0f9e72,#1a6fc4);
+  position:absolute;left:0;right:0;bottom:0;height:5px;
+  background:linear-gradient(90deg,#2f7fd6,#9179f2,#22c9a0,#f7b93f,#f8785c,#2f7fd6);
   background-size:200% 100%;animation:hue 9s linear infinite;
 }
-.errmsg{font-size:12px;color:var(--er-t);margin-top:10px;display:none;font-weight:600;text-align:center;animation:shake .5s var(--e2)}
 
 /* ============================ HOME ============================ */
 .htop{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0 10px;flex-wrap:wrap}
@@ -873,9 +891,9 @@ body::before{
   .nstage{grid-template-columns:1fr;padding:38px 24px 60px;gap:30px}
   .nart svg{max-height:230px;margin:0 auto}
   .ncardcol{justify-content:stretch}
-  .tsplit{grid-template-columns:1fr}
-  .tleft{padding:44px 30px;gap:26px}
-  .tright{padding:40px 30px 64px}
+  .tstage{grid-template-columns:1fr;padding:38px 24px 60px;gap:28px}
+  .tart svg{max-height:200px;margin:0 auto}
+  .tcardcol{justify-content:stretch}
   .train{left:30px;right:30px}
   .nleft{padding:44px 30px;gap:26px}
   .nright{padding:40px 30px 64px}
@@ -1009,18 +1027,42 @@ body::before{
   </div>
 </div>
 <div class="screen" id="s-tl">
-  <div class="tsplit">
-    <div class="tleft">
-      <div class="tshape ts1"></div><div class="tshape ts2"></div><div class="tshape ts3"></div>
-      <div class="tlin">
-        <div class="tico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <h1 class="tth">Teacher<br><span>Dashboard</span></h1>
-        <p class="ttp">Live results from every course, updated while your students work.</p>
-        <div class="tbullets">
-          <div class="tbu"><span class="tbk">1</span>Scores by level, course and date</div>
-          <div class="tbu"><span class="tbk">2</span>Read every article and essay in full</div>
-          <div class="tbu"><span class="tbk">3</span>Download the whole class as a spreadsheet</div>
-        </div>
+  <div class="tstage">
+    <div class="tblob tb1"></div><div class="tblob tb2"></div><div class="tblob tb3"></div>
+    <div class="tmain">
+      <div class="tlogo"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h1 class="tth">Your class,<br><span>at a glance</span>.</h1>
+      <p class="ttp">Live results from every course, updated while your students work.</p>
+      <div class="tart">
+        <svg viewBox="0 0 520 210" role="img" aria-label="An illustrated dashboard with metric cards, a bar chart and a rising line">
+          <g class="tfloat">
+            <rect x="4" y="10" width="150" height="74" rx="16" fill="#fff" stroke="#e0e8f2" stroke-width="2"></rect>
+            <text x="22" y="36" font-size="11" font-weight="800" fill="#98a5b3" font-family="system-ui,sans-serif">STUDENTS</text>
+            <text x="22" y="66" font-size="27" font-weight="900" fill="#16202c" font-family="system-ui,sans-serif">28</text>
+            <circle cx="130" cy="34" r="5" fill="#22c9a0"></circle>
+          </g>
+          <g class="tfloat" style="--d:-1.4s">
+            <rect x="168" y="10" width="150" height="74" rx="16" fill="#fff" stroke="#e0e8f2" stroke-width="2"></rect>
+            <text x="186" y="36" font-size="11" font-weight="800" fill="#98a5b3" font-family="system-ui,sans-serif">AVERAGE</text>
+            <text x="186" y="66" font-size="27" font-weight="900" fill="#16202c" font-family="system-ui,sans-serif">67</text>
+            <path d="M262 66 l14 -20 12 12 18 -26" fill="none" stroke="#22c9a0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </g>
+          <g class="tfloat" style="--d:-2.6s">
+            <rect x="332" y="10" width="150" height="74" rx="16" fill="#fff" stroke="#e0e8f2" stroke-width="2"></rect>
+            <text x="350" y="36" font-size="11" font-weight="800" fill="#98a5b3" font-family="system-ui,sans-serif">TO REVIEW</text>
+            <text x="350" y="66" font-size="27" font-weight="900" fill="#16202c" font-family="system-ui,sans-serif">7</text>
+            <circle cx="458" cy="46" r="15" fill="#fdeee9"></circle>
+            <path d="M458 39 v9 M458 53 v1.5" stroke="#f8785c" stroke-width="3.5" stroke-linecap="round"></path>
+          </g>
+          <rect x="4" y="102" width="478" height="100" rx="18" fill="#fff" stroke="#e0e8f2" stroke-width="2"></rect>
+          <rect class="tbar" style="--d:.2s" x="34" y="128" width="34" height="52" rx="7" fill="#22c9a0"></rect>
+          <rect class="tbar" style="--d:.32s" x="88" y="146" width="34" height="34" rx="7" fill="#2f7fd6"></rect>
+          <rect class="tbar" style="--d:.44s" x="142" y="118" width="34" height="62" rx="7" fill="#f7b93f"></rect>
+          <rect class="tbar" style="--d:.56s" x="196" y="152" width="34" height="28" rx="7" fill="#f8785c"></rect>
+          <rect class="tbar" style="--d:.68s" x="250" y="134" width="34" height="46" rx="7" fill="#9179f2"></rect>
+          <path class="tline" d="M312 172 L346 156 L380 162 L414 134 L452 122" fill="none" stroke="#2f7fd6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle class="tdot" cx="452" cy="122" r="6" fill="#2f7fd6" stroke="#fff" stroke-width="3"></circle>
+        </svg>
       </div>
       <div class="tstats">
         <div><div class="tsv">5</div><div class="tsl">Courses</div></div>
@@ -1028,18 +1070,18 @@ body::before{
         <div><div class="tsv">6</div><div class="tsl">Activities</div></div>
       </div>
     </div>
-    <div class="tright">
-      <div class="trin">
-        <div class="trh">Teacher access</div>
-        <div class="trs">Enter your password to open the dashboard.</div>
+    <div class="tcardcol">
+      <div class="tcard">
+        <div class="tch">Teacher access</div>
+        <div class="tcs">Enter your password to open the dashboard.</div>
         <div class="flbl">Password</div>
         <input class="finp" id="tpass" type="password" placeholder="Enter password">
-        <button class="bigbtn b" id="tlbtn">View dashboard</button>
+        <button class="bigbtn tgo" id="tlbtn">View dashboard</button>
         <p class="errmsg" id="perr">Incorrect password. Please try again.</p>
         <div class="tfoot"><button class="backl" id="tbk">Back to student login</button></div>
       </div>
-      <div class="train"></div>
     </div>
+    <div class="train"></div>
   </div>
 </div>
 <div class="screen" id="s-dash">
@@ -2514,6 +2556,9 @@ function doPick(i){
     toast('Correct! +'+PTS_PER_Q+' points',1600);
   } else {
     st.wrong+=1;
+    /* Sin esto, st.missed quedaba siempre vacio y la pantalla de resultados
+       decia "Perfect score" aunque el alumno hubiera fallado. */
+    st.missed.push({word:q.word,subject:q.subject,pos:q.pos,why:q.why});
     toast('Not quite — read the explanation.',2200);
   }
   renderQ();
