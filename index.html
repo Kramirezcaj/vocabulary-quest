@@ -56,9 +56,9 @@ body::before{
    comoda, el panel del profesor quiere sitio para la tabla. */
 #s-tl,#s-home,#s-game,#s-results,#s-write,#s-dash{width:100%;margin:0 auto}
 #s-home{max-width:1060px}
-#s-game{max-width:880px}
+#s-game{max-width:1180px}
 #s-results{max-width:940px}
-#s-write{max-width:1180px}
+#s-write{max-width:1120px}
 #s-dash{max-width:1280px}
 .screen{display:none}
 .screen.active{display:block;animation:scrIn .5s var(--e) both}
@@ -329,83 +329,105 @@ body::before{
 .hft{text-align:center;font-size:11px;color:var(--tx3);padding-top:18px}
 
 /* ============================ JUEGO ============================ */
-.gtop{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+/* La pregunta se reparte en dos: a la izquierda lo que hay que leer, a la derecha
+   lo que hay que responder. Y el bloque se centra en el alto para que no quede
+   media pantalla vacia debajo. */
+#s-game.active{display:flex;flex-direction:column;min-height:calc(100vh - 104px)}
+#gbody{flex:1;display:flex;flex-direction:column;justify-content:center}
+.gtop{
+  display:flex;align-items:center;gap:16px;margin-bottom:20px;background:var(--card);
+  border:1px solid var(--bd);border-radius:99px;padding:9px 10px 9px 16px;box-shadow:var(--s1);
+}
 .gbk{display:none}
 .gbk:hover{background:var(--c2)}
-.gpill{font-size:11px;font-weight:800;padding:5px 13px;border-radius:99px;letter-spacing:.04em;white-space:nowrap}
-.gpw{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
-.gtrk{height:7px;background:var(--c3);border-radius:99px;overflow:hidden}
+.gpill{font-size:11px;font-weight:800;padding:6px 14px;border-radius:99px;letter-spacing:.04em;white-space:nowrap}
+.gpw{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.gtrk{position:relative;height:9px;background:var(--c3);border-radius:99px;overflow:hidden}
 .gfill{height:100%;border-radius:99px;transition:width .55s var(--e)}
+/* separadores: una marca por pregunta, para que se vea cuantas quedan */
+.gtrk::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,
+    transparent 0 calc(var(--seg,5%) - 2px),
+    var(--card) calc(var(--seg,5%) - 2px) var(--seg,5%));
+}
 .gmeta{font-size:11px;color:var(--tx3);display:flex;justify-content:space-between;gap:8px}
 .gscore{
-  font-size:13px;font-weight:800;padding:5px 12px;border-radius:99px;background:var(--card);
-  border:1.5px solid var(--bd);white-space:nowrap;min-width:52px;text-align:center;box-shadow:var(--s1);
+  font-size:15px;font-weight:900;width:46px;height:46px;border-radius:50%;background:var(--bg);
+  border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
+/* La situacion se lee grande y centrada, como el texto de un examen. */
 .qcard{
-  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:24px 20px;
-  margin-bottom:12px;box-shadow:var(--s2);animation:fadeUp .4s var(--e) both;
+  background:var(--card);border:1px solid var(--bd);border-radius:22px;
+  padding:28px 32px 30px;box-shadow:var(--s2);text-align:center;
+  animation:fadeUp .4s var(--e) both;
 }
-.qtags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.qtags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.04em}
 .tags{background:var(--c2);color:var(--tx2)}
 .tagt{background:var(--pu-l);color:var(--pu)}
-.schd{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--tx3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.schl{flex:1;height:1px;background:var(--bd)}
-.sc{
-  background:linear-gradient(180deg,var(--c2),#f7f6f1);border-left:4px solid var(--tl);
-  border-radius:0 12px 12px 0;padding:14px 16px;font-size:14px;line-height:1.72;margin-bottom:14px;
-}
-.sc em{font-style:normal;font-weight:700;color:var(--tl-d);background:rgba(15,158,114,.13);padding:1px 5px;border-radius:5px}
-.qp{font-size:15.5px;font-weight:700;line-height:1.45;margin-bottom:14px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{font-size:20px;line-height:1.75;margin:16px auto 0;max-width:78ch;color:var(--tx)}
+.sc em{font-style:normal;font-weight:700;color:var(--tl-d);background:rgba(15,158,114,.13);padding:2px 8px;border-radius:6px}
+.qp{font-size:22px;font-weight:800;line-height:1.4;letter-spacing:-.4px;margin-top:22px}
+.qp strong{font-weight:900}
+.opts{display:grid;gap:14px;margin-top:18px}
+.opts.c4{grid-template-columns:repeat(4,1fr)}
+.opts.c2{grid-template-columns:repeat(2,1fr)}
+.opts.c1{grid-template-columns:1fr}
+.warea{margin-top:18px}
 .opt{
-  background:var(--bg);border:1.5px solid var(--bd2);border-radius:13px;padding:12px 13px 12px 11px;
-  font-size:13px;line-height:1.45;text-align:left;cursor:pointer;color:var(--tx);font-family:inherit;
-  display:flex;align-items:flex-start;gap:9px;
-  transition:background .16s,border-color .16s,transform .16s var(--e),box-shadow .16s;
+  background:var(--card);border:1.5px solid var(--bd2);border-radius:18px;padding:20px 18px;
+  font-size:14.5px;line-height:1.55;text-align:left;cursor:pointer;color:var(--tx);font-family:inherit;
+  display:flex;align-items:flex-start;gap:13px;box-shadow:var(--s1);
+  transition:background .16s,border-color .16s,transform .18s var(--e),box-shadow .18s;
   animation:fadeUp .4s var(--e) both;
 }
+/* en cuatro columnas la letra va arriba y el texto debajo, como una ficha */
+.opts.c4 .opt{flex-direction:column;gap:14px;min-height:150px}
 .opts .opt:nth-child(1){animation-delay:.04s}.opts .opt:nth-child(2){animation-delay:.09s}
 .opts .opt:nth-child(3){animation-delay:.14s}.opts .opt:nth-child(4){animation-delay:.19s}
-.opt:hover:not(:disabled){background:var(--tl-l);border-color:var(--tl-m);transform:translateY(-2px);box-shadow:var(--s1)}
-.opt:active:not(:disabled){transform:translateY(0) scale(.99)}
+.opt:hover:not(:disabled){background:var(--tl-l);border-color:var(--tl-m);transform:translateY(-5px);box-shadow:var(--s3)}
+.opt:active:not(:disabled){transform:translateY(0)}
 .opt:disabled{cursor:default}
+.opt:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
 .opt.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t);animation:popSm .4s var(--e)}
 .opt.bad{background:var(--er-bg);border-color:var(--er-b);color:var(--er-t);animation:shake .45s var(--e2)}
 .ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-t)}
 .bad{background:var(--er-bg);border-color:var(--er-b);color:var(--er-t)}
 .optk{
-  min-width:23px;height:23px;border-radius:7px;background:var(--c3);display:flex;align-items:center;
-  justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;color:var(--tx2);transition:all .16s;
+  min-width:30px;height:30px;border-radius:10px;background:var(--c3);display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;color:var(--tx2);transition:all .16s;
 }
+.opts.c4 .optk{min-width:36px;height:36px;font-size:14px;border-radius:11px}
 .opt:hover:not(:disabled) .optk{background:var(--tl-m);color:#fff}
 .opt.ok .optk{background:var(--ok-b);color:#fff}
 .opt.bad .optk{background:var(--er-b);color:#fff}
-.optt{flex:1;padding-top:1px}
+.optt{flex:1}
+.opts.c4 .optt{padding:0}
 .warea textarea{
-  width:100%;padding:13px 15px;border:1.5px solid var(--bd2);border-radius:12px;font-size:14px;
-  min-height:110px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;
-  line-height:1.65;margin-top:4px;transition:border-color .2s,box-shadow .2s;
+  width:100%;padding:14px 16px;border:1.5px solid var(--bd2);border-radius:12px;font-size:14.5px;
+  min-height:180px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;
+  line-height:1.7;transition:border-color .2s,box-shadow .2s;
 }
 .warea textarea:focus{outline:none;border-color:var(--tl);box-shadow:0 0 0 4px rgba(15,158,114,.12)}
-.wft{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:10px;flex-wrap:wrap}
+.wft{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:10px;flex-wrap:wrap}
 .cc{font-size:11px;color:var(--tx3)}
 .subbtn{
   padding:11px 22px;border-radius:11px;border:1.5px solid var(--tl);background:var(--tl-l);
   font-size:13px;font-weight:700;cursor:pointer;color:var(--tl);font-family:inherit;transition:all .16s var(--e2);
 }
 .subbtn:hover{background:var(--tl);color:#fff;transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,158,114,.28)}
-.fb{border-radius:14px;padding:15px 17px;font-size:13px;line-height:1.68;margin-top:12px;border:1.5px solid;animation:fadeUp .35s var(--e) both}
-.fb-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px;flex-wrap:wrap}
+.fb{border-radius:14px;padding:17px 19px;margin-top:16px;font-size:13.5px;line-height:1.7;border:1.5px solid;animation:fadeUp .35s var(--e) both}
+.fb-hd{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
 .fb-badge{padding:4px 10px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.05em}
 .fb.ok .fb-badge{background:var(--ok-b);color:#fff}
 .fb.bad .fb-badge{background:var(--er-b);color:#fff}
-.fb-ti{font-weight:800;font-size:14px}
-.fb-ex{margin-top:10px;padding:10px 13px;border-radius:10px;background:rgba(0,0,0,.045);font-size:12px;line-height:1.62}
+.fb-ti{font-weight:800;font-size:14.5px}
+.fb-ex{margin-top:11px;padding:11px 14px;border-radius:10px;background:rgba(0,0,0,.045);font-size:12.5px;line-height:1.65}
 .fb-el{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;opacity:.72;margin-bottom:3px}
 .nxtbtn{
-  display:block;width:100%;margin-top:2px;padding:14px;border-radius:14px;border:1.5px solid var(--bd2);
-  background:var(--card);font-size:14px;font-weight:700;cursor:pointer;color:var(--tx);font-family:inherit;
+  display:block;width:100%;margin-top:14px;padding:15px;border-radius:14px;border:1.5px solid var(--bd2);
+  background:var(--card);font-size:14.5px;font-weight:800;cursor:pointer;color:var(--tx);font-family:inherit;
   text-align:center;transition:all .18s var(--e2);animation:fadeUp .35s var(--e) .06s both;
 }
 .nxtbtn:hover{background:var(--tl);color:#fff;border-color:var(--tl);transform:translateY(-2px);box-shadow:0 8px 22px rgba(15,158,114,.28)}
@@ -535,52 +557,87 @@ body::before{
   font-size:12px;font-weight:700;cursor:pointer;color:var(--tx2);font-family:inherit;transition:all .16s var(--e2);
 }
 .wback:hover{background:var(--c2);color:var(--tx)}
-.wprompt-card{
-  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:22px 20px;
-  margin-bottom:14px;box-shadow:var(--s2);animation:fadeUp .45s var(--e) both;
+/* --- Cuaderno: la hoja rayada ocupa todo el alto que quede libre --- */
+#s-write.active{display:flex;flex-direction:column;min-height:calc(100vh - 104px)}
+#wbody{flex:1;min-height:0}
+.wnotebook{display:flex;flex-direction:column}
+.wstrip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:2px 4px 16px}
+.wstrip-t{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.wmore{
+  background:none;border:none;color:var(--pu);font-size:12.5px;font-weight:700;font-family:inherit;
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px;transition:opacity .16s;
 }
-.wtopic{display:inline-block;font-size:10px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px}
-.wtitle{font-size:23px;font-weight:900;letter-spacing:-.6px;line-height:1.15;margin-bottom:10px}
-.wtask{font-size:14px;line-height:1.68;color:var(--tx);margin-bottom:14px}
+.wmore:hover{opacity:.65}
+.wchip{font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;background:var(--c2);color:var(--tx2);white-space:nowrap}
+.wstrip .wchip:nth-of-type(1){margin-left:auto}
+.wtaskpanel{
+  background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:20px 22px;
+  margin-bottom:14px;box-shadow:var(--s1);animation:fadeUp .3s var(--e) both;
+}
+.wtaskpanel[hidden]{display:none}
+.wtask{font-size:14.5px;line-height:1.7;color:var(--tx);margin-bottom:14px;max-width:74ch}
 .wmeta-row{display:flex;gap:8px;flex-wrap:wrap}
 .wmeta-chip{font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;background:var(--c2);color:var(--tx2);display:flex;align-items:center;gap:5px}
 .wshuffle{
-  background:none;border:none;color:var(--pu);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
-  text-decoration:underline;text-underline-offset:3px;padding:5px;margin-bottom:14px;transition:opacity .16s;
+  background:none;border:none;color:var(--pu);font-size:12.5px;font-weight:700;cursor:pointer;
+  font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:12px 2px 0;transition:opacity .16s;
 }
 .wshuffle:hover{opacity:.65}
-.wwrite-card{
-  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:18px;
-  margin-bottom:14px;box-shadow:var(--s2);animation:fadeUp .45s var(--e) .06s both;
+/* La hoja: rayas dibujadas con un degradado que se repite cada linea. Van con
+   background-attachment:local para que se muevan junto al texto al desplazarse. */
+.wpaper{
+  --lh:38px;
+  flex:1;display:flex;flex-direction:column;min-height:320px;overflow:hidden;
+  background:var(--card);border:1px solid var(--bd);border-radius:20px;box-shadow:var(--s2);
+  animation:fadeUp .45s var(--e) both;
 }
-.wwrite-lbl{font-size:11px;font-weight:800;color:var(--tx2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px}
 .wta{
-  width:100%;padding:15px 16px;border:1.5px solid var(--bd2);border-radius:13px;font-size:14.5px;
-  min-height:250px;resize:vertical;background:var(--bg);color:var(--tx);font-family:inherit;line-height:1.75;
-  transition:border-color .2s,box-shadow .2s,background .2s;
+  flex:1;width:100%;border:none;outline:none;resize:none;font-family:inherit;
+  font-size:16.5px;line-height:var(--lh);color:var(--tx);padding:26px 44px;
+  background-color:transparent;background-attachment:local;
+  background-image:repeating-linear-gradient(180deg,transparent 0 calc(var(--lh) - 1px),#eeece4 calc(var(--lh) - 1px) var(--lh));
+  background-position:0 26px;
 }
-.wta:focus{outline:none;border-color:var(--pu);background:var(--card);box-shadow:0 0 0 4px rgba(91,69,200,.12)}
-.wwc-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:10px}
-.wwc{font-size:12px;color:var(--tx3);font-weight:600}
+.wta::placeholder{color:var(--tx3)}
+.wpfoot{
+  border-top:1px solid var(--bd);padding:14px 24px;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;flex-wrap:wrap;background:#fcfbf8;
+}
+.wprog{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.wring{
+  --p:0%;
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:conic-gradient(var(--pu) 0 var(--p),var(--c3) var(--p) 100%);
+  transition:background .4s var(--e);
+}
+.wring.done{background:conic-gradient(var(--tl) 0 100%,var(--tl) 0)}
+.wring span{
+  width:30px;height:30px;border-radius:50%;background:#fcfbf8;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:900;color:var(--pu-d);
+}
+.wring.done span{color:var(--tl-d)}
+.wwc{font-size:12.5px;color:var(--tx3);font-weight:600}
 .wwc b{color:var(--tx2)}
 .wwc.ok b{color:var(--tl)}
+.wdstat{font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--tl);opacity:0;transition:opacity .3s}
+.wdstat.on{opacity:1}
+.wdstat.warn{color:var(--co)}
+.wbtns{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.wlater{
+  padding:12px 18px;border-radius:12px;border:1.5px solid var(--bd2);background:var(--card);
+  color:var(--tx2);font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
+  white-space:nowrap;transition:all .18s var(--e2);
+}
+.wlater:hover:not(:disabled){border-color:var(--tl);color:var(--tl);background:var(--tl-l)}
+.wlater:disabled{opacity:.55;cursor:default}
 .wsubmit{
-  padding:13px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,#6b53de,#4d38b4);color:#fff;
-  font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(91,69,200,.32);
-  transition:transform .16s var(--e2),box-shadow .16s,opacity .16s;
+  padding:12px 26px;border-radius:12px;border:none;background:linear-gradient(135deg,#6b53de,#4d38b4);
+  color:#fff;font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;
+  box-shadow:0 6px 18px rgba(91,69,200,.32);transition:transform .16s var(--e2),box-shadow .16s,opacity .16s;
 }
 .wsubmit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px rgba(91,69,200,.42)}
 .wsubmit:active:not(:disabled){transform:translateY(0) scale(.99)}
 .wsubmit:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
-.wlater{
-  width:100%;margin-top:12px;padding:13px;border-radius:12px;border:1.5px solid var(--bd2);background:var(--card);
-  color:var(--tx2);font-size:13.5px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .18s var(--e2);
-}
-.wlater:hover:not(:disabled){border-color:var(--tl);color:var(--tl);background:var(--tl-l)}
-.wlater:disabled{opacity:.55;cursor:default}
-.wdstat{float:right;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:none;color:var(--tl);opacity:0;transition:opacity .3s}
-.wdstat.on{opacity:1}
-.wdstat.warn{color:var(--co)}
 .wdraft-prev{
   background:var(--c2);border:1px solid var(--bd);border-left:4px solid var(--tl-m);border-radius:13px;
   padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.68;color:var(--tx2);
@@ -593,16 +650,30 @@ body::before{
   line-height:1.6;color:var(--er-t);margin-bottom:14px;animation:pop .4s var(--e) both;
 }
 
-.wnote{display:block;border-radius:12px;padding:11px 14px;margin-bottom:10px;font-size:12.5px;font-weight:700;line-height:1.55;
-  background:var(--bl-l);border:1.5px solid #9cc6ec;color:var(--bl-d)}
-.wnote.exam{background:var(--am-l);border-color:#e6bd6e;color:var(--am-d);margin-bottom:12px}
+/* Estas piezas las siguen usando dos vistas: la de retomar un borrador y el aviso
+   de error al enviar. No forman parte del cuaderno, pero deben seguir con estilo. */
+.wprompt-card{
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:22px 20px;
+  margin-bottom:14px;box-shadow:var(--s2);animation:fadeUp .45s var(--e) both;
+}
+.wtopic{display:inline-block;font-size:10px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px}
+.wtitle{font-size:23px;font-weight:900;letter-spacing:-.6px;line-height:1.15;margin-bottom:10px}
+.wwrite-card{
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:18px;
+  margin-bottom:14px;box-shadow:var(--s2);
+}
+.wwrite-lbl{font-size:11px;font-weight:800;color:var(--tx2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px}
+.wwrite-card .wta{
+  min-height:280px;border:1.5px solid var(--bd2);border-radius:13px;padding:15px 16px;
+  background:var(--bg);background-image:none;line-height:1.75;font-size:14.5px;
+}
+.wwc-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:10px}
+.wnote{
+  display:block;border-radius:12px;padding:12px 14px;margin-top:14px;font-size:12.5px;font-weight:700;
+  line-height:1.55;background:var(--bl-l);border:1.5px solid #9cc6ec;color:var(--bl-d);
+}
+.wnote.exam{background:var(--am-l);border-color:#e6bd6e;color:var(--am-d)}
 .wnote b{font-weight:800}
-
-/* Dos columnas mientras se escribe: el enunciado se queda a la vista (sticky)
-   mientras el alumno trabaja en el editor. Se apila en pantallas estrechas. */
-.wlayout{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:0 22px;align-items:start}
-.wcol-left{position:sticky;top:20px;min-width:0}
-.wcol-right{min-width:0}
 
 /* ============================ CORRECCION Y DEVOLUCION ============================ */
 .wgrading{text-align:center;padding:44px 20px;animation:fadeIn .3s both}
@@ -624,9 +695,7 @@ body::before{
 .wfb-sub{font-size:13px;color:var(--tx2);animation:fadeUp .45s var(--e) .2s both}
 .wfb-rubric{letter-spacing:-.2px}
 .wband{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.wfblayout{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}
-.wfblayout>.wfb-top,.wfblayout>.wsaverow,.wfblayout>.wband,
-.wfblayout>.wfb-summary,.wfblayout>.actrow,.wfblayout>.wfb-block.wide{grid-column:1/-1}
+.wfblayout{display:block}
 .wbandc{
   background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:13px 14px;
   box-shadow:var(--s1);animation:fadeUp .45s var(--e) both;
@@ -699,13 +768,18 @@ body::before{
   body:has(#s-dash.active) #app{max-width:1120px}
 }
 @media(max-width:1000px){
+  #s-game.active{min-height:0}
+  .opts.c4{grid-template-columns:1fr 1fr}
+  .opts.c4 .opt{flex-direction:row;min-height:0;gap:13px}
+  .sc{font-size:18px}
+  .qp{font-size:20px}
   /* en dos filas la linea del recorrido deja de tener sentido */
   .rgrid{grid-template-columns:repeat(2,1fr);gap:16px}
   .rline{display:none}
   .rd{min-height:0}
   .wband{grid-template-columns:1fr 1fr}
-  .wlayout,.wfblayout{grid-template-columns:1fr}
-  .wcol-left{position:static}
+  #s-write.active{min-height:0}
+  .wpaper{min-height:420px}
 }
 @media(max-width:900px){
   .nsplit,.tsplit{grid-template-columns:1fr}
@@ -727,6 +801,15 @@ body::before{
   .ntitle{font-size:32px}
   .opts{grid-template-columns:1fr}
   #wsgrid,.lvgrid,.wband,.rgrid{grid-template-columns:1fr}
+  .wbtns{width:100%}
+  .wbtns button{flex:1}
+  .wta{padding:22px 20px;font-size:16px}
+  .wstrip .wchip:nth-of-type(1){margin-left:0}
+  .wpfoot{padding:14px 16px}
+  .qcard{padding:22px 18px 24px}
+  .opts.c4,.opts.c2{grid-template-columns:1fr}
+  .sc{font-size:16.5px}
+  .qp{font-size:18px}
   .htop{gap:10px}
   .rdot{width:56px;height:56px;font-size:20px;margin-bottom:12px}
   .metg,.emb-bands{grid-template-columns:1fr 1fr}
@@ -1570,46 +1653,65 @@ function renderResume(stage,d){
 function renderWritePrompt(){
   var p=wst.prompt,cfg=wst.cfg;
   var req=cfg.reqWords||p.minWords;
-  var h='<div class="wcol-left">'+
-    '<div class="wprompt-card">'+
+  /* Cuaderno: una tira con el tema arriba, la hoja rayada ocupando todo el alto y
+     el pie con el anillo de progreso. La consigna completa se despliega aparte. */
+  var h='<div class="wstrip">'+
       '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">'+p.topic+'</span>'+
-      '<div class="wtitle">'+p.title+'</div>'+
+      '<span class="wstrip-t">'+p.title+'</span>'+
+      '<button class="wmore" id="wmorebtn" aria-expanded="false">See the full task</button>'+
+      '<span class="wchip">&#128221; '+req+'+ words required</span>'+
+      '<span class="wchip">&#128274; Exam mode</span>'+
+    '</div>'+
+    '<div class="wtaskpanel" id="wtaskpanel" hidden>'+
       '<div class="wtask">'+p.prompt+'</div>'+
       '<div class="wmeta-row">'+
         '<span class="wmeta-chip">&#9999;&#65039; '+(cfg.kind==='essay'?'Essay':'Article')+'</span>'+
         '<span class="wmeta-chip">&#128101; '+p.audience+'</span>'+
-        '<span class="wmeta-chip">&#128221; '+req+'+ words required</span>'+
       '</div>'+
+      '<div class="wnote">&#128204; Remember to use your term ring while writing.</div>'+
+      '<div class="wnote exam">&#128274; Exam mode: don\'t switch tabs and no pasting &mdash; the writing must be your own. If you need to stop, use <b>Save &amp; finish later</b> below.</div>'+
+      '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
     '</div>'+
-    '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
-    '<div class="wnote">&#128204; Remember to use your term ring while writing.</div>'+
-    '<div class="wnote exam">&#128274; Exam mode: don\'t switch tabs and no pasting &mdash; the writing must be your own. If you need to stop, use <b>Save &amp; finish later</b> below.</div>'+
-    '</div>'+
-    '<div class="wcol-right">'+
-    '<div class="wwrite-card">'+
-      '<div class="wwrite-lbl">Your '+(cfg.kind==='essay'?'essay':'article')+'<span class="wdstat" id="wdstat"></span></div>'+
+    '<div class="wpaper">'+
       '<textarea class="wta" id="wta" placeholder="Start writing here. Take your time, plan your ideas, and write in full paragraphs...">'+(wst.text||'')+'</textarea>'+
-      '<div class="wwc-row">'+
-        '<span class="wwc" id="wwc">0 words</span>'+
-        '<button class="wsubmit" id="wsubbtn" disabled>Submit for feedback</button>'+
+      '<div class="wpfoot">'+
+        '<div class="wprog">'+
+          '<div class="wring" id="wring"><span id="wringn">0%</span></div>'+
+          '<span class="wwc" id="wwc">0 of '+req+' words</span>'+
+          '<span class="wdstat" id="wdstat"></span>'+
+        '</div>'+
+        '<div class="wbtns">'+
+          '<button class="wlater" id="wlaterbtn">&#128190; Save &amp; finish later</button>'+
+          '<button class="wsubmit" id="wsubbtn" disabled>Submit for feedback</button>'+
+        '</div>'+
       '</div>'+
-    '</div>'+
-    '<button class="wlater" id="wlaterbtn">&#128190; Save &amp; finish later</button>'+
-    '<div class="wdraft-note">Your writing saves by itself as you type. You can stop now and pick it up later on any computer.</div>'+
     '</div>';
-  g('wbody').className='wlayout';
+  g('wbody').className='wnotebook';
   g('wbody').innerHTML=h;
   var ta=g('wta'),wc=g('wwc'),sb=g('wsubbtn');
+  var ring=g('wring'),ringn=g('wringn');
   var lb=g('wlaterbtn');if(lb)lb.addEventListener('click',pauseWriting);
   function upd(){
     var n=countWords(ta.value);wst.text=ta.value;
     draftSaveSoon();
-    if(n>=req){wc.innerHTML=n+' words &middot; <b>minimum reached &#10003;</b>';wc.className='wwc ok';}
-    else{wc.innerHTML=n+' / '+req+' words &middot; '+(req-n)+' more needed to submit';wc.className='wwc';}
+    var pct=Math.max(0,Math.min(100,Math.round(n/req*100)));
+    ring.style.setProperty('--p',pct+'%');
+    ringn.textContent=pct+'%';
+    if(n>=req){wc.innerHTML='<b>'+n+' words &middot; minimum reached &#10003;</b>';wc.className='wwc ok';ring.classList.add('done');}
+    else{wc.innerHTML=n+' of '+req+' words &middot; '+(req-n)+' more to submit';wc.className='wwc';ring.classList.remove('done');}
     sb.disabled=n<req;
   }
   ta.addEventListener('input',upd);upd();
   if(!LS)draftFlag('Draft saving unavailable',true);   // modo privado: sin red de seguridad
+  /* La consigna completa se despliega solo si el alumno la pide, para no robarle
+     alto a la hoja mientras escribe. */
+  var mb=g('wmorebtn'),panel=g('wtaskpanel');
+  mb.addEventListener('click',function(){
+    var open=panel.hasAttribute('hidden');
+    if(open){panel.removeAttribute('hidden');}else{panel.setAttribute('hidden','');}
+    mb.setAttribute('aria-expanded',open?'true':'false');
+    mb.textContent=open?'Hide the task':'See the full task';
+  });
   g('wshufbtn').addEventListener('click',function(){
     var arr=cfg.prompts.filter(function(x){return x.title!==wst.prompt.title;});
     wst.prompt=arr[Math.floor(Math.random()*arr.length)];wst.text='';renderWritePrompt();
@@ -1617,10 +1719,6 @@ function renderWritePrompt(){
   sb.addEventListener('click',gradeWriting);
 }
 
-/* Salida deliberada a mitad del ensayo. Hasta ahora la unica forma de parar era
-   cerrar la pestana, que es justo lo que el aviso de exam mode prohibia: el
-   guardado existia pero el alumno no tenia como usarlo. Deja constancia de la
-   pausa para que el profesor sepa que se escribio en varias sesiones. */
 async function pauseWriting(){
   if(!wst||!wst.text||!wst.text.trim()){   // nada escrito: no hay borrador que guardar
     setWriteLock(false);
@@ -1996,7 +2094,7 @@ function renderFeedback(fb){
     (fb.summary?'<div class="wfb-summary"><b>Examiner\'s comment:</b> '+fb.summary+'</div>':'')+
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#3daa6f"></span>What you did well</div>'+strengths+'</div>'+
     '<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#c47a10"></span>How to improve</div>'+improve+'</div>'+
-    (critEx?'<div class="wfb-block wide"><div class="wfb-h"><span class="dot" style="background:#1a6fc4"></span>How to apply each criterion (with examples)</div>'+critEx+'</div>':'')+
+    (critEx?'<div class="wfb-block"><div class="wfb-h"><span class="dot" style="background:#1a6fc4"></span>How to apply each criterion (with examples)</div>'+critEx+'</div>':'')+
     '<div class="actrow">'+(resumeOnly?'':'<button class="actbtn" id="wagain">Try another topic</button>')+'<button class="actbtn pri" id="whome">Main menu</button></div>';
   g('wbody').className='wfblayout';
   g('wbody').innerHTML=h;
@@ -2056,22 +2154,33 @@ function renderQ(){
   var prog=Math.round((st.qi/st.questions.length)*100);
   var pill=g('gpill');pill.textContent=lv.name;pill.style.background=lv.bg;pill.style.color=lv.dark;
   g('gfill').style.width=prog+'%';g('gfill').style.background=lv.fill;
+  g('gfill').parentNode.style.setProperty('--seg',(100/st.questions.length)+'%');
   g('gfrac').textContent='Question '+(st.qi+1)+' of '+st.questions.length+'';
   g('gpts').textContent='Score: '+st.score;
   g('gscore').textContent=st.score;
   var KK=['A','B','C','D'];
   var ah='';
   if(isW){
-    ah='<div class="warea"><textarea id="wa" placeholder="Write your response here...">'+(st.written||'')+'</textarea><div class="wft"><span class="cc" id="cc">0 characters</span><button class="subbtn" id="subbtn">Submit answer</button></div></div>';
+    ah='<div class="warea c1"><textarea id="wa" placeholder="Write your response here...">'+(st.written||'')+'</textarea><div class="wft"><span class="cc" id="cc">0 characters</span><button class="subbtn" id="subbtn">Submit answer</button></div></div>';
   }else{
-    ah='<div class="opts">'+q.options.map(function(o,i){return '<button class="opt" data-i="'+i+'"><span class="optk">'+KK[i]+'</span><span class="optt">'+o+'</span></button>';}).join('')+'</div>';
+    /* Cuatro columnas solo si las respuestas son cortas. Con frases enteras
+       (Elementary y Expert) el texto se partiria demasiado, asi que bajan a dos. */
+    var maxLen=Math.max.apply(null,q.options.map(function(o){return String(o).replace(/<[^>]*>/g,'').length;}));
+    var cols=maxLen<=45?'c4':(maxLen<=110?'c2':'c1');
+    ah='<div class="opts '+cols+'">'+q.options.map(function(o,i){return '<button class="opt" data-i="'+i+'"><span class="optk">'+KK[i]+'</span><span class="optt">'+o+'</span></button>';}).join('')+'</div>';
   }
   var fh='';
   if(st.answered){
     var isok=isW||st.lastok;
     fh='<div class="fb '+(isok?'ok':'bad')+'"><div class="fb-hd"><span class="fb-badge">'+(isW?'MODEL ANSWER':(isok?'CORRECT':'INCORRECT'))+'</span><span class="fb-ti">'+(isW?'Compare your response:':(isok?'Well done!':'Here is the explanation:'))+'</span></div><div>'+(isW?'<em style="line-height:1.7;display:block">'+q.model+'</em>':q.why)+'</div>'+(isW&&q.tip?'<div class="fb-ex"><div class="fb-el">What makes a strong answer</div>'+q.tip+'</div>':'')+(!isW&&q.extra?'<div class="fb-ex"><div class="fb-el">Also in real life</div>'+q.extra+'</div>':'')+'</div>';
   }
-  g('gbody').innerHTML='<div class="qcard"><div class="qtags"><span class="tag tags">'+q.subject+'</span><span class="tag tagt">'+q.pos+'</span></div><div class="schd">Situation <div class="schl"></div></div><div class="sc">'+q.scenario+'</div><div class="qp">'+q.prompt+'</div>'+ah+fh+'</div>'+(st.answered?'<button class="nxtbtn" id="nxtbtn">'+(st.qi<st.questions.length-1?'Next question':'See my results')+' &#8594;</button>':'');
+  g('gbody').innerHTML='<div class="qcard">'+
+      '<div class="qtags"><span class="tag tags">'+q.subject+'</span><span class="tag tagt">'+q.pos+'</span></div>'+
+      '<div class="sc">'+q.scenario+'</div>'+
+      '<div class="qp">'+q.prompt+'</div>'+
+    '</div>'+
+    ah+
+    fh+(st.answered?'<button class="nxtbtn" id="nxtbtn">'+(st.qi<st.questions.length-1?'Next question':'See my results')+' &#8594;</button>':'');
   if(isW&&!st.answered){
     var wa=g('wa'),cc=g('cc');
     if(wa)wa.addEventListener('input',function(e){st.written=e.target.value;if(cc)cc.textContent=e.target.value.length+' characters';});
