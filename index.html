@@ -121,21 +121,21 @@ body::before{
 .backl{display:block;text-align:center;margin-top:12px}
 
 /* ============================ PANTALLA DE ENTRADA ============================ */
-/* El mapa de la mision: un camino de puntos con las cuatro medallas y la bandera
-   de meta. Todo el dibujo es SVG en linea, sin imagenes que descargar.
-   Ocupa la ventana entera saliendose de #app con position:fixed. */
-#s-name.active{position:fixed;inset:0;z-index:5;overflow-y:auto;background:var(--card);display:block}
-.nsplit{display:grid;grid-template-columns:52% 48%;min-height:100vh}
-.nleft{
-  position:relative;overflow:hidden;padding:46px 44px;display:flex;flex-direction:column;
-  justify-content:space-between;gap:20px;
-  background:linear-gradient(165deg,#e9fbf4 0%,#eaf4ff 52%,#fdf2e6 100%);
+/* Un solo lienzo: el fondo ilustrado ocupa la ventana entera y el formulario
+   flota encima en una tarjeta blanca. No hay division entre dos mitades. */
+#s-name.active{position:fixed;inset:0;z-index:5;overflow-y:auto;display:block}
+.nstage{
+  min-height:100vh;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#e9fbf4 0%,#eaf4ff 46%,#fdf2e6 100%);
+  display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:54px;
+  align-items:center;padding:52px 58px 72px;
 }
-.nblob{position:absolute;border-radius:50%;opacity:.55;filter:blur(2px)}
-.nb1{width:240px;height:240px;background:#c8f2e4;top:-72px;right:-52px}
-.nb2{width:160px;height:160px;background:#ffe9c9;bottom:-44px;left:-42px}
-.nlin{position:relative;z-index:2}
-.nbrand{display:flex;align-items:center;gap:12px;margin-bottom:22px;animation:fadeUp .5s var(--e) both}
+.nblob{position:absolute;border-radius:50%;opacity:.5;filter:blur(2px);pointer-events:none}
+.nb1{width:300px;height:300px;background:#c8f2e4;top:-90px;right:22%}
+.nb2{width:210px;height:210px;background:#ffe9c9;bottom:-60px;left:-50px}
+.nb3{width:240px;height:240px;background:#dbe9ff;top:38%;left:34%;opacity:.4}
+.nmain{position:relative;z-index:1;display:flex;flex-direction:column;gap:18px;min-width:0}
+.nbrand{display:flex;align-items:center;gap:12px;animation:fadeUp .5s var(--e) both}
 .nlogo{
   width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;
   flex-shrink:0;background:#22c9a0;box-shadow:0 4px 0 #0e9e7c;animation:pop .6s var(--e) both;
@@ -144,54 +144,56 @@ body::before{
 .nbname{font-size:13px;font-weight:800;letter-spacing:-.1px}
 .nbmeta{font-size:11.5px;color:var(--tx2)}
 .ntitle{
-  font-size:clamp(30px,3.1vw,42px);font-weight:900;letter-spacing:-1.8px;line-height:1.04;
-  color:var(--tx);margin-bottom:12px;animation:fadeUp .55s var(--e) .06s both;
+  font-size:clamp(32px,3.4vw,46px);font-weight:900;letter-spacing:-1.9px;line-height:1.04;
+  color:var(--tx);animation:fadeUp .55s var(--e) .06s both;
 }
 .ntitle span{color:#0e9e7c}
-.nsub{font-size:15px;color:var(--tx2);line-height:1.65;max-width:400px;animation:fadeUp .55s var(--e) .12s both}
-.nart{
-  position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;
-  min-height:0;animation:fadeUp .6s var(--e) .18s both;
-}
-.nart svg{width:100%;height:auto;max-height:300px}
-/* las medallas flotan y las estrellas parpadean, cada una a su ritmo */
+.nsub{font-size:15px;color:var(--tx2);line-height:1.65;max-width:430px;animation:fadeUp .55s var(--e) .12s both}
+.nart{position:relative;z-index:1;margin:2px 0}
+.nart svg{width:100%;max-width:620px;height:auto;max-height:min(38vh,330px);display:block}
+/* --- el mapa se dibuja solo al abrir --- */
+@keyframes nDash{from{stroke-dasharray:0 17;opacity:0}to{stroke-dasharray:1 17;opacity:1}}
+@keyframes nPopIn{0%{opacity:0;transform:scale(.2) translateY(16px)}65%{transform:scale(1.14) translateY(0)}100%{opacity:1;transform:scale(1)}}
+@keyframes nTwinkle{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+.nrt{stroke-dasharray:1 17;animation:nDash 1.7s var(--e) both}
+.nbin{opacity:0;animation:nPopIn .5s var(--e) var(--d,0s) both;transform-box:fill-box;transform-origin:center}
+.nbob{animation:bob 3.4s ease-in-out var(--d,0s) infinite alternate;transform-box:fill-box;transform-origin:center}
+.nstar{opacity:0;animation:nTwinkle 3s ease-in-out var(--d,0s) infinite;transform-box:fill-box;transform-origin:center}
 @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-9px)}}
-@keyframes twinkle{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
-.nbadge{animation:bob 3.4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
-.nart .nbadge:nth-of-type(2){animation-delay:-.8s}
-.nart .nbadge:nth-of-type(3){animation-delay:-1.6s}
-.nart .nbadge:nth-of-type(4){animation-delay:-2.4s}
-.nstar{animation:twinkle 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 .nstats{
-  position:relative;z-index:2;display:flex;gap:32px;flex-wrap:wrap;padding-top:20px;
+  position:relative;z-index:1;display:flex;gap:34px;flex-wrap:wrap;padding-top:6px;
   animation:fadeUp .55s var(--e) .24s both;
 }
 .nsv{font-size:26px;font-weight:900;letter-spacing:-.9px;color:var(--tx)}
 .nsl{font-size:10.5px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
 
-.nright{background:var(--card);display:flex;align-items:center;justify-content:center;padding:46px 44px 62px;position:relative}
-.nrin{width:100%;max-width:370px;animation:fadeUp .55s var(--e) .2s both}
+/* la tarjeta flotante del formulario */
+.ncardcol{position:relative;z-index:2;display:flex;justify-content:center;align-items:center}
+.ncard{
+  width:100%;max-width:400px;background:var(--card);border-radius:24px;padding:32px 30px;
+  box-shadow:0 2px 6px rgba(20,40,60,.06),0 24px 56px rgba(20,40,60,.16);
+  animation:fadeUp .55s var(--e) .2s both;
+}
 .nrh{font-size:26px;font-weight:900;letter-spacing:-.9px;margin-bottom:6px}
 .nrs{font-size:13.5px;color:var(--tx2);margin-bottom:22px;line-height:1.6}
-.ncard{background:none;border:none;box-shadow:none;padding:0;border-radius:0}
-.nright .finp{background:var(--bg)}
+.ncard .finp{background:var(--bg)}
 /* Boton con relieve: se hunde al pulsarlo, como el de un juego. */
-.nright .bigbtn.g{
+.ncard .bigbtn.g{
   border-radius:14px;font-weight:900;background:#22c9a0;
   box-shadow:0 5px 0 #0e9e7c,0 10px 22px rgba(34,201,160,.35);
   transition:transform .12s var(--e2),box-shadow .12s var(--e2);
 }
-.nright .bigbtn.g:hover{transform:translateY(2px);box-shadow:0 3px 0 #0e9e7c,0 8px 18px rgba(34,201,160,.35);filter:none}
-.nright .bigbtn.g:active{transform:translateY(5px);box-shadow:0 0 0 #0e9e7c,0 4px 10px rgba(34,201,160,.3)}
+.ncard .bigbtn.g:hover{transform:translateY(2px);box-shadow:0 3px 0 #0e9e7c,0 8px 18px rgba(34,201,160,.35);filter:none}
+.ncard .bigbtn.g:active{transform:translateY(5px);box-shadow:0 0 0 #0e9e7c,0 4px 10px rgba(34,201,160,.3)}
 .nhint{font-size:11px;color:var(--tx3);margin-top:12px;text-align:center;line-height:1.5}
 .nfoot{text-align:center;margin-top:16px}
 .nrain{
-  position:absolute;left:44px;right:44px;bottom:24px;height:4px;border-radius:99px;
+  position:absolute;left:0;right:0;bottom:0;height:5px;
   background:linear-gradient(90deg,#22c9a0,#4aa8f0,#9179f2,#f7b93f,#f8785c,#22c9a0);
   background-size:200% 100%;animation:hue 9s linear infinite;
 }
 .blocked{
-  background:var(--er-bg);border:1.5px solid var(--er-b);border-radius:18px;padding:22px;
+  background:var(--er-bg);border:1.5px solid var(--er-b);border-radius:18px;padding:20px;
   width:100%;text-align:center;animation:pop .45s var(--e) both;
 }
 .bh{font-size:15px;font-weight:800;color:var(--er-t);margin-bottom:7px}
@@ -454,14 +456,42 @@ body::before{
 /* ============================ RESULTADOS ============================ */
 .reswrap{padding:14px 0 6px}
 .restop{text-align:center;margin-bottom:24px}
+/* ===================== EFECTOS ===================== */
+/* Anillo de la nota: el borde deja de ser fijo y pasa a llenarse con la nota. */
 .rescirc{
-  width:124px;height:124px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;
-  justify-content:center;flex-direction:column;border:4px solid;background:var(--card);
-  box-shadow:var(--s2);animation:pop .6s var(--e) both;
+  width:132px;height:132px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;
+  justify-content:center;border:none;background:conic-gradient(var(--rc,#0f9e72) 0 0%,var(--c3) 0% 100%);
+  animation:pop .6s var(--e) both;
 }
-.resnum{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1}
+.rescirc>div{
+  width:110px;height:110px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.resnum{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums}
 .reslbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:3px;opacity:.72}
-.resstars{font-size:26px;letter-spacing:5px;margin-bottom:8px;animation:popSm .5s var(--e) .2s both}
+/* Las estrellas salen una a una en vez de aparecer de golpe. */
+.resstars{font-size:26px;letter-spacing:5px;margin-bottom:8px;display:flex;gap:7px;justify-content:center}
+.rst{opacity:0;transform:scale(.3);animation:stIn .5s var(--e) var(--d,0s) forwards;display:inline-block}
+@keyframes stIn{60%{transform:scale(1.25) rotate(8deg)}100%{opacity:1;transform:scale(1)}}
+/* Confeti: solo a partir de 80, para que no se gaste. */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:900;overflow:hidden}
+.cfp{position:absolute;width:9px;height:14px;border-radius:2px;opacity:0}
+@keyframes cfFall{
+  0%{opacity:1;transform:translate(0,0) rotate(0)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}
+}
+/* Escritura: el golpe al alcanzar el minimo de palabras. */
+@keyframes celebrate{0%{transform:scale(1)}45%{transform:scale(1.18)}100%{transform:scale(1)}}
+.wring.pulse{animation:celebrate .6s var(--e)}
+.wsubmit.lit{animation:celebrate .5s var(--e) .1s}
+/* Panel: la fila que acaba de llegar entra en verde y se apaga sola. */
+@keyframes freshRow{
+  0%{background:rgba(61,170,111,.26);transform:translateX(-8px);opacity:0}
+  12%{opacity:1;transform:none}
+  100%{background:transparent}
+}
+.stbl tbody tr.fresh td{animation:freshRow 2.6s var(--e) forwards}
+.freshdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok-b);margin-right:7px;vertical-align:middle}
 .resmsg{font-size:16px;font-weight:800;margin-bottom:7px;animation:fadeUp .45s var(--e) .16s both}
 .ressub{font-size:13px;color:var(--tx2);max-width:330px;margin:0 auto;animation:fadeUp .45s var(--e) .22s both}
 .resbarw{max-width:240px;height:8px;background:var(--c2);border-radius:99px;overflow:hidden;margin:16px auto 5px;border:1px solid var(--bd)}
@@ -840,11 +870,10 @@ body::before{
   .wpaper{min-height:420px}
 }
 @media(max-width:900px){
-  .nsplit,.tsplit{grid-template-columns:1fr}
-  .nleft{padding:40px 28px;gap:18px}
-  .nart svg{max-height:230px}
-  .nright{padding:38px 28px 62px}
-  .nrain{left:28px;right:28px}
+  .nstage{grid-template-columns:1fr;padding:38px 24px 60px;gap:30px}
+  .nart svg{max-height:230px;margin:0 auto}
+  .ncardcol{justify-content:stretch}
+  .tsplit{grid-template-columns:1fr}
   .tleft{padding:44px 30px;gap:26px}
   .tright{padding:40px 30px 64px}
   .train{left:30px;right:30px}
@@ -902,52 +931,50 @@ body::before{
 <body>
 <div id="app">
 <div class="screen active" id="s-name">
-  <div class="nsplit">
-    <div class="nleft">
-      <div class="nblob nb1"></div><div class="nblob nb2"></div>
-      <div class="nlin">
-        <div class="nbrand">
-          <div class="nlogo"><svg viewBox="0 0 28 28"><path d="M4 6h20M4 12h14M4 18h17M4 24h10"/></svg></div>
-          <div><div class="nbname">Vocabulary Quest</div><div class="nbmeta">Grades 6 &amp; 7 &middot; English</div></div>
-        </div>
-        <h1 class="ntitle">Four levels.<br>One <span>quest</span>.</h1>
-        <p class="nsub">Real-life English for grades 6 and 7. Climb from Beginner to Expert, then write your own article or essay.</p>
+  <div class="nstage">
+    <div class="nblob nb1"></div><div class="nblob nb2"></div><div class="nblob nb3"></div>
+    <div class="nmain">
+      <div class="nbrand">
+        <div class="nlogo"><svg viewBox="0 0 28 28"><path d="M4 6h20M4 12h14M4 18h17M4 24h10"/></svg></div>
+        <div><div class="nbname">Vocabulary Quest</div><div class="nbmeta">Grades 6 &amp; 7 &middot; English</div></div>
       </div>
+      <h1 class="ntitle">Four levels.<br>One <span>quest</span>.</h1>
+      <p class="nsub">Real-life English for grades 6 and 7. Climb from Beginner to Expert, then write your own article or essay.</p>
       <div class="nart">
         <svg viewBox="0 0 460 300" role="img" aria-label="A dotted path climbing past four level medals to a finish flag">
-          <path d="M46 262 C 130 258, 108 208, 168 200 S 268 196, 282 140 S 356 92, 404 72"
-                fill="none" stroke="#b9d7cd" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 17"/>
-          <g class="nstar" fill="#f7b93f"><path d="M355 40 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5z"/></g>
-          <g class="nstar" fill="#4aa8f0" style="animation-delay:-1.2s"><path d="M96 92 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z"/></g>
-          <g class="nstar" fill="#f8785c" style="animation-delay:-2.1s"><path d="M242 46 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z"/></g>
-          <g class="nbadge" transform="translate(46,262)">
+          <path class="nrt" d="M46 262 C 130 258, 108 208, 168 200 S 268 196, 282 140 S 356 92, 404 72"
+                fill="none" stroke="#b9d7cd" stroke-width="7" stroke-linecap="round"/>
+          <g class="nstar" style="--d:1.7s"><path d="M355 40 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5z" fill="#f7b93f"/></g>
+          <g class="nstar" style="--d:1.9s"><path d="M96 92 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#4aa8f0"/></g>
+          <g class="nstar" style="--d:2.1s"><path d="M242 46 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#f8785c"/></g>
+          <g transform="translate(46,262)"><g class="nbin" style="--d:.35s"><g class="nbob" style="--d:.85s">
             <circle cy="7" r="29" fill="#0e9e7c"></circle><circle r="29" fill="#22c9a0" stroke="#fff" stroke-width="5"></circle>
             <text y="9" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="system-ui,sans-serif">1</text>
-          </g>
-          <g class="nbadge" transform="translate(168,200)">
+          </g></g></g>
+          <g transform="translate(168,200)"><g class="nbin" style="--d:.6s"><g class="nbob" style="--d:1.1s">
             <circle cy="7" r="29" fill="#2a7fc4"></circle><circle r="29" fill="#4aa8f0" stroke="#fff" stroke-width="5"></circle>
             <text y="9" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="system-ui,sans-serif">2</text>
-          </g>
-          <g class="nbadge" transform="translate(282,140)">
+          </g></g></g>
+          <g transform="translate(282,140)"><g class="nbin" style="--d:.85s"><g class="nbob" style="--d:1.35s">
             <circle cy="7" r="29" fill="#d1901c"></circle><circle r="29" fill="#f7b93f" stroke="#fff" stroke-width="5"></circle>
             <text y="9" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="system-ui,sans-serif">3</text>
-          </g>
-          <g class="nbadge" transform="translate(404,72)">
+          </g></g></g>
+          <g transform="translate(404,72)"><g class="nbin" style="--d:1.1s"><g class="nbob" style="--d:1.6s">
             <circle cy="7" r="29" fill="#d2513a"></circle><circle r="29" fill="#f8785c" stroke="#fff" stroke-width="5"></circle>
             <text y="9" text-anchor="middle" font-size="24" font-weight="900" fill="#fff" font-family="system-ui,sans-serif">4</text>
-          </g>
-          <g transform="translate(404,72)">
+          </g></g></g>
+          <g transform="translate(404,72)"><g class="nbin" style="--d:1.35s">
             <path d="M0 -34 v-40" stroke="#6a7d8f" stroke-width="5" stroke-linecap="round"></path>
             <path d="M2 -74 l40 12 -40 12z" fill="#9179f2"></path>
-          </g>
-          <g transform="translate(112,196)">
+          </g></g>
+          <g transform="translate(112,196)"><g class="nbin" style="--d:1.5s">
             <rect x="-46" y="-17" width="92" height="34" rx="12" fill="#fff" stroke="#dbe6ef" stroke-width="2"></rect>
             <text y="6" text-anchor="middle" font-size="14" font-weight="800" fill="#5d6b7a" font-family="system-ui,sans-serif">anticipate</text>
-          </g>
-          <g transform="translate(340,196)">
-            <rect x="-42" y="-17" width="84" height="34" rx="12" fill="#fff" stroke="#dbe6ef" stroke-width="2"></rect>
-            <text y="6" text-anchor="middle" font-size="14" font-weight="800" fill="#5d6b7a" font-family="system-ui,sans-serif">call off</text>
-          </g>
+          </g></g>
+          <g transform="translate(340,196)"><g class="nbin" style="--d:1.62s">
+            <rect x="-46" y="-17" width="92" height="34" rx="12" fill="#fff" stroke="#dbe6ef" stroke-width="2"></rect>
+            <text y="6" text-anchor="middle" font-size="14" font-weight="800" fill="#5d6b7a" font-family="system-ui,sans-serif">reluctant</text>
+          </g></g>
         </svg>
       </div>
       <div class="nstats">
@@ -956,31 +983,29 @@ body::before{
         <div><div class="nsv">6</div><div class="nsl">Activities</div></div>
       </div>
     </div>
-    <div class="nright">
-      <div class="nrin">
+    <div class="ncardcol">
+      <div class="ncard">
         <div class="nrh">Let's begin</div>
         <div class="nrs">Write your name exactly as it appears on the class list.</div>
         <div id="narea">
-          <div class="ncard">
-            <div class="flbl">Your full name</div>
-            <input class="finp" id="ninp" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name">
-            <div class="flbl" style="margin-top:16px">Your course</div>
-            <select class="finp" id="cinp" style="appearance:auto">
-              <option value="">Select your course…</option>
-              <option value="6D">6D</option>
-              <option value="6E">6E</option>
-              <option value="6F">6F</option>
-              <option value="7C">7C</option>
-              <option value="7D">7D</option>
-            </select>
-            <button class="bigbtn g" id="sbtn">Start playing</button>
-            <p class="nhint">Your name, course and score are saved automatically for your teacher.</p>
-          </div>
+          <div class="flbl">Your full name</div>
+          <input class="finp" id="ninp" type="text" placeholder="e.g. Valentina Rodriguez" autocomplete="name">
+          <div class="flbl" style="margin-top:16px">Your course</div>
+          <select class="finp" id="cinp" style="appearance:auto">
+            <option value="">Select your course…</option>
+            <option value="6D">6D</option>
+            <option value="6E">6E</option>
+            <option value="6F">6F</option>
+            <option value="7C">7C</option>
+            <option value="7D">7D</option>
+          </select>
+          <button class="bigbtn g" id="sbtn">Start playing</button>
+          <p class="nhint">Your name, course and score are saved automatically for your teacher.</p>
         </div>
         <div class="nfoot"><button class="tlink" id="tlink">Teacher access</button></div>
       </div>
-      <div class="nrain"></div>
     </div>
+    <div class="nrain"></div>
   </div>
 </div>
 <div class="screen" id="s-tl">
@@ -1554,6 +1579,9 @@ function doTeacherLogin(){
 }
 /* Vista activa de la tabla: todos, solo los que van mal, o solo escritura. */
 var dashView='all', dashHist=[];
+/* Ids ya mostrados: sirve para saber que fila acaba de llegar en el refresco
+   automatico. En la primera carga no se resalta nada, solo a partir de ahi. */
+var dashSeen=null, dashKey='';
 
 function dayOf(x){return String(x.created_at||'').slice(0,10);}
 
@@ -1579,9 +1607,16 @@ function buildHist(all,dateStr){
 function drawSpark(id,vals,color){
   var el=g(id);if(!el)return;
   var mx=Math.max.apply(null,vals.concat([1]));
+  /* Salen desde abajo, una detras de otra, para que se lea que son varios dias. */
   el.innerHTML=vals.map(function(v){
-    return '<i style="height:'+Math.max(5,Math.round(v/mx*100))+'%;background:'+color+'"></i>';
+    return '<i data-h="'+Math.max(5,Math.round(v/mx*100))+'" style="height:0;background:'+color+'"></i>';
   }).join('');
+  [].forEach.call(el.children,function(b,i){
+    setTimeout(function(){
+      b.style.transition='height .5s cubic-bezier(.22,1,.36,1)';
+      b.style.height=b.getAttribute('data-h')+'%';
+    },80+i*70);
+  });
 }
 
 /* Compara con la ultima sesion anterior que tuvo datos, no con "ayer" a secas:
@@ -1618,6 +1653,7 @@ async function loadDash(){
     var all=r.data;
     if(courseF)all=all.filter(function(x){return (x.course||'')===courseF;});
     if(activF)all=all.filter(function(x){return x.level===activF;});
+    if(dashKey!==dateStr+'|'+courseF+'|'+activF){dashSeen=null;dashKey=dateStr+'|'+courseF+'|'+activF;}
     dashHist=buildHist(all,dateStr);
     var rows=all.filter(function(x){return dayOf(x)===dateStr;});
     dashRows=rows;
@@ -1630,10 +1666,12 @@ function renderDash(rows){
   var avg=total?Math.round(rows.reduce(function(a,r){return a+r.score;},0)/total):0;
   var pr=total?Math.round(rows.filter(function(r){return r.score>=60;}).length/total*100):0;
   var risk=rows.filter(function(r){return r.score<60;}).length;
-  g('mtot').textContent=total;
-  g('mavg').textContent=total?avg:'--';
-  g('mpass').textContent=total?pr+'%':'--';
-  g('mrisk').textContent=risk;
+  /* Cuentan hacia el valor en vez de aparecer de golpe. countUp vive en la
+     seccion de efectos, junto al anillo de resultados. */
+  countUp(g('mtot'),total,700);
+  if(total)countUp(g('mavg'),avg,700); else g('mavg').textContent='--';
+  if(total)countUp(g('mpass'),pr,700,'%'); else g('mpass').textContent='--';
+  countUp(g('mrisk'),risk,700);
 
   drawDelta('dtot',total,prevWithData('total'),'',true);
   drawDelta('davg',avg,prevWithData('avg'),' points',true);
@@ -1683,13 +1721,17 @@ function renderDash(rows){
   }
   function sf(s){return s>=80?'&#9733;&#9733;&#9733;':s>=60?'&#9733;&#9733;&#9734;':s>=40?'&#9733;&#9734;&#9734;':'&#9734;&#9734;&#9734;';}
   function pf(s){return s>=80?['Excellent','#0f9e72','#e0f5ee']:s>=60?['Good','#c47a10','#fdf0d8']:['Needs work','#c44a28','#fdeee9'];}
+  var primeraCarga=(dashSeen===null);
+  if(primeraCarga)dashSeen={};
   var trs=view.map(function(r,idx){
     var tm=new Date(r.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     var pff=pf(r.score);
     var stripe=r.score>=80?'#3daa6f':(r.score>=60?'#c47a10':'#c44a28');
+    var esNueva=!primeraCarga&&!dashSeen[r.id];
+    dashSeen[r.id]=1;
     var readBtn=r.essay_text?' <button class="readbtn" data-row="'+idx+'">&#128196; Read</button>':'';
     var flag='';try{var fbp=r.feedback?JSON.parse(r.feedback):null;if(fbp&&fbp.integrity){var ts=fbp.integrity.tabSwitches||0,pb=fbp.integrity.pasteBlocked||0;if(ts>0||pb>0)flag=' <span title="Left the page '+ts+' time(s); paste blocked '+pb+' time(s)" style="color:#c44a28;font-weight:900;cursor:help">&#9888;</span>';}}catch(_){}
-    return '<tr><td><div class="stcell"><span class="stripe" style="background:'+stripe+'"></span><div><div style="font-weight:700">'+r.student+'</div>'+(r.course?'<div style="font-size:11px;font-weight:600;color:var(--tx2)">'+r.course+'</div>':'')+'</div></div></td>'+
+    return '<tr'+(esNueva?' class="fresh"':'')+'><td><div class="stcell"><span class="stripe" style="background:'+stripe+'"></span><div><div style="font-weight:700">'+(esNueva?'<span class="freshdot"></span>':'')+r.student+'</div>'+(r.course?'<div style="font-size:11px;font-weight:600;color:var(--tx2)">'+r.course+'</div>':'')+'</div></div></td>'+
       '<td><span class="lvdot" style="background:'+(LVC[r.level]||'#888')+'"></span>'+(LVN[r.level]||r.level)+'</td>'+
       '<td><strong>'+r.score+'</strong>/100<div class="sct"><div class="scf" style="width:'+r.score+'%;background:'+(r.score>=60?'#0f9e72':'#c44a28')+'"></div></div></td>'+
       '<td style="color:#c47a10;font-size:12px">'+sf(r.score)+'</td>'+
@@ -1950,6 +1992,7 @@ function renderWritePrompt(){
   g('wbody').innerHTML=h;
   var ta=g('wta'),wc=g('wwc'),sb=g('wsubbtn');
   var ring=g('wring'),ringn=g('wringn');
+  var wasReached=countWords(wst.text||'')>=req;
   var lb=g('wlaterbtn');if(lb)lb.addEventListener('click',pauseWriting);
   function upd(){
     var n=countWords(ta.value);wst.text=ta.value;
@@ -1957,9 +2000,17 @@ function renderWritePrompt(){
     var pct=Math.max(0,Math.min(100,Math.round(n/req*100)));
     ring.style.setProperty('--p',pct+'%');
     ringn.textContent=pct+'%';
-    if(n>=req){wc.innerHTML='<b>'+n+' words &middot; minimum reached &#10003;</b>';wc.className='wwc ok';ring.classList.add('done');}
+    var reached=n>=req;
+    if(reached){wc.innerHTML='<b>'+n+' words &middot; minimum reached &#10003;</b>';wc.className='wwc ok';ring.classList.add('done');}
     else{wc.innerHTML=n+' of '+req+' words &middot; '+(req-n)+' more to submit';wc.className='wwc';ring.classList.remove('done');}
-    sb.disabled=n<req;
+    sb.disabled=!reached;
+    /* Solo al cruzar el minimo, no en cada tecla a partir de ahi. */
+    if(reached&&!wasReached){
+      ring.classList.remove('pulse');sb.classList.remove('lit');
+      void ring.offsetWidth;
+      ring.classList.add('pulse');sb.classList.add('lit');
+    }
+    wasReached=reached;
   }
   ta.addEventListener('input',upd);upd();
   if(!LS)draftFlag('Draft saving unavailable',true);   // modo privado: sin red de seguridad
@@ -2479,6 +2530,72 @@ function doNext(){
   renderQ();
 }
 
+/* ===================== EFECTOS ===================== */
+/* Sube un numero con desaceleracion, en vez de saltar de golpe. */
+function countUp(el,to,ms,suffix){
+  if(!el)return;
+  var fin=to+(suffix||'');
+  el.textContent=fin;            // valor correcto ya visible: la animacion solo adorna
+  var done=false;
+  function finish(){if(!done){done=true;el.textContent=fin;}}
+  var t0=null;
+  function step(ts){
+    if(done)return;
+    if(!t0){t0=ts;}
+    var p=Math.min(1,(ts-t0)/ms), e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e)+(suffix||'');
+    if(p<1)requestAnimationFrame(step); else finish();
+  }
+  el.textContent=0+(suffix||'');
+  requestAnimationFrame(step);
+  /* Si la pestana esta en segundo plano, requestAnimationFrame no corre y el
+     numero se quedaria en cero: este seguro lo deja siempre en su valor. */
+  setTimeout(finish,ms+400);
+}
+/* Llena un anillo conico hasta pct mientras el numero de dentro cuenta. */
+function fillRing(ring,num,pct,color,ms){
+  if(!ring)return;
+  var done=false;
+  function paint(v){
+    ring.style.background='conic-gradient('+color+' 0 '+v+'%,var(--c3) '+v+'% 100%)';
+    if(num)num.textContent=v;
+  }
+  function finish(){if(!done){done=true;paint(pct);}}
+  var t0=null;
+  function step(ts){
+    if(done)return;
+    if(!t0)t0=ts;
+    var p=Math.min(1,(ts-t0)/ms), e=1-Math.pow(1-p,3);
+    paint(Math.round(pct*e));
+    if(p<1)requestAnimationFrame(step); else finish();
+  }
+  paint(0);
+  requestAnimationFrame(step);
+  /* Mismo seguro que en countUp: la nota nunca se queda a medias. */
+  setTimeout(finish,ms+400);
+}
+/* Confeti reservado a las notas de 80 para arriba. Se limpia solo. */
+function confetti(){
+  var wrap=document.createElement('div');
+  wrap.className='confetti';
+  var cols=['#0f9e72','#1a6fc4','#c47a10','#c44a28','#5b45c8'];
+  for(var i=0;i<34;i++){
+    var c=document.createElement('div');
+    c.className='cfp';
+    c.style.background=cols[i%cols.length];
+    c.style.left=(38+Math.random()*24)+'%';
+    c.style.top='34%';
+    c.style.setProperty('--dx',(Math.random()*520-260).toFixed(0)+'px');
+    c.style.setProperty('--dy',(Math.random()*260+180).toFixed(0)+'px');
+    c.style.setProperty('--rot',(Math.random()*720-360).toFixed(0)+'deg');
+    c.style.animation='cfFall '+(1100+Math.random()*700).toFixed(0)+'ms cubic-bezier(.2,.7,.3,1) forwards';
+    c.style.animationDelay=(Math.random()*220).toFixed(0)+'ms';
+    wrap.appendChild(c);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(function(){wrap.remove();},2600);
+}
+
 async function doResults(){
   setGameLock(false);
   var lv=LEVELS[st.level];var pct=st.score;
@@ -2492,9 +2609,15 @@ async function doResults(){
   }else{
     rvh='<div style="background:#e8f7ef;border:1.5px solid #3daa6f;border-radius:13px;padding:14px 16px;text-align:center;font-size:14px;font-weight:700;color:#145c35;margin-bottom:20px">Perfect score — every question correct!</div>';
   }
-  var sh='&#9733;'.repeat(stars)+'&#9734;'.repeat(3-stars);
-  g('rbody').innerHTML='<div class="rainbow"></div><div class="restop"><div class="rescirc" style="border-color:'+cc+'"><div class="resnum" style="color:'+cc+'">'+pct+'</div><div class="reslbl" style="color:'+cc+'">out of 100</div></div><div class="resstars" style="color:#c47a10">'+sh+'</div><div class="resmsg">'+msgs[stars]+'</div><div class="ressub">'+lv.name+' level &middot; '+st.correct+' correct of '+st.questions.length+'</div><div class="resbarw"><div class="resbarf" style="width:'+pct+'%;background:'+cc+'"></div></div></div><div class="saverow" id="saverow"><div class="sdot"></div>Saving your score...</div><div class="statsg"><div class="statc"><div class="statv" style="color:'+cc+'">'+pct+'</div><div class="statl">Score</div></div><div class="statc"><div class="statv">'+secs+'s</div><div class="statl">Time</div></div><div class="statc"><div class="statv">'+st.correct+' / '+st.questions.length+'</div><div class="statl">Correct</div></div></div>'+(pct>=60&&nxt?'<div class="unlk">You unlocked '+LEVELS[nxt].name+' level!</div>':'')+rvh+'<div class="actrow"><button class="actbtn" id="rbtn">Try again</button>'+(nxt?'<button class="actbtn pri" id="nlbtn">Try '+LEVELS[nxt].name+'</button>':'')+'<button class="actbtn" id="hbtn">Main menu</button></div>';
+  var sh='';
+  for(var si=0;si<3;si++){
+    sh+='<span class="rst" style="--d:'+(.9+si*.15)+'s">'+(si<stars?'&#9733;':'&#9734;')+'</span>';
+  }
+  g('rbody').innerHTML='<div class="rainbow"></div><div class="restop"><div class="rescirc" id="rescirc" style="--rc:'+cc+'"><div><div class="resnum" id="resnum" style="color:'+cc+'">0</div><div class="reslbl" style="color:'+cc+'">out of 100</div></div></div><div class="resstars" style="color:#c47a10">'+sh+'</div><div class="resmsg">'+msgs[stars]+'</div><div class="ressub">'+lv.name+' level &middot; '+st.correct+' correct of '+st.questions.length+'</div><div class="resbarw"><div class="resbarf" style="width:'+pct+'%;background:'+cc+'"></div></div></div><div class="saverow" id="saverow"><div class="sdot"></div>Saving your score...</div><div class="statsg"><div class="statc"><div class="statv" style="color:'+cc+'">'+pct+'</div><div class="statl">Score</div></div><div class="statc"><div class="statv">'+secs+'s</div><div class="statl">Time</div></div><div class="statc"><div class="statv">'+st.correct+' / '+st.questions.length+'</div><div class="statl">Correct</div></div></div>'+(pct>=60&&nxt?'<div class="unlk">You unlocked '+LEVELS[nxt].name+' level!</div>':'')+rvh+'<div class="actrow"><button class="actbtn" id="rbtn">Try again</button>'+(nxt?'<button class="actbtn pri" id="nlbtn">Try '+LEVELS[nxt].name+'</button>':'')+'<button class="actbtn" id="hbtn">Main menu</button></div>';
   showScr('s-results');
+  /* El anillo se llena hasta la nota mientras el numero cuenta. */
+  fillRing(g('rescirc'),g('resnum'),pct,cc,1000);
+  if(pct>=80)confetti();
   var rb=g('rbtn');if(rb)rb.addEventListener('click',function(){startLevel(st.level);});
   var nl=g('nlbtn');if(nl)nl.addEventListener('click',function(){startLevel(nxt);});
   var hb=g('hbtn');if(hb)hb.addEventListener('click',function(){showScr('s-home');});
