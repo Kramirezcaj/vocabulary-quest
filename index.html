@@ -180,66 +180,153 @@ body::before{
 .bp{font-size:13px;color:var(--er-t);line-height:1.6;opacity:.88}
 
 /* ============================ LOGIN DEL PROFESOR ============================ */
-.tlwrap{min-height:92vh;display:flex;align-items:center;justify-content:center}
-.tlcard{
-  background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:32px 26px;
-  width:100%;max-width:370px;text-align:center;box-shadow:var(--s2);animation:pop .5s var(--e) both;
+/* Mismo panel lateral que la entrada del alumno pero en azul: se distingue de un
+   vistazo que estas en el lado de la profesora. */
+#s-tl.active{position:fixed;inset:0;z-index:5;overflow-y:auto;background:var(--card);display:block}
+.tsplit{display:grid;grid-template-columns:47% 53%;min-height:100vh}
+.tleft{
+  position:relative;overflow:hidden;padding:56px 52px;display:flex;flex-direction:column;
+  justify-content:space-between;gap:34px;
+  background:linear-gradient(150deg,#0b3f74 0%,#12579c 44%,#1a6fc4 74%,#3f5fd0 130%);
 }
-.tlico{
-  width:54px;height:54px;border-radius:17px;background:linear-gradient(135deg,#e8f2fb,#d3e6f8);
-  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+.tshape{position:absolute;border-radius:50%;background:rgba(255,255,255,.09);animation:floatn 15s var(--e2) infinite alternate}
+.ts1{width:330px;height:330px;top:-120px;right:-110px}
+.ts2{width:210px;height:210px;bottom:-80px;left:-70px;background:rgba(255,255,255,.07);animation-delay:-5s}
+.ts3{width:110px;height:110px;top:46%;right:14%;background:rgba(255,255,255,.06);animation-delay:-9s}
+.tlin{position:relative;z-index:1}
+.tico{
+  width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;
+  margin:0 0 30px;animation:pop .6s var(--e) both;
 }
-.tlico svg{width:23px;height:23px;stroke:#1a6fc4;stroke-width:2;fill:none;stroke-linecap:round}
-.tlh{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-.3px}
-.tlp{font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:20px}
-.errmsg{font-size:12px;color:var(--er-t);margin-top:9px;display:none;font-weight:600;animation:shake .5s var(--e2)}
+.tico svg{width:24px;height:24px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round}
+.tth{
+  font-size:clamp(32px,3.2vw,46px);font-weight:900;letter-spacing:-2px;line-height:1.05;
+  color:#fff;margin-bottom:16px;animation:fadeUp .55s var(--e) .06s both;
+}
+.tth span{color:#bfdcff}
+.ttp{font-size:15.5px;color:rgba(255,255,255,.9);line-height:1.7;max-width:420px;animation:fadeUp .55s var(--e) .12s both}
+.tbullets{margin-top:28px;display:grid;gap:12px;animation:fadeUp .55s var(--e) .18s both}
+.tbu{display:flex;gap:11px;align-items:center;color:#fff;font-size:14px;font-weight:600}
+.tbk{
+  width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
+}
+.tstats{
+  position:relative;z-index:1;display:flex;gap:36px;flex-wrap:wrap;padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.25);animation:fadeUp .55s var(--e) .24s both;
+}
+.tsv{font-size:26px;font-weight:900;color:#fff;letter-spacing:-1px}
+.tsl{font-size:11px;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.tright{background:var(--card);display:flex;align-items:center;justify-content:center;padding:56px 52px 72px;position:relative}
+.trin{width:100%;max-width:390px;animation:fadeUp .55s var(--e) .2s both}
+.trh{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:7px}
+.trs{font-size:14px;color:var(--tx2);margin-bottom:26px;line-height:1.6}
+.tright .finp{background:var(--bg)}
+.tfoot{text-align:center;margin-top:6px}
+.train{
+  position:absolute;left:52px;right:52px;bottom:28px;height:4px;border-radius:99px;
+  background:linear-gradient(90deg,#1a6fc4,#5b45c8,#0f9e72,#1a6fc4);
+  background-size:200% 100%;animation:hue 9s linear infinite;
+}
+.errmsg{font-size:12px;color:var(--er-t);margin-top:10px;display:none;font-weight:600;text-align:center;animation:shake .5s var(--e2)}
 
 /* ============================ HOME ============================ */
-.htop{display:flex;align-items:center;gap:13px;padding:16px 0 14px}
+.htop{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0 10px;flex-wrap:wrap}
+.hi{display:flex;align-items:center;gap:13px;min-width:0}
 .awrap{border-radius:50%;padding:3px;flex-shrink:0;animation:pop .5s var(--e) both}
 .av{
-  width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:800;color:#fff;letter-spacing:.5px;
+  width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:#fff;letter-spacing:.5px;
 }
 .hg{font-size:13px;color:var(--tx2);margin-bottom:1px}
-.hn{font-size:20px;font-weight:800;letter-spacing:-.4px}
-.hdesc{font-size:13px;color:var(--tx2);margin-bottom:16px;line-height:1.6}
-.lvgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-#lvgrid{grid-template-columns:repeat(4,1fr)}
-#wsgrid{grid-template-columns:repeat(2,1fr)}
-.lvc{
-  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:20px 18px;
-  cursor:pointer;text-align:left;font-family:inherit;position:relative;overflow:hidden;
+.hn{font-size:21px;font-weight:800;letter-spacing:-.4px}
+.crs{
+  font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.04em;
+  background:var(--tl-l);color:var(--tl-d);align-self:center;white-space:nowrap;
+}
+.crs:empty{display:none}
+/* Salir es una accion secundaria: en reposo pasa desapercibida y solo toma color
+   al pasar el raton, para que no compita con los niveles. */
+.exitbtn{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:99px;
+  border:1px solid transparent;background:none;color:var(--tx3);font-size:13px;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:all .18s var(--e2);
+}
+.exitbtn svg{
+  width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .22s var(--e);
+}
+.exitbtn:hover{background:var(--co-l);color:var(--co-d);border-color:#f0c3b2}
+.exitbtn:hover svg{transform:translateX(-3px)}
+.exitbtn:focus-visible{outline:2px solid var(--co);outline-offset:2px}
+
+/* --- los cuatro niveles, dibujados como un recorrido --- */
+.route{position:relative;margin-bottom:4px}
+.rline{
+  /* translateY centra la linea justo en el eje de los circulos (35px = su radio) */
+  position:absolute;top:35px;transform:translateY(-50%);left:12.5%;right:12.5%;height:3px;border-radius:99px;opacity:.3;
+  background:linear-gradient(90deg,#0f9e72,#1a6fc4,#c47a10,#c44a28);
+}
+.rgrid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.rnode{
+  background:none;border:none;padding:0;font-family:inherit;text-align:center;cursor:pointer;
+  animation:fadeUp .5s var(--e) both;
+  /* Un boton dentro de una rejilla se centra en la fila en vez de estirarse, y eso
+     bajaba los circulos respecto a la linea. Estirandolo, todos quedan alineados. */
+  align-self:stretch;display:flex;flex-direction:column;
+}
+.rcard{flex:1}
+.rnode:nth-child(1){animation-delay:.04s}.rnode:nth-child(2){animation-delay:.1s}
+.rnode:nth-child(3){animation-delay:.16s}.rnode:nth-child(4){animation-delay:.22s}
+.rdot{
+  width:70px;height:70px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;font-weight:900;color:#fff;border:5px solid var(--bg);
+  box-shadow:var(--s2);transition:transform .22s var(--e),box-shadow .22s var(--e);
+}
+.rcard{
+  background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 16px;
   box-shadow:var(--s1);transition:transform .2s var(--e),box-shadow .2s var(--e),border-color .2s;
+}
+.rnode:hover .rcard{transform:translateY(-4px);box-shadow:var(--s3);border-color:var(--bd2)}
+.rnode:hover .rdot{transform:scale(1.08);box-shadow:var(--s3)}
+.rnode:active .rcard{transform:translateY(-1px)}
+.rnode:focus-visible .rcard{outline:2px solid var(--tl);outline-offset:3px}
+.rn{font-size:16px;font-weight:800;margin-bottom:5px;letter-spacing:-.3px}
+.rd{font-size:12.5px;color:var(--tx2);line-height:1.5;margin-bottom:11px;min-height:57px}
+.rq{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;display:inline-block}
+
+/* --- los dos retos de escritura --- */
+.lvgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.lvc{
+  background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);padding:20px 20px;
+  cursor:pointer;text-align:left;font-family:inherit;position:relative;overflow:hidden;
+  box-shadow:var(--s1);display:flex;flex-direction:column;
+  transition:transform .2s var(--e),box-shadow .2s var(--e),border-color .2s;
   animation:fadeUp .5s var(--e) both;
 }
-.lvgrid .lvc:nth-child(1){animation-delay:.04s}.lvgrid .lvc:nth-child(2){animation-delay:.10s}
-.lvgrid .lvc:nth-child(3){animation-delay:.16s}.lvgrid .lvc:nth-child(4){animation-delay:.22s}
+.lvgrid .lvc:nth-child(1){animation-delay:.28s}.lvgrid .lvc:nth-child(2){animation-delay:.34s}
 .lvc:hover{transform:translateY(-4px);box-shadow:var(--s3);border-color:var(--bd2)}
-.lvc:active{transform:translateY(-1px) scale(.995)}
-.lvc:hover .lvshape{transform:scale(1.5) translate(-6px,-6px);opacity:.13}
-.lvst{height:4px;border-radius:99px;margin-bottom:14px;width:34px;transition:width .3s var(--e)}
+.lvc:active{transform:translateY(-1px)}
+.lvc:focus-visible{outline:2px solid var(--pu);outline-offset:3px}
+.lvc:hover .lvshape{transform:scale(1.45) translate(-8px,-8px);opacity:.13}
+.lvst{height:4px;border-radius:99px;margin-bottom:13px;width:30px;transition:width .3s var(--e)}
 .lvc:hover .lvst{width:100%}
-.lvgr{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.lvn{font-size:16px;font-weight:800;margin-bottom:5px;letter-spacing:-.25px}
-.lvd{font-size:12px;color:var(--tx2);line-height:1.45}
-.lvb{font-size:11px;font-weight:700;margin-top:10px;padding:4px 10px;border-radius:9px;display:inline-block}
+.lvgr{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.lvn{font-size:17px;font-weight:800;margin-bottom:5px;letter-spacing:-.3px}
+.lvd{font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:12px;flex:1}
+.wtop{display:flex;gap:6px;flex-wrap:wrap;position:relative;z-index:1}
+.wtp{font-size:11px;font-weight:600;padding:4px 10px;border-radius:9px;background:var(--c2);color:var(--tx2)}
 .lvshape{
-  position:absolute;bottom:-16px;right:-16px;width:66px;height:66px;border-radius:50%;opacity:.07;
+  position:absolute;bottom:-18px;right:-18px;width:74px;height:74px;border-radius:50%;opacity:.07;
   transition:transform .45s var(--e),opacity .3s;
 }
 .wsec-hd{
-  display:flex;align-items:center;gap:10px;margin:18px 0 10px;font-size:11px;font-weight:800;
+  display:flex;align-items:center;gap:12px;margin:26px 0 14px;font-size:11px;font-weight:800;
   letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);
 }
 .wsec-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent)}
-.hmenu-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:12px;
-  border:1.5px solid var(--bd);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;
-  color:var(--tx2);font-family:inherit;transition:all .16s var(--e2);margin-bottom:12px;
-}
-.hmenu-btn:hover{background:var(--co-l);color:var(--co-d);border-color:#eab5a3}
-.hft{text-align:center;font-size:11px;color:var(--tx3);padding-top:2px}
+.hft{text-align:center;font-size:11px;color:var(--tx3);padding-top:18px}
 
 /* ============================ JUEGO ============================ */
 .gtop{display:flex;align-items:center;gap:10px;margin-bottom:18px}
@@ -612,13 +699,19 @@ body::before{
   body:has(#s-dash.active) #app{max-width:1120px}
 }
 @media(max-width:1000px){
-  #lvgrid{grid-template-columns:repeat(2,1fr)}
+  /* en dos filas la linea del recorrido deja de tener sentido */
+  .rgrid{grid-template-columns:repeat(2,1fr);gap:16px}
+  .rline{display:none}
+  .rd{min-height:0}
   .wband{grid-template-columns:1fr 1fr}
   .wlayout,.wfblayout{grid-template-columns:1fr}
   .wcol-left{position:static}
 }
 @media(max-width:900px){
-  .nsplit{grid-template-columns:1fr}
+  .nsplit,.tsplit{grid-template-columns:1fr}
+  .tleft{padding:44px 30px;gap:26px}
+  .tright{padding:40px 30px 64px}
+  .train{left:30px;right:30px}
   .nleft{padding:44px 30px;gap:26px}
   .nright{padding:40px 30px 64px}
   .nrain{left:30px;right:30px}
@@ -633,7 +726,9 @@ body::before{
   #app{padding:16px 13px 72px}
   .ntitle{font-size:32px}
   .opts{grid-template-columns:1fr}
-  #lvgrid,#wsgrid,.lvgrid,.wband{grid-template-columns:1fr}
+  #wsgrid,.lvgrid,.wband,.rgrid{grid-template-columns:1fr}
+  .htop{gap:10px}
+  .rdot{width:56px;height:56px;font-size:20px;margin-bottom:12px}
   .metg,.emb-bands{grid-template-columns:1fr 1fr}
   .actrow{flex-direction:column}
   .actbtn{width:100%;text-align:center}
@@ -697,16 +792,36 @@ body::before{
   </div>
 </div>
 <div class="screen" id="s-tl">
-  <div class="tlwrap">
-    <div class="tlcard">
-      <div class="tlico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-      <div class="tlh">Teacher Dashboard</div>
-      <p class="tlp">Enter your access password to view real-time student results and class progress.</p>
-      <div class="flbl" style="text-align:left">Password</div>
-      <input class="finp" id="tpass" type="password" placeholder="Enter password">
-      <button class="bigbtn b" id="tlbtn">View dashboard</button>
-      <p class="errmsg" id="perr">Incorrect password. Please try again.</p>
-      <button class="backl" id="tbk">Back to student login</button>
+  <div class="tsplit">
+    <div class="tleft">
+      <div class="tshape ts1"></div><div class="tshape ts2"></div><div class="tshape ts3"></div>
+      <div class="tlin">
+        <div class="tico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h1 class="tth">Teacher<br><span>Dashboard</span></h1>
+        <p class="ttp">Live results from every course, updated while your students work.</p>
+        <div class="tbullets">
+          <div class="tbu"><span class="tbk">1</span>Scores by level, course and date</div>
+          <div class="tbu"><span class="tbk">2</span>Read every article and essay in full</div>
+          <div class="tbu"><span class="tbk">3</span>Download the whole class as a spreadsheet</div>
+        </div>
+      </div>
+      <div class="tstats">
+        <div><div class="tsv">5</div><div class="tsl">Courses</div></div>
+        <div><div class="tsv">30s</div><div class="tsl">Refresh</div></div>
+        <div><div class="tsv">6</div><div class="tsl">Activities</div></div>
+      </div>
+    </div>
+    <div class="tright">
+      <div class="trin">
+        <div class="trh">Teacher access</div>
+        <div class="trs">Enter your password to open the dashboard.</div>
+        <div class="flbl">Password</div>
+        <input class="finp" id="tpass" type="password" placeholder="Enter password">
+        <button class="bigbtn b" id="tlbtn">View dashboard</button>
+        <p class="errmsg" id="perr">Incorrect password. Please try again.</p>
+        <div class="tfoot"><button class="backl" id="tbk">Back to student login</button></div>
+      </div>
+      <div class="train"></div>
     </div>
   </div>
 </div>
@@ -743,15 +858,23 @@ body::before{
 <div class="screen" id="s-home">
   <div class="rainbow"></div>
   <div class="htop">
-    <div class="awrap" id="awrap"><div class="av" id="av"></div></div>
-    <div><div class="hg">Welcome,</div><div class="hn" id="hn"></div></div>
+    <div class="hi">
+      <div class="awrap" id="awrap"><div class="av" id="av"></div></div>
+      <div><div class="hg">Welcome,</div><div class="hn" id="hn"></div></div>
+      <span class="crs" id="hcourse"></span>
+    </div>
+    <button class="exitbtn" id="mainmenubtn" title="Leave the game">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/></svg>
+      Exit
+    </button>
   </div>
-  <p class="hdesc">Choose your level. 20 questions drawn randomly from 50 — a different order for every student.</p>
-  <div class="lvgrid" id="lvgrid"></div>
-  <div class="wsec-hd"><div class="wsec-line"></div><span>Writing Challenges</span><div class="wsec-line"></div></div>
-  <p class="hdesc" style="margin-top:-4px">Write a real article or essay on a random topic. It is marked against the Cambridge writing rubric — you must write it yourself: the page locks while you write, pasting is disabled, and leaving the page is reported to your teacher.</p>
+  <div class="wsec-hd"><div class="wsec-line"></div><span>Your route &middot; 20 questions per level</span><div class="wsec-line"></div></div>
+  <div class="route">
+    <div class="rline"></div>
+    <div class="rgrid" id="lvgrid"></div>
+  </div>
+  <div class="wsec-hd"><div class="wsec-line"></div><span>Writing challenges</span><div class="wsec-line"></div></div>
   <div class="lvgrid" id="wsgrid"></div>
-  <button class="hmenu-btn" id="mainmenubtn">&#10005; Exit game</button>
   <p class="hft">No download required &middot; Works on any device &middot; Free</p>
 </div>
 <div class="screen" id="s-game">
@@ -845,8 +968,8 @@ const STAGE9_PROMPTS=[
  {topic:"Ethics",title:"With Great Power",prompt:"Write an essay arguing whether people with power and influence have a greater responsibility to help others. Defend your position clearly.",audience:"Academic essay",minWords:200,keywords:["power","powerful","influence","responsibility","responsible","help","others","people","leader","leaders","rich","wealthy","famous","society","duty","moral","good","change","impact","position","greater","give"]}
 ];
 const WSTAGES={
-  stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. Instant feedback.',kind:'article',reqWords:200,prompts:STAGE8_PROMPTS},
-  stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an essay on a random topic. Instant feedback.',kind:'essay',reqWords:200,prompts:STAGE9_PROMPTS}
+  stage8:{name:'Stage 8 — Article',grade:'Grade 6',color:'#5b45c8',bg:'#eeecfd',dark:'#3b2a9c',fill:'#5b45c8',desc:'Write an article on a random topic. 200 words, marked against the Cambridge rubric the moment you hand it in.',kind:'article',reqWords:200,prompts:STAGE8_PROMPTS},
+  stage9:{name:'Stage 9 — Essay',grade:'Grade 7',color:'#0d8a8a',bg:'#dcf2f2',dark:'#085656',fill:'#0d8a8a',desc:'Write an argumentative essay. 200 words, marked against the Cambridge rubric the moment you hand it in.',kind:'essay',reqWords:200,prompts:STAGE9_PROMPTS}
 };
 let sName='',sCourse='',dTimer=null,st={},dashRows=[];
 function g(id){return document.getElementById(id);}
@@ -1153,6 +1276,7 @@ function enterApp(v){
   g('av').textContent=ini;g('av').style.background=pal[0];
   g('awrap').style.background=pal[1];g('awrap').style.padding='3px';
   g('hn').textContent=v.split(' ')[0];
+  var hc=g('hcourse');if(hc)hc.textContent=sCourse?('Course '+sCourse):'';
 }
 
 function initTeacher(){
@@ -1309,20 +1433,39 @@ function openEssay(r){
 
 function buildHome(){
   var lkbg={beginner:'#e0f5ee',elementary:'#e8f2fb',intermediate:'#fdf0d8',expert:'#fdeee9'};
-  var h='';
+  /* Los cuatro niveles se dibujan como un recorrido numerado: la app ya los
+     desbloquea en orden (ver NEXT), pero hasta ahora eso no se veia. */
+  var h='',n=0;
   Object.entries(LEVELS).forEach(function(e){
-    var k=e[0],v=e[1];
-    h+='<button class="lvc" data-lv="'+k+'"><div class="lvst" style="background:'+v.fill+'"></div><div class="lvn" style="color:'+v.color+'">'+v.name+'</div><div class="lvd">'+v.desc+'</div><div class="lvb" style="background:'+lkbg[k]+';color:'+v.dark+'">'+QUESTIONS[k].length+' questions</div><div class="lvshape" style="background:'+v.fill+'"></div></button>';
+    var k=e[0],v=e[1];n++;
+    h+='<button class="rnode" data-lv="'+k+'">'+
+         '<div class="rdot" style="background:'+v.fill+'">'+n+'</div>'+
+         '<div class="rcard">'+
+           '<div class="rn" style="color:'+v.color+'">'+v.name+'</div>'+
+           '<div class="rd">'+v.desc+'</div>'+
+           '<span class="rq" style="background:'+lkbg[k]+';color:'+v.dark+'">'+QUESTIONS[k].length+' questions</span>'+
+         '</div>'+
+       '</button>';
   });
   g('lvgrid').innerHTML=h;
-  g('lvgrid').querySelectorAll('.lvc').forEach(function(btn){
+  g('lvgrid').querySelectorAll('.rnode').forEach(function(btn){
     btn.addEventListener('click',function(){startLevel(this.getAttribute('data-lv'));});
   });
-  // Writing stages
+  // Writing stages: dos temas de muestra para que se vea de que van
   var wh='';
   Object.entries(WSTAGES).forEach(function(e){
     var k=e[0],v=e[1];
-    wh+='<button class="lvc" data-ws="'+k+'"><div class="lvst" style="background:'+v.fill+'"></div><div class="lvgr">'+v.grade+'</div><div class="lvn" style="color:'+v.color+'">'+v.name+'</div><div class="lvd">'+v.desc+'</div><div class="lvb" style="background:'+v.bg+';color:'+v.dark+'">'+v.prompts.length+' topics &middot; instant feedback</div><div class="lvshape" style="background:'+v.fill+'"></div></button>';
+    var picks=shuf(v.prompts).slice(0,2).map(function(p){
+      return '<span class="wtp">'+escHtml(p.title)+'</span>';
+    }).join('');
+    wh+='<button class="lvc" data-ws="'+k+'">'+
+          '<div class="lvst" style="background:'+v.fill+'"></div>'+
+          '<div class="lvgr">'+v.grade+'</div>'+
+          '<div class="lvn" style="color:'+v.color+'">'+v.name+'</div>'+
+          '<div class="lvd">'+v.desc+'</div>'+
+          '<div class="wtop">'+picks+'<span class="wtp">+'+(v.prompts.length-2)+'</span></div>'+
+          '<div class="lvshape" style="background:'+v.fill+'"></div>'+
+        '</button>';
   });
   g('wsgrid').innerHTML=wh;
   g('wsgrid').querySelectorAll('.lvc').forEach(function(btn){
