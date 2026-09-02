@@ -615,26 +615,34 @@ body::before{
 #s-write.active{display:flex;flex-direction:column;min-height:calc(100vh - 104px)}
 #wbody{flex:1;min-height:0}
 .wnotebook{display:flex;flex-direction:column}
-.wstrip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:2px 4px 16px}
-.wstrip-t{font-size:16px;font-weight:800;letter-spacing:-.3px}
-.wmore{
-  background:none;border:none;color:var(--pu);font-size:12.5px;font-weight:700;font-family:inherit;
-  cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px;transition:opacity .16s;
+/* La consigna: barra pegada al borde superior, siempre a la vista aunque el
+   alumno se desplace por un ensayo largo. */
+.wtaskbar{
+  position:sticky;top:12px;z-index:4;background:var(--card);border:1px solid var(--bd);
+  border-radius:16px;box-shadow:var(--s1);padding:16px 20px 14px;margin-bottom:12px;
+  animation:fadeUp .45s var(--e) both;
 }
-.wmore:hover{opacity:.65}
-.wchip{font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;background:var(--c2);color:var(--tx2);white-space:nowrap}
-.wstrip .wchip:nth-of-type(1){margin-left:auto}
-.wtaskpanel{
-  background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:20px 22px;
-  margin-bottom:14px;box-shadow:var(--s1);animation:fadeUp .3s var(--e) both;
+.wpin{
+  position:absolute;top:-9px;left:22px;font-size:11px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--pu);color:#fff;padding:3px 10px;border-radius:99px;
 }
-.wtaskpanel[hidden]{display:none}
+.wtb-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
+.wtb-t{font-size:17px;font-weight:900;letter-spacing:-.35px}
+.wtb-task{font-size:14px;line-height:1.6;color:var(--tx2);flex:1;min-width:300px}
+.wtb-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:11px}
+.wchip{
+  font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;
+  background:var(--c2);color:var(--tx2);white-space:nowrap;
+}
+.wchip.info{background:var(--bl-l);color:var(--bl-d)}
+.wchip.warn{background:var(--am-l);color:var(--am-d)}
+/* la usa la pantalla de retomar un borrador */
 .wtask{font-size:14.5px;line-height:1.7;color:var(--tx);margin-bottom:14px;max-width:74ch}
-.wmeta-row{display:flex;gap:8px;flex-wrap:wrap}
-.wmeta-chip{font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;background:var(--c2);color:var(--tx2);display:flex;align-items:center;gap:5px}
+.wtopic{display:inline-block;font-size:10px;font-weight:800;padding:5px 12px;border-radius:99px;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0}
 .wshuffle{
-  background:none;border:none;color:var(--pu);font-size:12.5px;font-weight:700;cursor:pointer;
-  font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:12px 2px 0;transition:opacity .16s;
+  margin-left:auto;background:none;border:none;color:var(--pu);font-size:12.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:3px;
+  padding:4px;white-space:nowrap;transition:opacity .16s;
 }
 .wshuffle:hover{opacity:.65}
 /* La hoja: rayas dibujadas con un degradado que se repite cada linea. Van con
@@ -862,7 +870,15 @@ body::before{
   .wbtns{width:100%}
   .wbtns button{flex:1}
   .wta{padding:22px 20px;font-size:16px}
-  .wstrip .wchip:nth-of-type(1){margin-left:0}
+  /* En un telefono la barra fija se comeria media pantalla: aqui se queda
+     quieta arriba de la pagina y se aprieta todo lo posible. */
+  .wtaskbar{position:static;padding:14px 16px 12px}
+  .wtb-row{gap:10px;margin-top:2px}
+  .wtb-t{font-size:16px}
+  .wtb-task{min-width:0;font-size:13.5px;line-height:1.55;flex-basis:100%}
+  .wtb-chips{gap:6px;margin-top:9px}
+  .wchip{font-size:10.5px;padding:5px 10px}
+  .wshuffle{margin-left:0;font-size:12px}
   .wpfoot{padding:14px 16px}
   .qcard{padding:22px 18px 24px}
   .opts.c4,.opts.c2{grid-template-columns:1fr}
@@ -1897,24 +1913,24 @@ function renderResume(stage,d){
 function renderWritePrompt(){
   var p=wst.prompt,cfg=wst.cfg;
   var req=cfg.reqWords||p.minWords;
-  /* Cuaderno: una tira con el tema arriba, la hoja rayada ocupando todo el alto y
-     el pie con el anillo de progreso. La consigna completa se despliega aparte. */
-  var h='<div class="wstrip">'+
-      '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">'+p.topic+'</span>'+
-      '<span class="wstrip-t">'+p.title+'</span>'+
-      '<button class="wmore" id="wmorebtn" aria-expanded="false">See the full task</button>'+
-      '<span class="wchip">&#128221; '+req+'+ words required</span>'+
-      '<span class="wchip">&#128274; Exam mode</span>'+
-    '</div>'+
-    '<div class="wtaskpanel" id="wtaskpanel" hidden>'+
-      '<div class="wtask">'+p.prompt+'</div>'+
-      '<div class="wmeta-row">'+
-        '<span class="wmeta-chip">&#9999;&#65039; '+(cfg.kind==='essay'?'Essay':'Article')+'</span>'+
-        '<span class="wmeta-chip">&#128101; '+p.audience+'</span>'+
+  /* La consigna vive en una barra que se queda pegada arriba: por largo que sea el
+     texto, el tema no se pierde de vista. Los dos avisos que antes eran cajas de
+     color ahora son pastillas, y con eso la hoja rayada no pierde ni un pixel. */
+  var h='<div class="wtaskbar">'+
+      '<span class="wpin">Your task</span>'+
+      '<div class="wtb-row">'+
+        '<span class="wtopic" style="background:'+cfg.bg+';color:'+cfg.dark+'">'+p.topic+'</span>'+
+        '<span class="wtb-t">'+p.title+'</span>'+
+        '<span class="wtb-task">'+p.prompt+'</span>'+
       '</div>'+
-      '<div class="wnote">&#128204; Remember to use your term ring while writing.</div>'+
-      '<div class="wnote exam">&#128274; Exam mode: don\'t switch tabs and no pasting &mdash; the writing must be your own. If you need to stop, use <b>Save &amp; finish later</b> below.</div>'+
-      '<button class="wshuffle" id="wshufbtn">&#127922; Give me a different topic</button>'+
+      '<div class="wtb-chips">'+
+        '<span class="wchip">&#9999;&#65039; '+(cfg.kind==='essay'?'Essay':'Article')+'</span>'+
+        '<span class="wchip">&#128101; '+p.audience+'</span>'+
+        '<span class="wchip">&#128221; '+req+'+ words required</span>'+
+        '<span class="wchip info">&#128204; Use your term ring</span>'+
+        '<span class="wchip warn">&#128274; Exam mode &middot; no pasting, no tab switching</span>'+
+        '<button class="wshuffle" id="wshufbtn">&#127922; Different topic</button>'+
+      '</div>'+
     '</div>'+
     '<div class="wpaper">'+
       '<textarea class="wta" id="wta" placeholder="Start writing here. Take your time, plan your ideas, and write in full paragraphs...">'+(wst.text||'')+'</textarea>'+
@@ -1947,15 +1963,6 @@ function renderWritePrompt(){
   }
   ta.addEventListener('input',upd);upd();
   if(!LS)draftFlag('Draft saving unavailable',true);   // modo privado: sin red de seguridad
-  /* La consigna completa se despliega solo si el alumno la pide, para no robarle
-     alto a la hoja mientras escribe. */
-  var mb=g('wmorebtn'),panel=g('wtaskpanel');
-  mb.addEventListener('click',function(){
-    var open=panel.hasAttribute('hidden');
-    if(open){panel.removeAttribute('hidden');}else{panel.setAttribute('hidden','');}
-    mb.setAttribute('aria-expanded',open?'true':'false');
-    mb.textContent=open?'Hide the task':'See the full task';
-  });
   g('wshufbtn').addEventListener('click',function(){
     var arr=cfg.prompts.filter(function(x){return x.title!==wst.prompt.title;});
     wst.prompt=arr[Math.floor(Math.random()*arr.length)];wst.text='';renderWritePrompt();
